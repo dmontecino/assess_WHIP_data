@@ -11,30 +11,34 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
-```{r load packages and data, echo=FALSE, warning=FALSE, message=FALSE}
-using<-function(...) {
-    libs<-unlist(list(...))
-    req<-unlist(lapply(libs,require,character.only=TRUE))
-    need<-libs[req==FALSE]
-    if(length(need)>0){ 
-        install.packages(need)
-        lapply(need,require,character.only=TRUE)
-    }
-}
+```{r load packages , echo=FALSE, warning=FALSE, message=FALSE}
+# using<-function(...) {
+#     libs<-unlist(list(...))
+#     req<-unlist(lapply(libs,require,character.only=TRUE))
+#     need<-libs[req==FALSE]
+#     if(length(need)>0){ 
+#         install.packages(need)
+#         lapply(need,require,character.only=TRUE)
+#     }
+# }
+# 
+# using("knitr", "kableExtra", "readxl",
+#       "stringi", "dplyr", "tibble", 
+#       "rworldmap", "tidyverse", "plyr")
 
-using("knitr", "kableExtra", "readxl",
-      "stringi", "dplyr", "tibble", 
-      "rworldmap", "tidyverse", "plyr")
-# library(knitr)
-# library(kableExtra)
-# library(readxl)
-# library(stringi)
-# library(dplyr)
-# library(tibble)
-# library(rworldmap)
-# library(tidyverse)
-# library(plyr)
 
+library(knitr)
+library(kableExtra)
+library(readxl)
+library(stringi)
+library(dplyr)
+library(tibble)
+library(rworldmap)
+library(tidyverse)
+library(plyr)
+```
+
+```{r load data, echo=FALSE, warning=FALSE, message=FALSE}
 
 # specimen.codes.with.animal.ids.as.na.per.country=readRDS( "/Users/DMontecino/Desktop/test.RDS")
 # lapply(specimen.codes.with.animal.ids.as.na.per.country,kableExtra::kable)

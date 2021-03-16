@@ -1,7 +1,10 @@
+
 library(shiny)
 
+
 ui <- fluidPage( # lets. check 
-  sidebarLayout(
+  # img(src = "WCS.png",height=100),    # adding the WCS symbol
+  sidebarLayout(sidebarPanel = 
     sidebarPanel(
       fileInput("datain", "Upload WHIP Export", accept = c(".xlsx")
                 #accept = c(
@@ -17,16 +20,16 @@ ui <- fluidPage( # lets. check
                    inline = F),  
       
       downloadButton("report", "Assess data")
-    ),
-    mainPanel(
-      tableOutput("contents")
-    ),
-    
+    ), mainPanel = 
+    # mainPanel(
+    #   tableOutput("contents")
+    # ),
+      
     mainPanel("Download all the data from WHIP. Specifically, go to the quick search and click on the down arrow.
               In 'Category', select 'Event', and in 'Field' select 'Event Code'. Type 'wcs' in 'Value' and click on 
               the green button on the upper-right corner. Click on 'Export' and save the excel file. Finally,
               upload the excel file to the app, click on 'Assess...' and wait for 3-5 minutes. Download the .html
-              output and presto! (Let me know if you have any problems)")
+              output and presto! (Let me know if you have any problems).")
   )
 )
 
@@ -50,6 +53,7 @@ server <- function(input, output) {
       # Knit the document, passing in the `params` list, and eval it in a
       # child of the global environment (this isolates the code in the document
       # from the code in this app).
+      library(rmarkdown)
       rmarkdown::render(tempReport, output_file = file,
                         params = params,
                         envir = new.env(parent = globalenv()))
