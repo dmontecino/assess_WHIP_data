@@ -1,8 +1,8 @@
 ---
-title: "WHIP DATA QUALITY ASSESSMENT - VIETNAM"
+title: "WHIP DATA QUALITY ASSESSMENT"
 output: html_document
 params:
-  country.of.interest: "Vietnam"
+  country.of.interest: ""
   path.to.file: ""
 ---
 
