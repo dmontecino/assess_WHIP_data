@@ -38,10 +38,10 @@ number_of_columns=619 # counted the number of columns in the original excel
 
 # spec<-read_excel("/Users/DMontecino/Desktop/Data export_diego_montecino_2021-01-21.xlsx", sheet = 1, col_types = rep("text", number_of_columns))
 # spec<-read_excel("/Users/DMontecino/Desktop/Data export_diego_montecino_2021-03-09.xlsx", sheet = 1, col_types = rep("text", number_of_columns))
-spec<-read_excel(file=params$path.to.file, sheet = 1, col_types = rep("text", number_of_columns))
+spec<-read_excel(path = params$path.to.file, sheet = 1, col_types = rep("text", number_of_columns))
 
 # obs<-read_excel("/Users/DMontecino/Desktop/Data export_diego_montecino_2021-01-21.xlsx", sheet = 2, col_types = rep("text", number_of_columns))
-obs<-read_excel(params$path.to.file, sheet = 2, col_types = rep("text", number_of_columns))
+obs<-read_excel(path = params$path.to.file, sheet = 2, col_types = rep("text", number_of_columns))
 
 
 
