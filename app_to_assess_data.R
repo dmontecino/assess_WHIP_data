@@ -40,7 +40,8 @@ server = function(input, output, session) {
       # child of the global environment (this isolates the code in the document
       # from the code in this app).
       library(rmarkdown)
-      out <- render(report)
+      out <- render(report,
+                    params = list(datain = input$datain$datapath))
       file.rename(out, file)
     }
   )
