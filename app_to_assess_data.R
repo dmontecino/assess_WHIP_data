@@ -7,7 +7,7 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       fileInput("datain", "Upload WHIP Export", buttonLabel = "Choose file..."),
-      downloadButton("report", "Generate report")
+      downloadButton("report", "Assess Data")
     ),
     
     mainPanel("Download all the data from WHIP. Specifically, go to the quick search and click on the down arrow.
