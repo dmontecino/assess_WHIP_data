@@ -1,10 +1,12 @@
 library(shiny)
+library(readxl)
 
-ui = fluidPage(
-  
+
+
+ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
-      fileInput("datain", "Upload data", buttonLabel = "Choose file..."),
+      fileInput("datain", "Upload WHIP Export", buttonLabel = "Choose file..."),
       downloadButton("report", "Generate report")
     ),
     
@@ -15,11 +17,27 @@ ui = fluidPage(
               output and presto! (Let me know if you have any problems).")
     
     
-    ))
+    )
+  )
 
 
 server = function(input, output, session) {
+
+  number_of_columns=619 # counted the number of columns in the original excel
   
+  # specimens
+  dataset<-reactive({
+    # inFile <- input$datain
+    dat<-read_excel(path =input$datain$datapath, sheet = 1, col_types = rep("text", number_of_columns))
+    return(dat)
+  })
+  
+  #observations
+  dataset2<-reactive({
+    # inFile <- input$datain
+    dat<-read_excel(path =input$datain$datapath, sheet = 2, col_types = rep("text", number_of_columns))
+    return(dat)
+  })
   
   
   output$report <- downloadHandler(
@@ -35,13 +53,17 @@ server = function(input, output, session) {
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
       file.copy(src, report, overwrite = TRUE)
-  
-       # Knit the document, passing in the `params` list, and eval it in a
-      # child of the global environment (this isolates the code in the document
-      # from the code in this app).
+      spec <- dataset()
+      obs <- dataset2()
+      
+      params <- list(spec = spec,
+                     obs = obs)
+      
       library(rmarkdown)
-      out <- render(report,
-                    params = list(datain = input$datain$datapath))
+      out <- rmarkdown::render(report,
+                               output_file = file,
+                               params = params,
+                               envir = new.env(parent = globalenv()))
       file.rename(out, file)
     }
   )

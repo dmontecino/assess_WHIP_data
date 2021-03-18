@@ -2,7 +2,8 @@
 title: "WHIP DATA QUALITY ASSESSMENT"
 output: html_document
 params:
-  datain: ""
+  spec: spec
+  obs: obs
 ---
 
 ```{r setup, include=FALSE}
@@ -10,22 +11,25 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
-```{r load packages , echo=FALSE, warning=FALSE, message=FALSE}
+```{r load packages , echo=FALSE, warning=FALSE, message=FALSE, eval=T}
 
-library(readxl)
+# library(readxl)
 
 
 ```
 
 ```{r load data, echo=FALSE, warning=FALSE, message=FALSE}
 
-number_of_columns=619 # counted the number of columns in the original excel
+# getwd()
+# params$datain$datapath
+# number_of_columns=619 # counted the number of columns in the original excel
+# 
+# spec<-read_excel(path = input$datain$datapath, sheet = 1, col_types = rep("text", number_of_columns))
+# obs<-read_excel(path = params$datain$datapath, sheet = 2, col_types = rep("text", number_of_columns))
 
+# spec$Country
 
-spec<-read_excel(path = params$datain, sheet = 1, col_types = rep("text", number_of_columns))
-obs<-read_excel(path = params$datain, sheet = 2, col_types = rep("text", number_of_columns))
+head(params$spec)
+head(params$obs)
 
-
-spec$Country
-obs$Country
 ```
