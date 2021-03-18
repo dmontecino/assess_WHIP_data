@@ -7,7 +7,6 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       fileInput("datain", "Upload WHIP Export", buttonLabel = "Choose file..."),
-      downloadButton("report", "Assess Data"),
       radioButtons('country', 'Select country', 
                    choiceValues=c("Cambodia", "Lao PDR", "Vietnam"),
                    choiceNames = c('Cambodia', 'Laos', 'Viet nam'), inline = F),
