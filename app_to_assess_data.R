@@ -47,7 +47,7 @@ server <- function(input, output) {
     filename = "report.html",
     content = function(file) {
       
-      report<-"test.Rmd"
+      report<-"assess_data.Rmd"
       src <- normalizePath(report)
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
