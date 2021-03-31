@@ -125,6 +125,14 @@ if(nrow(data.per.country.spec$NA_Country)>0){
 
 
 # Divide data per country for observations including rows with country as NA
+# number sick, dead, heaelthy, observed is numeric
+cols.num <- c("observation_number_observed",
+              "observation_number_healthy",
+              "observation_number_sick",
+              "observation_number_dead")
+
+obs[cols.num] <- sapply(obs[cols.num],as.numeric)
+
 
 data.per.country.obs=
   lapply(countries, function(x)
@@ -2502,7 +2510,7 @@ total.obs.healthy.sick.dead=
                   observation_number_sick,
                   observation_number_dead)%>%
 
-         mutate(obs.healthy.sick.dead =rowSums(select(., all_of(c("observation_number_observed", cols.num[-1])))))%>%
+         mutate(obs.healthy.sick.dead =rowSums(select(., all_of(cols.num[-1]))))%>%
     dplyr::select(Country, Observation_code, obs.healthy.sick.dead))
 
 
@@ -2600,7 +2608,8 @@ obs.healthy.sick.dead.equal.observed.sum=
                   observation_number_sick,
                   observation_number_dead)%>%
 
-         mutate(healthy.sick.dead =rowSums(select(., all_of(cols.num[-1])))))
+         mutate(healthy.sick.dead =rowSums(select(., all_of(
+           cols.num[-1])))))
 
 
 obs.healthy.sick.dead.equal.observed.sum.per.country=
