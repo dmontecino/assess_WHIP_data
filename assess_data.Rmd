@@ -2487,11 +2487,200 @@ if(!exists("obs.codes.date.found.earlier.end.date.per.country.df") |
 
 ### OBSERVED NUMBERS 
 
-##### Do total seen, number healthy, number sick, and number dead match?
+##### Is there at least one individual reported per observation?
 
-We cannot learn about this yes because the columns "Total seen", "Number healthy", "Number sick", and "Number dead" are not in the export but we have requested a solution to this problem.
+```{r observation at least one, echo=FALSE, warning=FALSE, eval=T}
 
-```{r observation number, echo=FALSE, warning=FALSE, eval=F}
+total.obs.healthy.sick.dead=
+  
+ lapply(data.per.country.obs, function(x)
+  x%>%
+
+    dplyr::select(Country, Observation_code, 
+                  observation_number_observed,
+                  observation_number_healthy,
+                  observation_number_sick,
+                  observation_number_dead)%>%
+
+         mutate(obs.healthy.sick.dead =rowSums(select(., all_of(c("observation_number_observed", cols.num[-1])))))%>%
+    dplyr::select(Country, Observation_code, obs.healthy.sick.dead))
+
+
+total.obs.healthy.sick.dead.per.country=
+ lapply(total.obs.healthy.sick.dead, function(x)
+   x%>%filter(obs.healthy.sick.dead==0))
+
+
+if(nrow(do.call(rbind, total.obs.healthy.sick.dead.per.country))>0){  
+
+  total.obs.healthy.sick.dead.per.country=
+  do.call(
+  rbind, total.obs.healthy.sick.dead.per.country)%>%
+  dplyr::select(Country, Observation_code)
+
+# spit the data by country again now including the data of country based on the project tag
+# for those rows wo country
+total.obs.healthy.sick.dead.per.country=
+lapply(sort(unique(total.obs.healthy.sick.dead.per.country$Country)), function(x) 
+  total.obs.healthy.sick.dead.per.country%>%filter(Country==x)%>%
+  dplyr::select(Country, Observation_code)%>%
+  distinct(Country, Observation_code))
+
+# name the list
+names(total.obs.healthy.sick.dead.per.country)=sapply(
+  total.obs.healthy.sick.dead.per.country, function(x) unique(x$Country))
+    
+# order by specimen code
+total.obs.healthy.sick.dead.per.country=
+  lapply(total.obs.healthy.sick.dead.per.country, function(x)
+  x[order(x[,"Observation_code"]), ])
+
+# move to da dataset with the observation codes in a single row
+total.obs.healthy.sick.dead.per.country.df=
+  lapply(total.obs.healthy.sick.dead.per.country, function(x)
+  data.frame(Observation_code=paste(unique(x$Observation_code), collapse = " ")))
+
+
+  total.obs.healthy.sick.dead.per.country.df=data.frame(
+    Country=names(total.obs.healthy.sick.dead.per.country.df), 
+    Observation_code=unlist(total.obs.healthy.sick.dead.per.country.df, use.names = F))
+
+   total.obs.healthy.sick.dead.per.country.df=
+     total.obs.healthy.sick.dead.per.country.df[
+       total.obs.healthy.sick.dead.per.country.df$Observation_code!="",]
+
+   #delete rownames
+  rownames(total.obs.healthy.sick.dead.per.country.df)=NULL 
+
+      # subset to specific country
+total.obs.healthy.sick.dead.per.country.df=
+  total.obs.healthy.sick.dead.per.country.df%>%filter(Country==params$country.of.interest)
+
+if(nrow(total.obs.healthy.sick.dead.per.country.df)>0){
+
+
+  message("No. Not all observations have at least one individual reported. These are the observations without animals")
+  
+  kableExtra::kbl(total.obs.healthy.sick.dead.per.country.df, 
+                      caption = "Observations without individuals per country") %>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, width = "30em")
+  # print(specimen.codes.with.animal.ids.as.na.per.country)
+}
+}
+
+if(!exists("total.obs.healthy.sick.dead.per.country.df") |
+    exists("total.obs.healthy.sick.dead.per.country.df") && 
+   nrow(total.obs.healthy.sick.dead.per.country.df)==0){  
+
+    
+    total.obs.healthy.sick.dead.per.country=list(data.frame(Country="", Observation_code=""))
+   
+  rownames(total.obs.healthy.sick.dead.per.country[[1]])<-NULL
+    
+    message("Yes, all observations have at least one individual")}
+
+
+
+```
+
+##### Does total seen match the sum of number healthy, number sick, and number dead?
+
+```{r observation number, echo=FALSE, warning=FALSE, eval=T}
+
+obs.healthy.sick.dead.equal.observed.sum=
+  
+ lapply(data.per.country.obs, function(x)
+  x%>%
+
+    dplyr::select(Country, Observation_code, 
+                  observation_number_observed,
+                  observation_number_healthy,
+                  observation_number_sick,
+                  observation_number_dead)%>%
+
+         mutate(healthy.sick.dead =rowSums(select(., all_of(cols.num[-1])))))
+
+
+obs.healthy.sick.dead.equal.observed.sum.per.country=
+lapply(obs.healthy.sick.dead.equal.observed.sum, function(x)
+        x%>%
+        filter(healthy.sick.dead!=observation_number_observed)%>%
+        dplyr::select(Country, Observation_code))
+
+
+if(nrow(do.call(rbind, obs.healthy.sick.dead.equal.observed.sum.per.country))>0){  
+
+  obs.healthy.sick.dead.equal.observed.sum.per.country=
+  do.call(
+  rbind, obs.healthy.sick.dead.equal.observed.sum.per.country)%>%
+  dplyr::select(Country, Observation_code)
+
+# spit the data by country again now including the data of country based on the project tag
+# for those rows wo country
+obs.healthy.sick.dead.equal.observed.sum.per.country=
+lapply(sort(unique(obs.healthy.sick.dead.equal.observed.sum.per.country$Country)), function(x) 
+  obs.healthy.sick.dead.equal.observed.sum.per.country%>%filter(Country==x)%>%
+  dplyr::select(Country, Observation_code)%>%
+  distinct(Country, Observation_code))
+
+# name the list
+names(obs.healthy.sick.dead.equal.observed.sum.per.country)=sapply(
+  obs.healthy.sick.dead.equal.observed.sum.per.country, function(x) unique(x$Country))
+    
+# order by specimen code
+obs.healthy.sick.dead.equal.observed.sum.per.country=
+  lapply(obs.healthy.sick.dead.equal.observed.sum.per.country, function(x)
+  x[order(x[,"Observation_code"]), ])
+
+# move to da dataset with the observation codes in a single row
+obs.healthy.sick.dead.equal.observed.sum.per.country.df=
+  lapply(obs.healthy.sick.dead.equal.observed.sum.per.country, function(x)
+  data.frame(Observation_code=paste(unique(x$Observation_code), collapse = " ")))
+
+
+  obs.healthy.sick.dead.equal.observed.sum.per.country.df=data.frame(
+    Country=names(obs.healthy.sick.dead.equal.observed.sum.per.country.df), 
+    Observation_code=unlist(obs.healthy.sick.dead.equal.observed.sum.per.country.df, use.names = F))
+
+   obs.healthy.sick.dead.equal.observed.sum.per.country.df=
+     obs.healthy.sick.dead.equal.observed.sum.per.country.df[
+       obs.healthy.sick.dead.equal.observed.sum.per.country.df$Observation_code!="",]
+
+   #delete rownames
+  rownames(obs.healthy.sick.dead.equal.observed.sum.per.country.df)=NULL 
+
+      # subset to specific country
+obs.healthy.sick.dead.equal.observed.sum.per.country.df=
+  obs.healthy.sick.dead.equal.observed.sum.per.country.df%>%filter(Country==params$country.of.interest)
+
+if(nrow(obs.healthy.sick.dead.equal.observed.sum.per.country.df)>0){
+
+
+  message("No. Not all total observed and the sum of the number of healthy, sick, and dead observed individuals match. These are the observations with values that do not match per country")
+  
+  kableExtra::kbl(obs.healthy.sick.dead.equal.observed.sum.per.country.df, 
+                      caption = "Observations with incongruent numbers of individuals per country") %>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, width = "30em")
+  # print(specimen.codes.with.animal.ids.as.na.per.country)
+}
+}
+
+if(!exists("obs.healthy.sick.dead.equal.observed.sum.per.country.df") |
+    exists("obs.healthy.sick.dead.equal.observed.sum.per.country.df") && 
+   nrow(obs.healthy.sick.dead.equal.observed.sum.per.country.df)==0){  
+
+    
+    obs.healthy.sick.dead.equal.observed.sum.per.country=list(data.frame(Country="", Observation_code=""))
+   
+  rownames(obs.healthy.sick.dead.equal.observed.sum.per.country[[1]])<-NULL
+    
+    message("Yes, all observations have correct consistent numbers")}
+
+
 ```
 
 ### ANIMAL IDS
