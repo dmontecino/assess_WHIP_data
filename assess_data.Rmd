@@ -2510,7 +2510,7 @@ total.obs.healthy.sick.dead=
                   observation_number_sick,
                   observation_number_dead)%>%
 
-         mutate(obs.healthy.sick.dead =rowSums(select(., all_of(cols.num[-1]))))%>%
+         mutate(obs.healthy.sick.dead =rowSums(select(., all_of(cols.num))))%>%
     dplyr::select(Country, Observation_code, obs.healthy.sick.dead))
 
 
