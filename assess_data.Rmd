@@ -2411,7 +2411,7 @@ if(!exists("obs.codes.date.found.earlier.start.date.per.country.df") |
 
 ```{r observation date 2, echo=FALSE, warning=FALSE, eval=T, cache=F}
 
-obs.codes.date.found.earlier.end.date.per.country=
+obs.codes.date.found.later.end.date.per.country=
   lapply(data.per.country.obs, function(x)
   x%>%
     filter(!(as.Date(Observation_date)<=as.Date(End_date)))%>%
@@ -2421,57 +2421,57 @@ obs.codes.date.found.earlier.end.date.per.country=
 
 
 # if there are rows with wrong latitude
-if(nrow(do.call(rbind, obs.codes.date.found.earlier.end.date.per.country))>0){  
+if(nrow(do.call(rbind, obs.codes.date.found.later.end.date.per.country))>0){  
 
-obs.codes.date.found.earlier.end.date.per.country=do.call(
-  rbind, obs.codes.date.found.earlier.end.date.per.country)%>%
+obs.codes.date.found.later.end.date.per.country=do.call(
+  rbind, obs.codes.date.found.later.end.date.per.country)%>%
   dplyr::select(Country, Observation_code)
 
 
 # spit the data by country again now including the data of country based on the project tag
 # for those rows wo country
-obs.codes.date.found.earlier.end.date.per.country=
-lapply(sort(unique(obs.codes.date.found.earlier.end.date.per.country$Country)), function(x) 
-  obs.codes.date.found.earlier.end.date.per.country%>%filter(Country==x)%>%
+obs.codes.date.found.later.end.date.per.country=
+lapply(sort(unique(obs.codes.date.found.later.end.date.per.country$Country)), function(x) 
+  obs.codes.date.found.later.end.date.per.country%>%filter(Country==x)%>%
   dplyr::select(Country, Observation_code)%>%
   distinct(Country, Observation_code))
 
 # name the list
-names(obs.codes.date.found.earlier.end.date.per.country)=sapply(
-  obs.codes.date.found.earlier.end.date.per.country, function(x) unique(x$Country))
+names(obs.codes.date.found.later.end.date.per.country)=sapply(
+  obs.codes.date.found.later.end.date.per.country, function(x) unique(x$Country))
     
 # order by specimen code
-obs.codes.date.found.earlier.end.date.per.country=
-  lapply(obs.codes.date.found.earlier.end.date.per.country, function(x)
+obs.codes.date.found.later.end.date.per.country=
+  lapply(obs.codes.date.found.later.end.date.per.country, function(x)
   x[order(x[,"Observation_code"]), ])
 
 # move to da dataset with the event codes in a single row
-obs.codes.date.found.earlier.end.date.per.country.df=
-  lapply(obs.codes.date.found.earlier.end.date.per.country, function(x)
+obs.codes.date.found.later.end.date.per.country.df=
+  lapply(obs.codes.date.found.later.end.date.per.country, function(x)
   data.frame(Observation_code=paste(unique(x$Observation_code), collapse = " ")))
 
 
-  obs.codes.date.found.earlier.end.date.per.country.df=data.frame(
-    Country=names(obs.codes.date.found.earlier.end.date.per.country.df), 
-    Observation_code=unlist(obs.codes.date.found.earlier.end.date.per.country.df, use.names = F))
+  obs.codes.date.found.later.end.date.per.country.df=data.frame(
+    Country=names(obs.codes.date.found.later.end.date.per.country.df), 
+    Observation_code=unlist(obs.codes.date.found.later.end.date.per.country.df, use.names = F))
 
-   obs.codes.date.found.earlier.end.date.per.country.df=
-     obs.codes.date.found.earlier.end.date.per.country.df[
-       obs.codes.date.found.earlier.end.date.per.country.df$Observation_code!="",]
+   obs.codes.date.found.later.end.date.per.country.df=
+     obs.codes.date.found.later.end.date.per.country.df[
+       obs.codes.date.found.later.end.date.per.country.df$Observation_code!="",]
 
    #delete rownames
-  rownames(obs.codes.date.found.earlier.end.date.per.country.df)=NULL 
+  rownames(obs.codes.date.found.later.end.date.per.country.df)=NULL 
 
     # subset to specific country
-obs.codes.date.found.earlier.end.date.per.country.df=
-  obs.codes.date.found.earlier.end.date.per.country.df%>%filter(Country==params$country.of.interest)
+obs.codes.date.found.later.end.date.per.country.df=
+  obs.codes.date.found.later.end.date.per.country.df%>%filter(Country==params$country.of.interest)
 
-if(nrow(obs.codes.date.found.earlier.end.date.per.country.df)>0){
+if(nrow(obs.codes.date.found.later.end.date.per.country.df)>0){
 
 
   message("No, the data show that some observations were observed after the event ended. These are the observations that were found after the end of the corresponding event")
   
-  kableExtra::kbl(obs.codes.date.found.earlier.end.date.per.country.df, 
+  kableExtra::kbl(obs.codes.date.found.later.end.date.per.country.df, 
                 caption = "Observations with inconsistency between the event end date and the date they were observed") %>%
 
     kableExtra::kable_paper(full_width = F) %>%
@@ -2479,14 +2479,14 @@ if(nrow(obs.codes.date.found.earlier.end.date.per.country.df)>0){
     kableExtra::column_spec(2, width = "30em", border_right = T)
 }}
   
-if(!exists("obs.codes.date.found.earlier.end.date.per.country.df") |
-    exists("obs.codes.date.found.earlier.end.date.per.country.df") && 
-   nrow(obs.codes.date.found.earlier.end.date.per.country.df)==0){  
+if(!exists("obs.codes.date.found.later.end.date.per.country.df") |
+    exists("obs.codes.date.found.later.end.date.per.country.df") && 
+   nrow(obs.codes.date.found.later.end.date.per.country.df)==0){  
 
    
-  obs.codes.date.found.earlier.end.date.per.country=list(data.frame(Country="", Observation_code=""))
+  obs.codes.date.found.later.end.date.per.country=list(data.frame(Country="", Observation_code=""))
    
-  rownames(obs.codes.date.found.earlier.end.date.per.country[[1]])<-NULL
+  rownames(obs.codes.date.found.later.end.date.per.country[[1]])<-NULL
 
   message("Yes, all observations were observed before the corresponding event ended")}
     
@@ -3683,23 +3683,45 @@ if(!exists("list.of.potential.observations.df") |
 
 
 
+
+obs.codes.date.found.later.end.date.per.country.df=
+
+  do.call(rbind, obs.codes.date.found.later.end.date.per.country)
+
+obs.codes.date.found.later.end.date.per.country.df$Inconsistent_observed_end_date="Yes"
+
+
+
 obs.codes.date.found.earlier.start.date.per.country.df=
+
+  do.call(rbind, obs.codes.date.found.earlier.start.date.per.country)
+
+obs.codes.date.found.earlier.start.date.per.country$Inconsistent_observed_start_date="Yes"
+
+
+
+
+obs.codes.total.obs.healthy.sick.dead.per.country.df=
   
-  do.call(rbind, obs.codes.date.found.earlier.start.date.per.country)
+  do.call(rbind, total.obs.healthy.sick.dead.per.country)
 
-obs.codes.date.found.earlier.start.date.per.country.df$Inconsistent_observed_start_date="Yes"
-
-
-
-
-obs.codes.date.found.earlier.end.date.per.country.df=
-
-  do.call(rbind, obs.codes.date.found.earlier.start.date.per.country)
-
-obs.codes.date.found.earlier.end.date.per.country.df$Inconsistent_observed_end_date="Yes"
+obs.codes.total.obs.healthy.sick.dead.per.country.df$No_animal_in_the_observation="Yes"
 
 
 
+
+obs.codes.obs.healthy.sick.dead.equal.observed.sum.per.country.df=
+ 
+    do.call(rbind, obs.healthy.sick.dead.equal.observed.sum.per.country)
+
+obs.codes.obs.healthy.sick.dead.equal.observed.sum.per.country.df$Inconsistent_sum_and_total="Yes"
+ 
+
+obs.codes.observation.codes.unique.sps.per.country.df=
+ 
+    do.call(rbind, observation.codes.unique.sps.per.country)
+
+obs.codes.observation.codes.unique.sps.per.country.df$More_than_one_sps="Yes"
 
 # data showing the issues per Specimen code per country
 # observation.codes.with.issues=full_join(observation.codes.with.invalid.proj.tag.per.country.df,
@@ -3717,7 +3739,23 @@ obs.codes.date.found.earlier.end.date.per.country.df$Inconsistent_observed_end_d
 #                                         by=c("Country", "Observation_code"))
 
 observation.codes.with.issues=full_join(obs.codes.date.found.earlier.start.date.per.country.df, #observation.codes.with.issues, 
-                                        obs.codes.date.found.earlier.end.date.per.country.df,
+                                        obs.codes.date.found.later.end.date.per.country.df,
+                                        by=c("Country", "Observation_code"))
+
+
+observation.codes.with.issues=full_join(observation.codes.with.issues, 
+                                        obs.codes.total.obs.healthy.sick.dead.per.country.df,
+                                        by=c("Country", "Observation_code"))
+
+
+observation.codes.with.issues=full_join(observation.codes.with.issues, 
+                                        obs.codes.obs.healthy.sick.dead.equal.observed.sum.per.country.df,
+                                        by=c("Country", "Observation_code"))
+
+
+
+observation.codes.with.issues=full_join(observation.codes.with.issues, 
+                                        obs.codes.observation.codes.unique.sps.per.country.df,
                                         by=c("Country", "Observation_code"))
 
 
