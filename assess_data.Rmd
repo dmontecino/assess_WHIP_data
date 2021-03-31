@@ -2692,6 +2692,96 @@ if(!exists("obs.healthy.sick.dead.equal.observed.sum.per.country.df") |
 
 ```
 
+##### Do all observation codes match a single species?
+
+```{r checking observation single sps, echo=FALSE, cache=FALSE, eval=T}
+
+observation.codes.unique.sps.per.country=
+  
+ lapply(data.per.country.obs, function(x)
+  x%>%
+
+    dplyr::select(Country, Observation_code, observation_common_name)%>%
+    dplyr::group_by(Observation_code)%>%
+    dplyr::mutate(num.species=n())%>%
+    filter(num.species>1)%>%
+    select(Country, Observation_code)%>%
+    distinct(Country, Observation_code))
+            
+
+    
+if(nrow(do.call(rbind, observation.codes.unique.sps.per.country))>0){  
+
+  observation.codes.unique.sps.per.country=
+  do.call(
+  rbind, observation.codes.unique.sps.per.country)%>%
+  dplyr::select(Country, Observation_code)
+
+# spit the data by country again now including the data of country based on the project tag
+# for those rows wo country
+observation.codes.unique.sps.per.country=
+lapply(sort(unique(observation.codes.unique.sps.per.country$Country)), function(x) 
+  observation.codes.unique.sps.per.country%>%filter(Country==x)%>%
+  dplyr::select(Country, Observation_code)%>%
+  distinct(Country, Observation_code))
+
+# name the list
+names(observation.codes.unique.sps.per.country)=sapply(
+  observation.codes.unique.sps.per.country, function(x) unique(x$Country))
+    
+# order by specimen code
+observation.codes.unique.sps.per.country=
+  lapply(observation.codes.unique.sps.per.country, function(x)
+  x[order(x[,"Observation_code"]), ])
+
+# move to da dataset with the observation codes in a single row
+observation.codes.unique.sps.per.country.df=
+  lapply(observation.codes.unique.sps.per.country, function(x)
+  data.frame(Observation_code=paste(unique(x$Observation_code), collapse = " ")))
+
+
+  observation.codes.unique.sps.per.country.df=data.frame(
+    Country=names(observation.codes.unique.sps.per.country.df), 
+    Observation_code=unlist(observation.codes.unique.sps.per.country.df, use.names = F))
+
+   observation.codes.unique.sps.per.country.df=
+     observation.codes.unique.sps.per.country.df[
+       observation.codes.unique.sps.per.country.df$Observation_code!="",]
+
+   #delete rownames
+  rownames(observation.codes.unique.sps.per.country.df)=NULL 
+
+      # subset to specific country
+observation.codes.unique.sps.per.country.df=
+  observation.codes.unique.sps.per.country.df%>%filter(Country==params$country.of.interest)
+
+if(nrow(observation.codes.unique.sps.per.country.df)>0){
+
+
+  message("No. Not all observation codes matach a single species. These are the observations with with more than one obervation per country")
+  
+  kableExtra::kbl(observation.codes.unique.sps.per.country.df, 
+                      caption = "Observations with more than one species per country") %>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, width = "30em")
+  # print(specimen.codes.with.animal.ids.as.na.per.country)
+}
+}
+
+if(!exists("observation.codes.unique.sps.per.country.df") |
+    exists("observation.codes.unique.sps.per.country.df") && 
+   nrow(observation.codes.unique.sps.per.country.df)==0){  
+
+    
+    observation.codes.unique.sps.per.country=list(data.frame(Country="", Observation_code=""))
+   
+  rownames(observation.codes.unique.sps.per.country[[1]])<-NULL
+    
+    message("Yes, all observations have a single species")}
+
+```
+
 ### ANIMAL IDS
 
 ##### Are all animal IDs provided?
