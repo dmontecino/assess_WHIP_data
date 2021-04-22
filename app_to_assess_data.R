@@ -29,17 +29,18 @@ ui <- fluidPage(
 
 server <- function(input, output) {
   
-  number_of_columns=627 # counted the number of columns in the original excel
   
-  dataset<-reactive({
+  # first open the observation and spec to get the number of columns
+  
+   dataset<-reactive({
     # inFile <- input$datain
-    dat<-read_excel(path =input$datain$datapath, sheet = 1, col_types = rep("text", number_of_columns))
+    dat<-read_excel(path =input$datain$datapath, sheet = 1, col_types = "text")
     return(dat)
   })
   
   dataset2<-reactive({
     # inFile <- input$datain
-    dat<-read_excel(path =input$datain$datapath, sheet = 2, col_types = rep("text", number_of_columns))
+    dat<-read_excel(path =input$datain$datapath, sheet = 2, col_types = "text")
     return(dat)
   })
   
