@@ -828,7 +828,7 @@ if(nrow(event.codes.wrong.lat.per.country.df)>0){
   
 # Show the results
     
-    message("No. Not all the latitudes values reported are feasible. These are the events with impossible latitude values
+    message("No. Not all the latitudes values reported are feasible These are the events with impossible latitude values
 (in decimal degrees) per country.")
     
     kableExtra::kbl(event.codes.wrong.lat.per.country.df, 
@@ -915,7 +915,7 @@ if(nrow(event.codes.wrong.lon.per.country.df)>0){
   
 # Show the results
   
-    message("No. Not all the longitude values reported are feasible. These are the events with impossible longitude values
+    message("No. Not all the longitude values reported are feasible These are the events with impossible longitude values
 (in decimal degrees) per country.")
     
     kableExtra::kbl(event.codes.wrong.lon.per.country.df, 
@@ -934,86 +934,6 @@ if(!exists("event.codes.wrong.lon.per.country.df") |
    
     message("Yes, all the longitude values reported are feasible (in decimal degrees)")}
 
-```
-### HISTORY OF THE EVENTS 
-#
-##### Is the history provided for all the events?
-#
-#
-```{r history of the events, echo=FALSE, warning=FALSE, eval=T, cache=F}
-
-event.codes.no.history.per.country=
-lapply(event.codes.per.country, function(x)
-  x%>%filter(is.na(History))%>%
-  dplyr::select(Country,Event_Code, Projects)%>%
-  distinct(Country,Event_Code, Projects))
-
-
-# if there are rows without history
-if(nrow(do.call(rbind, event.codes.no.history.per.country))>0){  
-
-event.codes.no.history.per.country=do.call(rbind, event.codes.no.history.per.country)
-
-# spit the data by country again now including the data of country based on the project tag
-# for those rows wo country
-event.codes.no.history.per.country=
-lapply(sort(unique(event.codes.no.history.per.country$Country)), function(x) 
-  event.codes.no.history.per.country%>%filter(Country==x)%>%
-  dplyr::select(Country, Event_Code)%>%
-  distinct(Country, Event_Code))
-
-# name the list
-names(event.codes.no.history.per.country)=sapply(
-  event.codes.no.history.per.country, function(x) unique(x$Country))
-    
-# order by event code
-event.codes.no.history.per.country=
-  lapply(event.codes.no.history.per.country, function(x)
-  x[order(x[,"Event_Code"]), ])
-
-# move to da dataset with the event codes in a single row
-event.codes.no.history.per.country.df=
-  lapply(event.codes.no.history.per.country, function(x)
-  data.frame(Event_Codes=paste(unique(x$Event_Code), collapse = " ")))
-
-
-  event.codes.no.history.per.country.df=data.frame(
-    Country=names(event.codes.no.history.per.country.df), 
-    Event_Codes=unlist(event.codes.no.history.per.country.df, use.names = F))
-
-   event.codes.no.history.per.country.df=
-     event.codes.no.history.per.country.df[event.codes.no.history.per.country.df$Event_Codes!="",]
-
-   #delete rownames
-  rownames(event.codes.no.history.per.country.df)=NULL 
-  
-       # subset to specific country
-event.codes.no.history.per.country.df=
-  event.codes.no.history.per.country.df%>%filter(Country==params$country.of.interest)
-
-if(nrow(event.codes.no.history.per.country.df)>0){
- 
-  
-# Show the results
-    
-    message("No. Not all the events have a history provided. These are the events without history per country.")
-    
-    kableExtra::kbl(event.codes.no.history.per.country.df, 
-                    caption = "Event codes without history per country") %>%
-      kableExtra::kable_paper(full_width = F) %>%
-      kableExtra::column_spec(1, bold = T, border_right = T) %>%
-      kableExtra::column_spec(2, width = "30em")
-}}
-
-if(!exists("event.codes.no.history.per.country.df") |
-    exists("event.codes.no.history.per.country.df") && nrow(event.codes.no.history.per.country.df)==0){  
-    
-    event.codes.no.history.per.country.df=list(data.frame(Country="", Event_Code=""))
-   
-   rownames(event.codes.no.history.per.country.df[[1]])<-NULL
-    
-    message("Yes, all events have a history reported")}
-  
 ```
 #
 #
@@ -1095,17 +1015,6 @@ event.codes.wrong.lon.per.country.df=event.codes.wrong.lon.per.country.df%>%
 
 
 
-# Data frame event no history
-
-event.codes.no.history.per.country.df=
-  do.call(rbind,event.codes.no.history.per.country)
-
-event.codes.no.history.per.country.df$No_history="Yes"
-
-event.codes.no.history.per.country.df=event.codes.no.history.per.country.df%>%
-  dplyr::select(Country , Event_Code, No_history)
-
-
 # data showing the issues per event code per country
 event.codes.with.issues=full_join(event.codes.start.dates.not.provided.per.country.df, 
                                   event.codes.end.dates.not.provided.per.country.df,     
@@ -1137,10 +1046,6 @@ event.codes.with.issues=full_join(event.codes.with.issues,
                                   event.codes.wrong.lon.per.country.df, 
                                   by=c("Country", "Event_Code"))
 
-
-event.codes.with.issues=full_join(event.codes.with.issues,
-                                  event.codes.no.history.per.country.df, 
-                                  by=c("Country", "Event_Code"))
 
 event.codes.with.issues=event.codes.with.issues[order(event.codes.with.issues$Country, 
                                                       event.codes.with.issues$Event_Code),]
@@ -3392,7 +3297,7 @@ if(!exists("specimen.codes.with.date.found.as.na.per.country.df") |
 #
 ##### Is "how found" reported in WHIP?
 #
-This is an important field because it allows to identify how is contributing more to the surveillance
+This is an important field because it allows to identify how is contirbuting more to the surveillance
 ```{r specimen how found, echo=FALSE, warning=FALSE, eval=T, cache=FALSE}
 
 spec.how.found.not.reported.per.country=
@@ -3555,89 +3460,6 @@ if(!exists("spec.captive.category.not.reported.per.country.df") |
 
   
   message("Yes, all specimens have the captivity category item reported")}
-  
-
-```
-#
-### CONDITION
-#
-##### Is "Condition" reported in WHIP?
-#
-```{r specimen condition, echo=FALSE, warning=FALSE, eval=T, cache=FALSE}
-
-spec.condition.not.reported.per.country=
-
-lapply(data.per.country.spec, function(x)
-  x%>%filter(is.na(Condition))%>%dplyr::select(Country, Event_Code, Specimen_code, Condition)%>%distinct())
-
-# if there are rows with wrong latitude
-
-if(nrow(do.call(rbind,spec.condition.not.reported.per.country))>0){  
-
-spec.condition.not.reported.per.country=do.call(
-  rbind, spec.condition.not.reported.per.country)%>%
-  dplyr::select(Country, Specimen_code)
-
-
-# spit the data by country again now including the data of country based on the project tag
-# for those rows wo country
-spec.condition.not.reported.per.country=
-lapply(sort(unique(spec.condition.not.reported.per.country$Country)), function(x) 
-  spec.condition.not.reported.per.country%>%filter(Country==x)%>%
-  dplyr::select(Country, Specimen_code)%>%
-  distinct(Country, Specimen_code))
-
-# name the list
-names(spec.condition.not.reported.per.country)=sapply(
-  spec.condition.not.reported.per.country, function(x) unique(x$Country))
-    
-# order by specimen code
-spec.condition.not.reported.per.country=
-  lapply(spec.condition.not.reported.per.country, function(x)
-  x[order(x[,"Specimen_code"]), ])
-
-# move to da dataset with the event codes in a single row
-spec.condition.not.reported.per.country.df=
-  lapply(spec.condition.not.reported.per.country, function(x)
-  data.frame(Specimen_code=paste(unique(x$Specimen_code), collapse = " ")))
-
-
-  spec.condition.not.reported.per.country.df=data.frame(
-    Country=names(spec.condition.not.reported.per.country.df), 
-    Specimen_code=unlist(spec.condition.not.reported.per.country.df, use.names = F))
-
-   spec.condition.not.reported.per.country.df=
-     spec.condition.not.reported.per.country.df[
-       spec.condition.not.reported.per.country.df$Specimen_code!="",]
-
-   #delete rownames
-  rownames(spec.condition.not.reported.per.country.df)=NULL 
-
- # subset to specific country
-spec.condition.not.reported.per.country.df=
-  spec.condition.not.reported.per.country.df%>%filter(Country==params$country.of.interest)
-
-if(nrow(spec.condition.not.reported.per.country.df)>0){  
-  
-  message("No, the data show that some specimens do not the condition of the animals reported. These are the Specimen codes that do not have the 'condition' field reported")
-  
-  kableExtra::kbl(spec.condition.not.reported.per.country.df, 
-                  caption = "Specimens with unknown condition")%>%
-    kableExtra::kable_paper(full_width = F) %>%
-    kableExtra::column_spec(1, bold = T, border_right = T) %>%
-    kableExtra::column_spec(2:ncol(spec.condition.not.reported.per.country.df), width = "30em", border_right = T)
-}}
-
-if(!exists("spec.condition.not.reported.per.country.df") |
-    exists("spec.condition.not.reported.per.country.df") && 
-   nrow(spec.condition.not.reported.per.country.df)==0){  
-  
-  spec.condition.not.reported.per.country=list(data.frame(Country="", Specimen_code=""))
-   
-  rownames(spec.condition.not.reported.per.country[[1]])<-NULL
-
-  
-  message("Yes, all specimens have the condition reported")}
   
 
 ```
@@ -4132,13 +3954,6 @@ spec.captive.category.not.reported.per.country.df=
 spec.captive.category.not.reported.per.country.df$No_captive_category="Yes"
 
 
-spec.condition.not.reported.per.country.df=
-  
-  do.call(rbind, spec.condition.not.reported.per.country)
-
-spec.condition.not.reported.per.country.df$No_condition="Yes"
-
-
 
 spec.necropsy.level.not.reported.per.country.df=
   
@@ -4182,7 +3997,6 @@ specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                      spec.received.earlier.than.found.date.per.country.df,
                                      by=c("Country", "Specimen_code"))
 
-
 specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                      spec.date.necropsy.earlier.than.start.date.per.country.df,
                                      by=c("Country", "Specimen_code"))
@@ -4225,11 +4039,6 @@ specimen.codes.with.issues=full_join(specimen.codes.with.issues,
 
 specimen.codes.with.issues=full_join(specimen.codes.with.issues, 
                                      spec.captive.category.not.reported.per.country.df,
-                                     by=c("Country", "Specimen_code"))
-
-
-specimen.codes.with.issues=full_join(specimen.codes.with.issues, 
-                                     spec.condition.not.reported.per.country.df,
                                      by=c("Country", "Specimen_code"))
 
 
