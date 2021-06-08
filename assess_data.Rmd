@@ -58,6 +58,8 @@ spec=spec[!(grepl("delete", spec$Projects, ignore.case = T)),]
 spec=spec[!(grepl("test", spec$Tags, ignore.case = T)),]
 spec=spec[!(grepl("delete", spec$Tags, ignore.case = T)),]
 
+spec=spec[spec$Event_Code!="WCS.100294",]
+
 # obs=obs[!(obs$Tags%in%c("Delete", "Delete,Test")),]
 # obs=obs[!(obs$Tags%in%c("Test,Delete", "Test")),]
 obs=obs[!(grepl("test", obs$Projects, ignore.case = T)),]
@@ -936,6 +938,88 @@ if(!exists("event.codes.wrong.lon.per.country.df") |
 
 ```
 #
+### HISTORY
+#
+##### Is the history of the events reported in WHIP?
+#
+```{r history, echo=FALSE, warning=FALSE, eval=T, cache=FALSE}
+
+event.history.not.reported.per.country=
+
+lapply(data.per.country.spec, function(x)
+  x%>%filter(is.na(History))%>%dplyr::select(Country, Event_Code, History)%>%distinct())
+
+# if there are rows with wrong latitude
+
+if(nrow(do.call(rbind,event.history.not.reported.per.country))>0){  
+
+event.history.not.reported.per.country=do.call(
+  rbind, event.history.not.reported.per.country)%>%
+  dplyr::select(Country, Event_Code)
+
+
+# spit the data by country again now including the data of country based on the project tag
+# for those rows wo country
+event.history.not.reported.per.country=
+lapply(sort(unique(event.history.not.reported.per.country$Country)), function(x) 
+  event.history.not.reported.per.country%>%filter(Country==x)%>%
+  dplyr::select(Country, Event_Code)%>%
+  distinct(Country, Event_Code))
+
+# name the list
+names(event.history.not.reported.per.country)=sapply(
+  event.history.not.reported.per.country, function(x) unique(x$Country))
+    
+# order by specimen code
+event.history.not.reported.per.country=
+  lapply(event.history.not.reported.per.country, function(x)
+  x[order(x[,"Event_Code"]), ])
+
+# move to da dataset with the event codes in a single row
+event.history.not.reported.per.country.df=
+  lapply(event.history.not.reported.per.country, function(x)
+  data.frame(Event_Code=paste(unique(x$Event_Code), collapse = " ")))
+
+event.history.not.reported.per.country.df=data.frame(
+    Country=names(event.history.not.reported.per.country.df), 
+    Event_code=unlist(event.history.not.reported.per.country.df, use.names = F))
+
+   event.history.not.reported.per.country.df=
+     event.history.not.reported.per.country.df[
+       event.history.not.reported.per.country.df$Event_code!="",]
+
+   #delete rownames
+  rownames(event.history.not.reported.per.country.df)=NULL 
+
+ # subset to specific country
+event.history.not.reported.per.country.df=
+  event.history.not.reported.per.country.df%>%filter(Country==params$country.of.interest)
+
+if(nrow(event.history.not.reported.per.country.df)>0){  
+  
+  message("No, the data show that some events do not have the history repoerted. These are the Event codes that do not have the history reported")
+  
+  kableExtra::kbl(event.history.not.reported.per.country.df, 
+                  caption = "Events without history")%>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2:ncol(event.history.not.reported.per.country.df), width = "30em", border_right = T)
+}}
+
+if(!exists("event.history.not.reported.per.country.df") |
+    exists("event.history.not.reported.per.country.df") && 
+   nrow(event.history.not.reported.per.country.df)==0){  
+  
+  event.history.not.reported.per.country=list(data.frame(Country="", Event_code=""))
+   
+  rownames(event.history.not.reported.per.country.df[[1]])<-NULL
+
+  
+  message("Yes, all events have the history reported")}
+  
+
+```
+#
 #
 ### SUMMARY ISSUES AT THE EVENT LEVEL
 #
@@ -1014,6 +1098,17 @@ event.codes.wrong.lon.per.country.df=event.codes.wrong.lon.per.country.df%>%
   dplyr::select(Country , Event_Code, Wrong_lon)
 
 
+#data frame event codes no history
+event.history.not.reported.per.country.df=
+  do.call(rbind,event.history.not.reported.per.country)
+
+event.history.not.reported.per.country.df$No_history="Yes"
+
+event.history.not.reported.per.country.df=event.history.not.reported.per.country.df%>%
+  dplyr::select(Country , Event_Code, No_history)
+
+
+
 
 # data showing the issues per event code per country
 event.codes.with.issues=full_join(event.codes.start.dates.not.provided.per.country.df, 
@@ -1044,6 +1139,10 @@ event.codes.with.issues=full_join(event.codes.with.issues,
 
 event.codes.with.issues=full_join(event.codes.with.issues,
                                   event.codes.wrong.lon.per.country.df, 
+                                  by=c("Country", "Event_Code"))
+
+event.codes.with.issues=full_join(event.codes.with.issues,
+                                  event.history.not.reported.per.country.df, 
                                   by=c("Country", "Event_Code"))
 
 
