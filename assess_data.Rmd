@@ -982,11 +982,11 @@ event.history.not.reported.per.country.df=
 
 event.history.not.reported.per.country.df=data.frame(
     Country=names(event.history.not.reported.per.country.df), 
-    Event_code=unlist(event.history.not.reported.per.country.df, use.names = F))
+    Event_Code=unlist(event.history.not.reported.per.country.df, use.names = F))
 
    event.history.not.reported.per.country.df=
      event.history.not.reported.per.country.df[
-       event.history.not.reported.per.country.df$Event_code!="",]
+       event.history.not.reported.per.country.df$Event_Code!="",]
 
    #delete rownames
   rownames(event.history.not.reported.per.country.df)=NULL 
@@ -1010,7 +1010,7 @@ if(!exists("event.history.not.reported.per.country.df") |
     exists("event.history.not.reported.per.country.df") && 
    nrow(event.history.not.reported.per.country.df)==0){  
   
-  event.history.not.reported.per.country=list(data.frame(Country="", Event_code=""))
+  event.history.not.reported.per.country=list(data.frame(Country="", Event_Code=""))
    
   rownames(event.history.not.reported.per.country.df[[1]])<-NULL
 
@@ -3476,6 +3476,89 @@ if(!exists("spec.how.found.not.reported.per.country.df") |
 
 ```
 #
+### CONDITION
+#
+##### Is "condition" reported in WHIP?
+#
+```{r specimen condition found, echo=FALSE, warning=FALSE, eval=T, cache=FALSE}
+
+spec.condition.not.reported.per.country=
+
+lapply(data.per.country.spec, function(x)
+  x%>%filter(is.na(Condition))%>%dplyr::select(Country, Event_Code, Specimen_code, Condition)%>%distinct())
+
+# if there are rows with wrong latitude
+
+if(nrow(do.call(rbind,spec.condition.not.reported.per.country))>0){  
+
+spec.condition.not.reported.per.country=do.call(
+  rbind, spec.condition.not.reported.per.country)%>%
+  dplyr::select(Country, Specimen_code)
+
+
+# spit the data by country again now including the data of country based on the project tag
+# for those rows wo country
+spec.condition.not.reported.per.country=
+lapply(sort(unique(spec.condition.not.reported.per.country$Country)), function(x) 
+  spec.condition.not.reported.per.country%>%filter(Country==x)%>%
+  dplyr::select(Country, Specimen_code)%>%
+  distinct(Country, Specimen_code))
+
+# name the list
+names(spec.condition.not.reported.per.country)=sapply(
+  spec.condition.not.reported.per.country, function(x) unique(x$Country))
+    
+# order by specimen code
+spec.condition.not.reported.per.country=
+  lapply(spec.condition.not.reported.per.country, function(x)
+  x[order(x[,"Specimen_code"]), ])
+
+# move to da dataset with the event codes in a single row
+spec.condition.not.reported.per.country.df=
+  lapply(spec.condition.not.reported.per.country, function(x)
+  data.frame(Specimen_code=paste(unique(x$Specimen_code), collapse = " ")))
+
+
+  spec.condition.not.reported.per.country.df=data.frame(
+    Country=names(spec.condition.not.reported.per.country.df), 
+    Specimen_code=unlist(spec.condition.not.reported.per.country.df, use.names = F))
+
+   spec.condition.not.reported.per.country.df=
+     spec.condition.not.reported.per.country.df[
+       spec.condition.not.reported.per.country.df$Specimen_code!="",]
+
+   #delete rownames
+  rownames(spec.condition.not.reported.per.country.df)=NULL 
+
+ # subset to specific country
+spec.condition.not.reported.per.country.df=
+  spec.condition.not.reported.per.country.df%>%filter(Country==params$country.of.interest)
+
+if(nrow(spec.condition.not.reported.per.country.df)>0){  
+  
+  message("No, the data show that some specimens do not have the condition reported. These are the Specimen codes that do not have the condition field reported")
+  
+  kableExtra::kbl(spec.condition.not.reported.per.country.df, 
+                  caption = "Specimens without condition reported")%>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2:ncol(spec.condition.not.reported.per.country.df), width = "30em", border_right = T)
+}}
+
+if(!exists("spec.condition.not.reported.per.country.df") |
+    exists("spec.condition.not.reported.per.country.df") && 
+   nrow(spec.condition.not.reported.per.country.df)==0){  
+  
+  spec.condition.not.reported.per.country=list(data.frame(Country="", Specimen_code=""))
+   
+  rownames(spec.condition.not.reported.per.country[[1]])<-NULL
+
+  
+  message("Yes, all specimens have the condition reported")}
+  
+
+```
+#
 ### CAPTIVITY CATEGORY
 #
 ##### Is "Captivity Category" reported in WHIP?
@@ -4044,6 +4127,12 @@ spec.how.found.not.reported.per.country.df=
 spec.how.found.not.reported.per.country.df$No_how_found="Yes"
 
 
+spec.condition.not.reported.per.country.df=
+
+    do.call(rbind, spec.condition.not.reported.per.country)
+
+spec.condition.not.reported.per.country.df$No_condition="Yes"
+
 
 
 spec.captive.category.not.reported.per.country.df=
@@ -4135,6 +4224,10 @@ specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                      spec.how.found.not.reported.per.country.df,
                                      by=c("Country", "Specimen_code"))
 
+
+specimen.codes.with.issues=full_join(specimen.codes.with.issues, 
+                                     spec.condition.not.reported.per.country.df,
+                                     by=c("Country", "Specimen_code"))
 
 specimen.codes.with.issues=full_join(specimen.codes.with.issues, 
                                      spec.captive.category.not.reported.per.country.df,
