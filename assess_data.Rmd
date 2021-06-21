@@ -147,7 +147,8 @@ data.per.country.obs.na= # specimens with NAs in the country
   #full set 
 data.per.country.obs=c(data.per.country.obs, data.per.country.obs.na)
   
-names(data.per.country.obs)= c(sort(unique(obs$Country)), "NA_Country")
+#names(data.per.country.obs)= c(sort(unique(obs$Country)), "NA_Country")
+names(data.per.country.obs)= c(countries, "NA_Country")
 
 
 #add the country name to those events with unknown country based on the project tag
@@ -1012,7 +1013,7 @@ if(!exists("event.history.not.reported.per.country.df") |
   
   event.history.not.reported.per.country=list(data.frame(Country="", Event_Code=""))
    
-  rownames(event.history.not.reported.per.country.df[[1]])<-NULL
+  rownames(event.history.not.reported.per.country[[1]])<-NULL
 
   
   message("Yes, all events have the history reported")}
@@ -1142,7 +1143,7 @@ event.codes.with.issues=full_join(event.codes.with.issues,
                                   by=c("Country", "Event_Code"))
 
 event.codes.with.issues=full_join(event.codes.with.issues,
-                                  event.history.not.reported.per.country.df, 
+                                  event.history.not.reported.per.country.df,
                                   by=c("Country", "Event_Code"))
 
 
@@ -4201,8 +4202,8 @@ specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                      specimen.codes.with.animal.ids.as.na.per.country.df, 
                                      by=c("Country", "Specimen_code"))
 
-# specimen.codes.with.issues=full_join(specimen.codes.with.issues, 
-#                                      specimen.codes.with.wrong.animal.ids.per.country.df, 
+# specimen.codes.with.issues=full_join(specimen.codes.with.issues,
+#                                      specimen.codes.with.wrong.animal.ids.per.country.df,
 #                                      by=c("Country", "Specimen_code"))
 
 specimen.codes.with.issues=full_join(specimen.codes.with.issues, 
@@ -4225,7 +4226,7 @@ specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                      by=c("Country", "Specimen_code"))
 
 
-specimen.codes.with.issues=full_join(specimen.codes.with.issues, 
+specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                      spec.condition.not.reported.per.country.df,
                                      by=c("Country", "Specimen_code"))
 
