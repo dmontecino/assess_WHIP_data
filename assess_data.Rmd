@@ -58,7 +58,7 @@ spec=spec[!(grepl("delete", spec$Projects, ignore.case = T)),]
 spec=spec[!(grepl("test", spec$Tags, ignore.case = T)),]
 spec=spec[!(grepl("delete", spec$Tags, ignore.case = T)),]
 
-spec=spec[spec$Event_Code!="WCS.100294",]
+spec=spec[spec$Event_Code!="WCS.100294",] # 
 
 # obs=obs[!(obs$Tags%in%c("Delete", "Delete,Test")),]
 # obs=obs[!(obs$Tags%in%c("Test,Delete", "Test")),]
@@ -3486,12 +3486,20 @@ if(!exists("spec.how.found.not.reported.per.country.df") |
 spec.condition.not.reported.per.country=
 
 lapply(data.per.country.spec, function(x)
-  x%>%filter(is.na(Condition))%>%dplyr::select(Country, Event_Code, Specimen_code, Condition)%>%distinct())
+  
+# first remove the environmental specimens. This script was developed before the 
+# Env specimen module existed so, I need to remove what is a environmental specimen
+# because the condition of  the animal would not be provided (there is no animal involved)
+  
+    x%>%filter(Comments != "This is an environmental specimen" & is.na(Condition))%>%  
+    dplyr::select(Country, Event_Code, Specimen_code, Condition)%>%distinct())
 
 # if there are rows with wrong latitude
 
 if(nrow(do.call(rbind,spec.condition.not.reported.per.country))>0){  
 
+  
+  
 spec.condition.not.reported.per.country=do.call(
   rbind, spec.condition.not.reported.per.country)%>%
   dplyr::select(Country, Specimen_code)
