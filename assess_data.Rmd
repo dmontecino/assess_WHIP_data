@@ -3659,7 +3659,7 @@ if(!exists("spec.captive.category.not.reported.per.country.df") |
 #
 ##### Is the "necropsy level" reported in WHIP? 
 #
-If no necropsy was conducted with the specimen, then we need the "no necropsy" level provided in the field 'Necropsy level".
+If no necropsy will be conducted with the specimen, then we need the "no necropsy" level provided in the field 'Necropsy level". If the necropsy will be conducted then select "Pending".
 ```{r specimen necropsy level, echo=FALSE, warning=FALSE, eval=T, cache=FALSE}
 
 spec.necropsy.level.not.reported.per.country=
