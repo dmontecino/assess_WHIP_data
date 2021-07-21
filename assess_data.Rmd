@@ -945,10 +945,27 @@ if(!exists("event.codes.wrong.lon.per.country.df") |
 #
 ```{r history, echo=FALSE, warning=FALSE, eval=T, cache=FALSE}
 
-event.history.not.reported.per.country=
+event.history.not.reported.per.country.spec=
 
 lapply(data.per.country.spec, function(x)
   x%>%filter(is.na(History))%>%dplyr::select(Country, Event_Code, History)%>%distinct())
+
+
+event.history.not.reported.per.country.obs=
+
+lapply(data.per.country.obs, function(x)
+  x%>%filter(is.na(History))%>%dplyr::select(Country, Event_Code, History)%>%distinct())
+
+
+event.history.not.reported.per.country=
+  lapply(sort(unique(unlist(c(unique(do.call(rbind, event.history.not.reported.per.country.spec)[,"Country"]), 
+         unique(do.call(rbind, event.history.not.reported.per.country.obs)[,"Country"]))))),  #getting the unique countries in obs and spec
+         
+         function(x)
+           
+    rbind(do.call(rbind, event.history.not.reported.per.country.spec), 
+          do.call(rbind, event.history.not.reported.per.country.obs))%>%filter(Country==x)) 
+
 
 # if there are rows with wrong latitude
 
