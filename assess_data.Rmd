@@ -10,6 +10,7 @@ params:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+
 ```
 
 ```{r load packages , echo=FALSE, warning=FALSE, message=FALSE, eval=T}
@@ -6519,7 +6520,7 @@ message("Please scroll the table below down and left-right to see the complete d
 #
 ##### Is the sample source provided for the tests conducted? "No", means the sample source is not provided.
 #
-```{r summmary sample source, echo=FALSE, warning=T, eval=T, cache=F, message=F}
+```{r summmary sample source, echo=FALSE, warning=T, eval=T, cache=F, message=T}
 
 
 # columns with tests results
@@ -6587,3 +6588,13 @@ Please scroll the table below down and left-right to see the complete dataset")
 }else{message("All sample sources are provided for the tests conducted")}
 
 ```
+
+
+
+
+
+
+
+
+
+
