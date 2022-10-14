@@ -4,7 +4,7 @@ output: html_document
 params:
   spec: spec
   obs: obs
-  country.of.interest: country.of.interest #test 2
+  country.of.interest: country.of.interest
 ---
 
 ```{r setup, include=FALSE}
