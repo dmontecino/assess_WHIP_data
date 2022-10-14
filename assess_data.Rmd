@@ -3308,6 +3308,7 @@ dat$spec %>% select(country, specimen_code, sample_type, date_sampled, meta_has_
 # if there are rows with wrong latitude
 
 if(nrow(list.of.potential.observations)>0){  
+<<<<<<< HEAD
 
 list.of.potential.observations.df=
   list.of.potential.observations %>% 
@@ -3356,6 +3357,199 @@ list.of.potential.observations.df=
 <!--          african_swine_fever_test_sent_for_testing, -->
 <!--          african_swine_fever_test_results_received, -->
 <!--          african_swine_fever_test_test_result)%>% -->
+<!--   # distinct(Country, Event_Code, Specimen_code, Sample_ID, Sample_type, Medium_Type, Quantity, Date_Sampled, african_swine_fever_test_test_result)) -->
+<!--   distinct(Country, Event_Code, Specimen_code,  -->
+<!--          #Sample_ID, Sample_type, Medium_Type, Quantity, Date_Sampled, -->
+<!--          Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing,  -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)) -->
+
+<!-- if(nrow(do.call(rbind, test.sent.before.start.date.per.country))>0){ -->
+
+<!--   test.sent.before.start.date.per.country= -->
+<!--   do.call( -->
+<!--   rbind, test.sent.before.start.date.per.country)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--         Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result) -->
+
+<!-- # spit the data by country again now including the data of country based on the project tag -->
+<!-- # for those rows wo country -->
+<!-- test.sent.before.start.date.per.country= -->
+<!-- lapply(sort(unique(test.sent.before.start.date.per.country$Country)), function(x)  -->
+<!--   test.sent.before.start.date.per.country%>%filter(Country==x)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+=======
+
+list.of.potential.observations.df=
+  list.of.potential.observations %>% 
+   group_by(country, specimen_code) %>%
+  dplyr::summarise(
+    specimen_codes = paste(specimen_code, collapse = ", ")) %>% 
+  arrange(country) 
+
+  
+  print("The data has specimens that could be observations. These are the specimen codes that could be observations")
+  
+  kableExtra::kbl(list.of.potential.observations.df, 
+                  caption = "Specimen codes that could be observations")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(4, width = "30em", border_right = T)
+}else{#}
+
+
+  print("None of the specimens seem to be an observations")}
+
+```
+<!-- # SPECIMEN TESTS -->
+<!-- Given the current status of the exported data from WHIP, I can only provide you the Specimen code that has samples with issues at the test level. You should search the Specimen code and go to the "Diseases" tab. -->
+<!-- # -->
+<!-- # -->
+<!-- ## Were the tests sent for testing since the event started? -->
+<!-- # -->
+<!-- Only tests available for ASF for now. -->
+
+<!-- ```{r test dates, echo=FALSE, warning=FALSE, eval=F} -->
+
+<!-- # list wht the filtering -->
+<!-- test.sent.before.start.date.per.country= -->
+<!-- lapply(data.per.country.spec, function(x)  -->
+<!--   x%>% -->
+<!--   filter(!is.na(african_swine_fever_test_test_result) &  -->
+<!--          !is.na(Start_date))%>% -->
+<!--   filter(!(as.Date(Start_date) <=    -->
+<!--            as.Date(african_swine_fever_test_sent_for_testing)))%>% # start date is not before that testing -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--          #Sample_ID, Sample_type, Medium_Type, Quantity, Date_Sampled, -->
+<!--          Start_date, -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)%>% -->
+<<<<<<< HEAD
+<!--   distinct(Country, Event_Code, Specimen_code,  -->
+<!--            Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)) -->
+
+<!-- # name the list -->
+<!-- names(test.sent.before.start.date.per.country)=sapply( -->
+<!--   test.sent.before.start.date.per.country, function(x) unique(x$Country)) -->
+
+
+<!-- # move to da dataset with the event codes in a single row -->
+<!-- test.sent.before.start.date.per.country.df= -->
+<!-- do.call(rbind, test.sent.before.start.date.per.country) -->
+
+<!-- #order by country and specimen code -->
+<!-- test.sent.before.start.date.per.country.df= -->
+<!--   test.sent.before.start.date.per.country.df[order( -->
+<!--     test.sent.before.start.date.per.country.df$Country,  -->
+<!--     test.sent.before.start.date.per.country.df$Specimen_code),] -->
+
+<!--    #delete rownames -->
+<!--   rownames(test.sent.before.start.date.per.country.df)=NULL  -->
+
+<!--  # subset to specific country -->
+<!-- test.sent.before.start.date.per.country.df= -->
+<!-- test.sent.before.start.date.per.country.df%>%filter(Country==params$country.of.interest) -->
+
+<!-- if(nrow(test.sent.before.start.date.per.country.df)>0){   -->
+
+
+<!--   print("No, data has some tests that were sent for testing before the corresponding event started. These -->
+<!-- are the records showing inconsistency between the date the tests were sent for testing and the date -->
+<!-- the event started") -->
+
+<!--   kableExtra::kbl(test.sent.before.start.date.per.country.df,  -->
+<!--                   caption = "Tests with inconsistency between the dates the event started and the date they were sent for testing")%>% -->
+<!--                   kableExtra::kable_paper(full_width = F) %>% -->
+<!--                   kableExtra::column_spec(1, bold = T, border_right = T) %>% -->
+<!--                   kableExtra::column_spec(2:ncol(test.sent.before.start.date.per.country.df), border_right = T, width = "10em") -->
+<!-- }} -->
+
+<!-- if(!exists("test.sent.before.start.date.per.country.df") | -->
+<!--     exists("test.sent.before.start.date.per.country.df") &&  -->
+<!--    nrow(test.sent.before.start.date.per.country.df)==0){   -->
+
+
+<!--      test.sent.before.start.date.per.country=list( -->
+<!--         data.frame(Country="",  -->
+<!--                  Event_Code="",  -->
+<!--                  Specimen_code="",  -->
+<!--          Start_date="", -->
+<!--          Date_Found="", Date_Received="", Date_Sampled="", -->
+<!--          african_swine_fever_test_sent_for_testing="", -->
+<!--          african_swine_fever_test_results_received="", -->
+<!--          african_swine_fever_test_test_result="")) -->
+
+
+<!--     rownames(test.sent.before.start.date.per.country[[1]])<-NULL -->
+
+<!--   print("Yes, all tests were sent for testing since the event started")} -->
+
+<!-- ``` -->
+<!-- # -->
+<!-- # -->
+<!-- ## Were the tests sent for testing since the specimens were found? -->
+<!-- # -->
+<!-- Only tests available for ASF for now. -->
+<!-- ```{r test dates 2, echo=FALSE, warning=FALSE, eval=F} -->
+
+<!-- # list wht the filtering -->
+<!-- test.sent.before.date.found.per.country= -->
+<!-- lapply(data.per.country.spec, function(x)  -->
+<!--   x%>% -->
+<!--   filter(!is.na(african_swine_fever_test_test_result) & -->
+<!--          !is.na(Date_Found))%>% -->
+<!--   filter(!(as.Date(Date_Found) <=    -->
+<!--            as.Date(african_swine_fever_test_sent_for_testing)))%>% # start datae is not before that testing -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--            Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)%>% -->
+<!--   distinct(Country, Event_Code, Specimen_code, -->
+<!--            Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--            african_swine_fever_test_test_result)) -->
+
+
+<!-- if(nrow(do.call(rbind, test.sent.before.date.found.per.country))>0){ -->
+
+<!--   test.sent.before.date.found.per.country= -->
+<!--   do.call( -->
+<!--   rbind, test.sent.before.date.found.per.country)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result) -->
+
+<!-- # spit the data by country again now including the data of country based on the project tag -->
+<!-- # for those rows wo country -->
+<!-- test.sent.before.date.found.per.country= -->
+<!-- lapply(sort(unique(test.sent.before.date.found.per.country$Country)), function(x)  -->
+<!--   test.sent.before.date.found.per.country%>%filter(Country==x)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--          Start_date, -->
+=======
 <!--   # distinct(Country, Event_Code, Specimen_code, Sample_ID, Sample_type, Medium_Type, Quantity, Date_Sampled, african_swine_fever_test_test_result)) -->
 <!--   distinct(Country, Event_Code, Specimen_code,  -->
 <!--          #Sample_ID, Sample_type, Medium_Type, Quantity, Date_Sampled, -->
@@ -3469,15 +3663,63 @@ list.of.potential.observations.df=
 <!--            as.Date(african_swine_fever_test_sent_for_testing)))%>% # start datae is not before that testing -->
 <!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
 <!--            Start_date, -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 <!--          Date_Found, Date_Received, Date_Sampled, -->
 <!--          african_swine_fever_test_sent_for_testing, -->
 <!--          african_swine_fever_test_results_received, -->
 <!--          african_swine_fever_test_test_result)%>% -->
+<<<<<<< HEAD
+<!--   distinct(Country, Event_Code, Specimen_code,  -->
+=======
 <!--   distinct(Country, Event_Code, Specimen_code, -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 <!--            Start_date, -->
 <!--          Date_Found, Date_Received, Date_Sampled, -->
 <!--          african_swine_fever_test_sent_for_testing, -->
 <!--          african_swine_fever_test_results_received, -->
+<<<<<<< HEAD
+<!--           african_swine_fever_test_test_result)) -->
+
+<!-- # name the list -->
+<!-- names(test.sent.before.date.found.per.country)=sapply( -->
+<!--   test.sent.before.date.found.per.country, function(x) unique(x$Country)) -->
+
+
+<!-- # move to da dataset with the event codes in a single row -->
+<!-- test.sent.before.date.found.per.country.df= -->
+<!-- do.call(rbind, test.sent.before.date.found.per.country) -->
+
+<!-- #order by country and specimen code -->
+<!-- test.sent.before.date.found.per.country.df= -->
+<!--   test.sent.before.date.found.per.country.df[order( -->
+<!--     test.sent.before.date.found.per.country.df$Country,  -->
+<!--     test.sent.before.date.found.per.country.df$Specimen_code),] -->
+
+<!--    #delete rownames -->
+<!--   rownames(test.sent.before.date.found.per.country.df)=NULL  -->
+
+<!--  # subset to specific country -->
+<!-- test.sent.before.date.found.per.country.df= -->
+<!-- test.sent.before.date.found.per.country.df%>%filter(Country==params$country.of.interest) -->
+
+<!-- if(nrow(test.sent.before.date.found.per.country.df)>0){   -->
+
+
+<!--    print("No, data has some tests that were sent for testing before the corresponding specimen was found.  -->
+<!-- These are the records showing inconsistency between the date tests were sent and the date the specimen was found") -->
+
+<!--   kableExtra::kbl(test.sent.before.date.found.per.country.df,  -->
+<!--                   caption = "Tests with inconsistency between the dates the specimen was found and the date they were sent for testing")%>% -->
+<!--                   kableExtra::kable_paper(full_width = F) %>% -->
+<!--                   kableExtra::column_spec(1, bold = T, border_right = T) %>% -->
+<!--                   kableExtra::column_spec(2:ncol(test.sent.before.date.found.per.country.df), border_right = T, width = "10em") -->
+<!--   }} -->
+
+<!-- if(!exists("test.sent.before.date.found.per.country.df") | -->
+<!--     exists("test.sent.before.date.found.per.country.df") &&  -->
+<!--    nrow(test.sent.before.date.found.per.country.df)==0){   -->
+
+=======
 <!--            african_swine_fever_test_test_result)) -->
 
 
@@ -3549,8 +3791,77 @@ list.of.potential.observations.df=
 <!-- if(!exists("test.sent.before.date.found.per.country.df") | -->
 <!--     exists("test.sent.before.date.found.per.country.df") &&  -->
 <!--    nrow(test.sent.before.date.found.per.country.df)==0){   -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+
+<!--      test.sent.before.date.found.per.country=list( -->
+<!--        data.frame(Country="",  -->
+<!--                  Event_Code="",  -->
+<!--                  Specimen_code="",  -->
+<!--          Start_date="", -->
+<!--          Date_Found="", Date_Received="", Date_Sampled="", -->
+<!--          african_swine_fever_test_sent_for_testing="", -->
+<!--          african_swine_fever_test_results_received="", -->
+<!--          african_swine_fever_test_test_result="")) -->
+
+<<<<<<< HEAD
+
+<!--     rownames(test.sent.before.date.found.per.country[[1]])<-NULL -->
+
+<!--   print("Yes, all tests were sent for testing since the specimens were found")} -->
 
 
+<!-- ``` -->
+
+<!-- # -->
+<!-- # -->
+<!-- ## Were the test sent for testing since the specimens were received? -->
+<!-- # -->
+<!-- Only tests available for ASF for now. -->
+
+<!-- ```{r test dates 3, echo=FALSE, warning=FALSE, eval=F} -->
+
+<!-- # list wht the filtering -->
+<!-- test.sent.before.date.received.per.country= -->
+<!-- lapply(data.per.country.spec, function(x)  -->
+<!--   x%>% -->
+<!--   filter(!is.na(african_swine_fever_test_test_result) & -->
+<!--          !is.na(Date_Received))%>% -->
+<!--   filter(!(as.Date(Date_Received) <=    -->
+<!--            as.Date(african_swine_fever_test_sent_for_testing)))%>% # start datae is not before that testing -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--          Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)%>% -->
+<!--   distinct(Country, Event_Code, Specimen_code,  -->
+<!--         Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--            african_swine_fever_test_test_result)) -->
+
+
+<!-- if(nrow(do.call(rbind, test.sent.before.date.received.per.country))>0){ -->
+
+<!--   test.sent.before.date.received.per.country= -->
+<!--   do.call( -->
+<!--   rbind, test.sent.before.date.received.per.country)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result) -->
+
+<!-- # spit the data by country again now including the data of country based on the project tag -->
+<!-- # for those rows wo country -->
+<!-- test.sent.before.date.received.per.country= -->
+<!-- lapply(sort(unique(test.sent.before.date.received.per.country$Country)), function(x)  -->
+<!--   test.sent.before.date.received.per.country%>%filter(Country==x)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+=======
 <!--      test.sent.before.date.found.per.country=list( -->
 <!--        data.frame(Country="",  -->
 <!--                  Event_Code="",  -->
@@ -3587,15 +3898,148 @@ list.of.potential.observations.df=
 <!--            as.Date(african_swine_fever_test_sent_for_testing)))%>% # start datae is not before that testing -->
 <!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
 <!--          Start_date, -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)%>% -->
+<<<<<<< HEAD
+<!--   distinct(Country, Event_Code, Specimen_code, -->
+=======
+<!--   distinct(Country, Event_Code, Specimen_code,  -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+<!--         Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<<<<<<< HEAD
+<!--          african_swine_fever_test_test_result)) -->
+
+<!-- # name the list -->
+<!-- names(test.sent.before.date.received.per.country)=sapply( -->
+<!--   test.sent.before.date.received.per.country, function(x) unique(x$Country)) -->
+
+
+<!-- # move to da dataset with the event codes in a single row -->
+<!-- test.sent.before.date.received.per.country.df= -->
+<!-- do.call(rbind, test.sent.before.date.received.per.country) -->
+
+<!-- #order by country and specimen code -->
+<!-- test.sent.before.date.received.per.country.df= -->
+<!--   test.sent.before.date.received.per.country.df[order( -->
+<!--     test.sent.before.date.received.per.country.df$Country,  -->
+<!--     test.sent.before.date.received.per.country.df$Specimen_code),] -->
+
+<!--    #delete rownames -->
+<!--   rownames(test.sent.before.date.received.per.country.df)=NULL  -->
+
+<!--  # subset to specific country -->
+<!-- test.sent.before.date.received.per.country.df= -->
+<!-- test.sent.before.date.received.per.country.df%>%filter(Country==params$country.of.interest) -->
+
+<!-- if(nrow(test.sent.before.date.received.per.country.df)>0){   -->
+
+
+<!--    print("No, data has some tests that were sent for testing before the corresponding specimen was received. These are the records showing inconsistency between the date tests were sent and the date the specimen was received") -->
+
+<!--   kableExtra::kbl(test.sent.before.date.received.per.country.df,  -->
+<!--                   caption = "Tests with inconsistent date sent for testing and specimen received")%>% -->
+<!--                   kableExtra::kable_paper(full_width = F) %>% -->
+<!--                   kableExtra::column_spec(1, bold = T, border_right = T) %>% -->
+<!--                   kableExtra::column_spec(2:ncol(test.sent.before.date.received.per.country.df), border_right = T, width = "10em") -->
+<!-- }} -->
+
+<!-- if(!exists("test.sent.before.date.received.per.country.df") | -->
+<!--     exists("test.sent.before.date.received.per.country.df") &&  -->
+<!--    nrow(test.sent.before.date.received.per.country.df)==0){ -->
+
+<!--      test.sent.before.date.received.per.country=list( -->
+<!--         data.frame(Country="",  -->
+<!--                  Event_Code="",  -->
+<!--                  Specimen_code="",  -->
+<!--          Start_date="", -->
+<!--          Date_Found="", Date_Received="", Date_Sampled="", -->
+<!--          african_swine_fever_test_sent_for_testing="", -->
+<!--          african_swine_fever_test_results_received="", -->
+<!--          african_swine_fever_test_test_result="")) -->
+
+
+<!--     rownames(test.sent.before.date.received.per.country[[1]])<-NULL -->
+
+<!--   print("Yes, all tests were sent for testing since the specimens were received")} -->
+
+<!-- ``` -->
+<!-- # -->
+<!-- # -->
+<!-- ## Were the tests sent for testing after the samples were taken? -->
+<!-- # -->
+<!-- Only tests available for ASF for now. -->
+<!-- ```{r test dates 4, echo=FALSE, warning=FALSE, eval=F} -->
+
+
+<!-- # list wht the filtering -->
+<!-- test.sent.before.date.sampled.per.country= -->
+<!-- lapply(data.per.country.spec, function(x)  -->
+<!--   x%>% -->
+<!--   filter(!is.na(african_swine_fever_test_test_result) & -->
+<!--          !is.na(Date_Sampled))%>% -->
+<!--   filter(!(as.Date(Date_Sampled) <=    -->
+<!--            as.Date(african_swine_fever_test_sent_for_testing)))%>% # start datae is not before that testing -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
 <!--          Date_Found, Date_Received, Date_Sampled, -->
 <!--          african_swine_fever_test_sent_for_testing, -->
 <!--          african_swine_fever_test_results_received, -->
 <!--          african_swine_fever_test_test_result)%>% -->
 <!--   distinct(Country, Event_Code, Specimen_code,  -->
-<!--         Start_date, -->
+<!--          Start_date, -->
 <!--          Date_Found, Date_Received, Date_Sampled, -->
 <!--          african_swine_fever_test_sent_for_testing, -->
 <!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)) -->
+
+
+
+<!-- test.sent.before.date.sampled.per.country= -->
+<!-- lapply(data.per.country.spec, function(x)  -->
+<!--   x%>% -->
+<!--   filter(!is.na(african_swine_fever_test_test_result) & -->
+<!--          !is.na(Date_Sampled))%>% -->
+<!--   filter(!(as.Date(Date_Sampled) <=    -->
+<!--            as.Date(african_swine_fever_test_sent_for_testing)))%>% # start datae is not before that testing -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)%>% -->
+<!--   distinct(Country, Event_Code, Specimen_code,  -->
+<!--             Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received,  -->
+<!--          african_swine_fever_test_test_result)) -->
+
+
+
+<!-- if(nrow(do.call(rbind, test.sent.before.date.sampled.per.country))>0){ -->
+
+<!--   test.sent.before.date.sampled.per.country= -->
+<!--   do.call( -->
+<!--   rbind, test.sent.before.date.sampled.per.country)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result) -->
+
+<!-- # spit the data by country again now including the data of country based on the project tag -->
+<!-- # for those rows wo country -->
+<!-- test.sent.before.date.sampled.per.country= -->
+<!-- lapply(sort(unique(test.sent.before.date.sampled.per.country$Country)), function(x)  -->
+<!--   test.sent.before.date.sampled.per.country%>%filter(Country==x)%>% -->
+=======
 <!--            african_swine_fever_test_test_result)) -->
 
 
@@ -3699,6 +4143,7 @@ list.of.potential.observations.df=
 <!--          !is.na(Date_Sampled))%>% -->
 <!--   filter(!(as.Date(Date_Sampled) <=    -->
 <!--            as.Date(african_swine_fever_test_sent_for_testing)))%>% # start datae is not before that testing -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 <!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
 <!--           Start_date, -->
 <!--          Date_Found, Date_Received, Date_Sampled, -->
@@ -3711,6 +4156,112 @@ list.of.potential.observations.df=
 <!--          african_swine_fever_test_sent_for_testing, -->
 <!--          african_swine_fever_test_results_received, -->
 <!--          african_swine_fever_test_test_result)) -->
+<<<<<<< HEAD
+
+<!-- # name the list -->
+<!-- names(test.sent.before.date.sampled.per.country)=sapply( -->
+<!--   test.sent.before.date.sampled.per.country, function(x) unique(x$Country)) -->
+
+
+<!-- # move to da dataset with the event codes in a single row -->
+<!-- test.sent.before.date.sampled.per.country.df= -->
+<!-- do.call(rbind, test.sent.before.date.sampled.per.country) -->
+
+<!-- #order by country and specimen code -->
+<!-- test.sent.before.date.sampled.per.country.df= -->
+<!--   test.sent.before.date.sampled.per.country.df[order( -->
+<!--     test.sent.before.date.sampled.per.country.df$Country,  -->
+<!--     test.sent.before.date.sampled.per.country.df$Specimen_code),] -->
+
+<!--    #delete rownames -->
+<!--   rownames(test.sent.before.date.sampled.per.country.df)=NULL  -->
+
+<!--    # subset to specific country -->
+<!-- test.sent.before.date.sampled.per.country.df= -->
+<!-- test.sent.before.date.sampled.per.country.df%>%filter(Country==params$country.of.interest) -->
+
+<!-- if(nrow(test.sent.before.date.sampled.per.country.df)>0){   -->
+
+
+<!--     print("No, data has some tests that were sent for testing before the sample was collected. These are the records showing inconsistency between the date tests were sent and the date the samples were collected") -->
+
+<!--   kableExtra::kbl(test.sent.before.date.sampled.per.country.df,  -->
+<!--                   caption = "Tests with inconsistent dates of sent for testing and sample collected")%>% -->
+<!--                   kableExtra::kable_paper(full_width = F) %>% -->
+<!--                   kableExtra::column_spec(1, bold = T, border_right = T) %>% -->
+<!--                   kableExtra::column_spec(2:ncol(test.sent.before.date.sampled.per.country.df), border_right = T, width = "10em") -->
+<!-- }} -->
+
+<!-- if(!exists("test.sent.before.date.sampled.per.country.df") | -->
+<!--     exists("test.sent.before.date.sampled.per.country.df") &&  -->
+<!--    nrow(test.sent.before.date.sampled.per.country.df)==0){ -->
+
+
+<!--      test.sent.before.date.sampled.per.country=list( -->
+<!--         data.frame(Country="",  -->
+<!--                  Event_Code="",  -->
+<!--                  Specimen_code="",  -->
+<!--          Start_date="", -->
+<!--          Date_Found="", Date_Received="", Date_Sampled="", -->
+<!--          african_swine_fever_test_sent_for_testing="", -->
+<!--          african_swine_fever_test_results_received="", -->
+<!--          african_swine_fever_test_test_result="")) -->
+
+
+<!--     rownames(test.sent.before.date.sampled.per.country[[1]])<-NULL -->
+
+<!--   print("Yes, all tests were sent for testing since the samples were taken")} -->
+
+<!-- ``` -->
+<!-- # -->
+<!-- # -->
+<!-- ## Were the tests results received after the event started? -->
+<!-- # -->
+<!-- Only tests available for ASF for now. -->
+<!-- ```{r test dates 5, echo=FALSE, warning=FALSE, eval=F} -->
+
+<!-- # list with the filtering -->
+<!-- test.results.received.before.start.date.per.country= -->
+<!-- lapply(data.per.country.spec, function(x)  -->
+<!--   x%>% -->
+<!--   filter(!is.na(african_swine_fever_test_results_received) & -->
+<!--          !is.na(Start_date))%>% -->
+<!--   filter(!(as.Date(Start_date) <=    -->
+<!--            as.Date(african_swine_fever_test_results_received)))%>% # start datae is not before that testing -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--          Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)%>% -->
+<!--   distinct(Country, Event_Code, Specimen_code, -->
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--            african_swine_fever_test_test_result)) -->
+
+
+<!-- if(nrow(do.call(rbind, test.results.received.before.start.date.per.country))>0){ -->
+
+<!--   test.results.received.before.start.date.per.country= -->
+<!--   do.call( -->
+<!--   rbind, test.results.received.before.start.date.per.country)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result) -->
+
+<!-- # spit the data by country again now including the data of country based on the project tag -->
+<!-- # for those rows wo country -->
+<!-- test.results.received.before.start.date.per.country= -->
+<!-- lapply(sort(unique(test.results.received.before.start.date.per.country$Country)), function(x)  -->
+<!--   test.results.received.before.start.date.per.country%>%filter(Country==x)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+=======
 
 
 
@@ -3838,41 +4389,12 @@ list.of.potential.observations.df=
 <!--            as.Date(african_swine_fever_test_results_received)))%>% # start datae is not before that testing -->
 <!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
 <!--          Start_date, -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 <!--          Date_Found, Date_Received, Date_Sampled, -->
 <!--          african_swine_fever_test_sent_for_testing, -->
 <!--          african_swine_fever_test_results_received, -->
 <!--          african_swine_fever_test_test_result)%>% -->
-<!--   distinct(Country, Event_Code, Specimen_code, -->
-<!--           Start_date, -->
-<!--          Date_Found, Date_Received, Date_Sampled, -->
-<!--          african_swine_fever_test_sent_for_testing, -->
-<!--          african_swine_fever_test_results_received, -->
-<!--            african_swine_fever_test_test_result)) -->
-
-
-<!-- if(nrow(do.call(rbind, test.results.received.before.start.date.per.country))>0){ -->
-
-<!--   test.results.received.before.start.date.per.country= -->
-<!--   do.call( -->
-<!--   rbind, test.results.received.before.start.date.per.country)%>% -->
-<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
-<!--           Start_date, -->
-<!--          Date_Found, Date_Received, Date_Sampled, -->
-<!--          african_swine_fever_test_sent_for_testing, -->
-<!--          african_swine_fever_test_results_received, -->
-<!--          african_swine_fever_test_test_result) -->
-
-<!-- # spit the data by country again now including the data of country based on the project tag -->
-<!-- # for those rows wo country -->
-<!-- test.results.received.before.start.date.per.country= -->
-<!-- lapply(sort(unique(test.results.received.before.start.date.per.country$Country)), function(x)  -->
-<!--   test.results.received.before.start.date.per.country%>%filter(Country==x)%>% -->
-<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
-<!--           Start_date, -->
-<!--          Date_Found, Date_Received, Date_Sampled, -->
-<!--          african_swine_fever_test_sent_for_testing, -->
-<!--          african_swine_fever_test_results_received, -->
-<!--          african_swine_fever_test_test_result)%>% -->
+<<<<<<< HEAD
 <!--   distinct(Country, Event_Code, Specimen_code,  -->
 <!--          Start_date, -->
 <!--          Date_Found, Date_Received, Date_Sampled, -->
@@ -3982,16 +4504,133 @@ list.of.potential.observations.df=
 <!-- lapply(sort(unique(test.results.received.before.found.per.country$Country)), function(x)  -->
 <!--   test.results.received.before.found.per.country%>%filter(Country==x)%>% -->
 <!--   dplyr::select(Country, Event_Code, Specimen_code, -->
+=======
+<!--   distinct(Country, Event_Code, Specimen_code, -->
 <!--           Start_date, -->
 <!--          Date_Found, Date_Received, Date_Sampled, -->
 <!--          african_swine_fever_test_sent_for_testing, -->
 <!--          african_swine_fever_test_results_received, -->
+<!--            african_swine_fever_test_test_result)) -->
+
+
+<!-- if(nrow(do.call(rbind, test.results.received.before.start.date.per.country))>0){ -->
+
+<!--   test.results.received.before.start.date.per.country= -->
+<!--   do.call( -->
+<!--   rbind, test.results.received.before.start.date.per.country)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result) -->
+
+<!-- # spit the data by country again now including the data of country based on the project tag -->
+<!-- # for those rows wo country -->
+<!-- test.results.received.before.start.date.per.country= -->
+<!-- lapply(sort(unique(test.results.received.before.start.date.per.country$Country)), function(x)  -->
+<!--   test.results.received.before.start.date.per.country%>%filter(Country==x)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)%>% -->
+<!--   distinct(Country, Event_Code, Specimen_code,  -->
+<!--          Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)) -->
+
+<!-- # name the list -->
+<!-- names(test.results.received.before.start.date.per.country)=sapply( -->
+<!--   test.results.received.before.start.date.per.country, function(x) unique(x$Country)) -->
+
+
+<!-- # move to da dataset with the event codes in a single row -->
+<!-- test.results.received.before.start.date.per.country.df= -->
+<!-- do.call(rbind, test.results.received.before.start.date.per.country) -->
+
+<!-- #order by country and specimen code -->
+<!-- test.results.received.before.start.date.per.country.df= -->
+<!--   test.results.received.before.start.date.per.country.df[order( -->
+<!--     test.results.received.before.start.date.per.country.df$Country,  -->
+<!--     test.results.received.before.start.date.per.country.df$Specimen_code),] -->
+
+<!--    #delete rownames -->
+<!--   rownames(test.results.received.before.start.date.per.country.df)=NULL  -->
+
+<!--    # subset to specific country -->
+<!-- test.results.received.before.start.date.per.country.df= -->
+<!-- test.results.received.before.start.date.per.country.df%>%filter(Country==params$country.of.interest) -->
+
+<!-- if(nrow(test.results.received.before.start.date.per.country.df)>0){   -->
+
+
+<!--      print("No, data has some test results that were received before the event started. These are the records showing inconsistency between the date test results were received and the date the event started") -->
+
+<!--   kableExtra::kbl(test.results.received.before.start.date.per.country.df,  -->
+<!--                   caption = "Tests with inconsistent dates of test results received and start of the event")%>% -->
+<!--                   kableExtra::kable_paper(full_width = F) %>% -->
+<!--                   kableExtra::column_spec(1, bold = T, border_right = T) %>% -->
+<!--                   kableExtra::column_spec(2:ncol(test.results.received.before.start.date.per.country.df), border_right = T, width = "10em") -->
+<!-- }} -->
+
+<!-- if(!exists("test.results.received.before.start.date.per.country.df") | -->
+<!--     exists("test.results.received.before.start.date.per.country.df") &&  -->
+<!--    nrow(test.results.received.before.start.date.per.country.df)==0){ -->
+
+
+<!--      test.results.received.before.start.date.per.country=list( -->
+<!--         data.frame(Country="",  -->
+<!--                  Event_Code="",  -->
+<!--                  Specimen_code="",  -->
+<!--          Start_date="", -->
+<!--          Date_Found="", Date_Received="", Date_Sampled="", -->
+<!--          african_swine_fever_test_sent_for_testing="", -->
+<!--          african_swine_fever_test_results_received="", -->
+<!--          african_swine_fever_test_test_result="")) -->
+
+
+<!--     rownames(test.results.received.before.start.date.per.country[[1]])<-NULL -->
+
+<!--   print("Yes, all test results were received since the event started")} -->
+
+<!-- ``` -->
+<!-- # -->
+<!-- # -->
+<!-- ## Were the tests results received after the specimens were found? -->
+<!-- # -->
+<!-- Only tests available for ASF for now. -->
+<!-- ```{r test dates 6, echo=FALSE, warning=FALSE, eval=F} -->
+
+<!-- # list with the filtering -->
+<!-- test.results.received.before.found.per.country= -->
+<!-- lapply(data.per.country.spec, function(x)  -->
+<!--   x%>% -->
+<!--   filter(!is.na(african_swine_fever_test_results_received) & -->
+<!--          !is.na(Date_Found))%>% -->
+<!--   filter(!(as.Date(Date_Found) <=    -->
+<!--            as.Date(african_swine_fever_test_results_received)))%>% # start datae is not before that testing -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<<<<<<< HEAD
 <!--         african_swine_fever_test_test_result)%>% -->
 <!--   distinct(Country, Event_Code, Specimen_code, -->
+=======
+<!--          african_swine_fever_test_test_result)%>% -->
+<!--   distinct(Country, Event_Code, Specimen_code,  -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 <!--            Start_date, -->
 <!--          Date_Found, Date_Received, Date_Sampled, -->
 <!--          african_swine_fever_test_sent_for_testing, -->
 <!--          african_swine_fever_test_results_received, -->
+<<<<<<< HEAD
 <!--          african_swine_fever_test_test_result)) -->
 
 <!-- # name the list -->
@@ -4042,8 +4681,91 @@ list.of.potential.observations.df=
 <!--          african_swine_fever_test_sent_for_testing="", -->
 <!--          african_swine_fever_test_results_received="", -->
 <!--          african_swine_fever_test_test_result="")) -->
+=======
+<!--            african_swine_fever_test_test_result)) -->
 
 
+<!-- if(nrow(do.call(rbind, test.results.received.before.found.per.country))>0){ -->
+
+<!--   test.results.received.before.found.per.country= -->
+<!--   do.call( -->
+<!--   rbind, test.results.received.before.found.per.country)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--          Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--           african_swine_fever_test_test_result) -->
+
+<!-- # spit the data by country again now including the data of country based on the project tag -->
+<!-- # for those rows wo country -->
+<!-- test.results.received.before.found.per.country= -->
+<!-- lapply(sort(unique(test.results.received.before.found.per.country$Country)), function(x)  -->
+<!--   test.results.received.before.found.per.country%>%filter(Country==x)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code, -->
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--         african_swine_fever_test_test_result)%>% -->
+<!--   distinct(Country, Event_Code, Specimen_code, -->
+<!--            Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)) -->
+
+<!-- # name the list -->
+<!-- names(test.results.received.before.found.per.country)=sapply( -->
+<!--   test.results.received.before.found.per.country, function(x) unique(x$Country)) -->
+
+
+<!-- # move to da dataset with the event codes in a single row -->
+<!-- test.results.received.before.found.per.country.df= -->
+<!-- do.call(rbind, test.results.received.before.found.per.country) -->
+
+<!-- #order by country and specimen code -->
+<!-- test.results.received.before.found.per.country.df= -->
+<!--   test.results.received.before.found.per.country.df[order( -->
+<!--     test.results.received.before.found.per.country.df$Country,  -->
+<!--     test.results.received.before.found.per.country.df$Specimen_code),] -->
+
+<!--    #delete rownames -->
+<!--   rownames(test.results.received.before.found.per.country.df)=NULL  -->
+
+<!--    # subset to specific country -->
+<!-- test.results.received.before.found.per.country.df= -->
+<!-- test.results.received.before.found.per.country.df%>%filter(Country==params$country.of.interest) -->
+
+<!-- if(nrow(test.results.received.before.found.per.country.df)>0){   -->
+
+
+<!--       print("No, data has some test results that were received before the corresponding specimen was found. These are the records showing inconsistency between the date test results were received and the date the specimen was found") -->
+
+<!--   kableExtra::kbl(test.results.received.before.found.per.country.df,  -->
+<!--                   caption = "Tests with inconsistent dates of test results received and specimen found")%>% -->
+<!--                   kableExtra::kable_paper(full_width = F) %>% -->
+<!--                   kableExtra::column_spec(1, bold = T, border_right = T) %>% -->
+<!--                   kableExtra::column_spec(2:ncol(test.results.received.before.found.per.country.df), border_right = T, width = "10em") -->
+<!-- }} -->
+
+<!-- if(!exists("test.results.received.before.found.per.country.df") | -->
+<!--     exists("test.results.received.before.found.per.country.df") &&  -->
+<!--    nrow(test.results.received.before.found.per.country.df)==0){ -->
+
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+
+<!--      test.results.received.before.found.per.country=list( -->
+<!--         data.frame(Country="",  -->
+<!--                  Event_Code="",  -->
+<!--                  Specimen_code="",  -->
+<!--          Start_date="", -->
+<!--          Date_Found="", Date_Received="", Date_Sampled="", -->
+<!--          african_swine_fever_test_sent_for_testing="", -->
+<!--          african_swine_fever_test_results_received="", -->
+<!--          african_swine_fever_test_test_result="")) -->
+
+<<<<<<< HEAD
 <!--     rownames(test.results.received.before.found.per.country[[1]])<-NULL -->
 
 <!--   print("Yes, all test results were received since the correspoding specimen was found")} -->
@@ -4095,6 +4817,71 @@ list.of.potential.observations.df=
 <!-- test.results.received.before.specimens.received.per.country= -->
 <!-- lapply(sort(unique(test.results.received.before.specimens.received.per.country$Country)), function(x)  -->
 <!--   test.results.received.before.specimens.received.per.country%>%filter(Country==x)%>% -->
+=======
+
+<!--     rownames(test.results.received.before.found.per.country[[1]])<-NULL -->
+
+<!--   print("Yes, all test results were received since the correspoding specimen was found")} -->
+
+<!-- ``` -->
+<!-- # -->
+<!-- # -->
+<!-- ## Were the tests results received after the specimens were received? -->
+<!-- # -->
+<!-- Only tests available for ASF for now. -->
+<!-- ```{r test dates 7, echo=FALSE, warning=FALSE, eval=F} -->
+
+<!-- # list with the filtering -->
+<!-- test.results.received.before.specimens.received.per.country= -->
+<!-- lapply(data.per.country.spec, function(x)  -->
+<!--   x%>% -->
+<!--   filter(!is.na(african_swine_fever_test_results_received) & -->
+<!--          !is.na(Date_Received))%>% -->
+<!--   filter(!(as.Date(Date_Received) <=    -->
+<!--            as.Date(african_swine_fever_test_results_received)))%>% # start datae is not before that testing -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--          Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)%>% -->
+<!--   distinct(Country, Event_Code, Specimen_code,  -->
+<<<<<<< HEAD
+=======
+<!--             Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--            african_swine_fever_test_test_result)) -->
+
+
+<!-- if(nrow(do.call(rbind, test.results.received.before.specimens.received.per.country))>0){ -->
+
+<!--   test.results.received.before.specimens.received.per.country= -->
+<!--   do.call( -->
+<!--   rbind, test.results.received.before.specimens.received.per.country)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<<<<<<< HEAD
+<!--          Date_Received, african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)) -->
+
+<!-- # name the list -->
+<!-- names(test.results.received.before.specimens.received.per.country)=sapply( -->
+<!--   test.results.received.before.specimens.received.per.country, function(x) unique(x$Country)) -->
+=======
+<!--          african_swine_fever_test_test_result) -->
+
+<!-- # spit the data by country again now including the data of country based on the project tag -->
+<!-- # for those rows wo country -->
+<!-- test.results.received.before.specimens.received.per.country= -->
+<!-- lapply(sort(unique(test.results.received.before.specimens.received.per.country$Country)), function(x)  -->
+<!--   test.results.received.before.specimens.received.per.country%>%filter(Country==x)%>% -->
 <!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
 <!--          Start_date, -->
 <!--          Date_Found, Date_Received, Date_Sampled, -->
@@ -4108,12 +4895,33 @@ list.of.potential.observations.df=
 <!--          african_swine_fever_test_results_received, -->
 <!--          Date_Received, african_swine_fever_test_results_received, -->
 <!--          african_swine_fever_test_test_result)) -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 
 <!-- # name the list -->
 <!-- names(test.results.received.before.specimens.received.per.country)=sapply( -->
 <!--   test.results.received.before.specimens.received.per.country, function(x) unique(x$Country)) -->
 
+<!-- # move to da dataset with the event codes in a single row -->
+<!-- test.results.received.before.specimens.received.per.country.df= -->
+<!-- do.call(rbind, test.results.received.before.specimens.received.per.country) -->
 
+<<<<<<< HEAD
+<!-- #order by country and specimen code -->
+<!-- test.results.received.before.specimens.received.per.country.df= -->
+<!--   test.results.received.before.specimens.received.per.country.df[order( -->
+<!--     test.results.received.before.specimens.received.per.country.df$Country,  -->
+<!--     test.results.received.before.specimens.received.per.country.df$Specimen_code),] -->
+
+<!--    #delete rownames -->
+<!--   rownames(test.results.received.before.specimens.received.per.country.df)=NULL  -->
+
+<!--    # subset to specific country -->
+<!-- test.results.received.before.specimens.received.per.country.df= -->
+<!-- test.results.received.before.specimens.received.per.country.df%>%filter(Country==params$country.of.interest) -->
+
+<!-- if(nrow(test.results.received.before.specimens.received.per.country.df)>0){   -->
+
+=======
 <!-- # move to da dataset with the event codes in a single row -->
 <!-- test.results.received.before.specimens.received.per.country.df= -->
 <!-- do.call(rbind, test.results.received.before.specimens.received.per.country) -->
@@ -4132,10 +4940,11 @@ list.of.potential.observations.df=
 <!-- test.results.received.before.specimens.received.per.country.df%>%filter(Country==params$country.of.interest) -->
 
 <!-- if(nrow(test.results.received.before.specimens.received.per.country.df)>0){   -->
-
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 
 <!--        print("No, data has some test results that were received before the corresponding specimen was received. These are the records showing inconsistency between the date test results were received and the date the specimen was received") -->
 
+<<<<<<< HEAD
 <!--   kableExtra::kbl(test.results.received.before.specimens.received.per.country.df,  -->
 <!--                   caption = "Tests with inconsistent dates of test results received and specimen received")%>% -->
 <!--                   kableExtra::kable_paper(full_width = F) %>% -->
@@ -4191,6 +5000,138 @@ list.of.potential.observations.df=
 <!--          Date_Found, Date_Received, Date_Sampled, -->
 <!--          african_swine_fever_test_sent_for_testing, -->
 <!--          african_swine_fever_test_results_received, -->
+<!--           african_swine_fever_test_test_result)) -->
+
+
+<!-- if(nrow(do.call(rbind, test.results.received.before.samples.taken.per.country))>0){ -->
+
+<!--   test.results.received.before.samples.taken.per.country= -->
+<!--   do.call( -->
+<!--   rbind, test.results.received.before.samples.taken.per.country)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result) -->
+
+<!-- # spit the data by country again now including the data of country based on the project tag -->
+<!-- # for those rows wo country -->
+<!-- test.results.received.before.samples.taken.per.country= -->
+<!-- lapply(sort(unique(test.results.received.before.samples.taken.per.country$Country)), function(x)  -->
+<!--   test.results.received.before.samples.taken.per.country%>%filter(Country==x)%>% -->
+=======
+<!--        print("No, data has some test results that were received before the corresponding specimen was received. These are the records showing inconsistency between the date test results were received and the date the specimen was received") -->
+
+<!--   kableExtra::kbl(test.results.received.before.specimens.received.per.country.df,  -->
+<!--                   caption = "Tests with inconsistent dates of test results received and specimen received")%>% -->
+<!--                   kableExtra::kable_paper(full_width = F) %>% -->
+<!--                   kableExtra::column_spec(1, bold = T, border_right = T) %>% -->
+<!--                   kableExtra::column_spec(2:ncol(test.results.received.before.specimens.received.per.country.df), border_right = T, width = "10em") -->
+<!-- }} -->
+
+<!-- if(!exists("test.results.received.before.specimens.received.per.country.df") | -->
+<!--     exists("test.results.received.before.specimens.received.per.country.df") &&  -->
+<!--    nrow(test.results.received.before.specimens.received.per.country.df)==0){ -->
+
+
+<!--      test.results.received.before.specimens.received.per.country=list( -->
+<!--         data.frame(Country="",  -->
+<!--                  Event_Code="",  -->
+<!--                  Specimen_code="",  -->
+<!--          Start_date="", -->
+<!--          Date_Found="", Date_Received="", Date_Sampled="", -->
+<!--          african_swine_fever_test_sent_for_testing="", -->
+<!--          african_swine_fever_test_results_received="", -->
+<!--          african_swine_fever_test_test_result="")) -->
+
+
+<!--     rownames(test.results.received.before.specimens.received.per.country[[1]])<-NULL -->
+
+<!--   print("Yes, all test results were received since the correspoding specimens were -->
+<!-- received")} -->
+
+<!-- ``` -->
+<!-- # -->
+<!-- # -->
+<!-- ## Were the tests results received after the samples were taken? -->
+<!-- # -->
+<!-- Only tests available for ASF for now. -->
+<!-- ```{r test dates 8, echo=FALSE, warning=FALSE, eval=F} -->
+
+<!-- # list with the filtering -->
+<!-- test.results.received.before.samples.taken.per.country= -->
+<!-- lapply(data.per.country.spec, function(x)  -->
+<!--   x%>% -->
+<!--   filter(!is.na(african_swine_fever_test_results_received) & -->
+<!--          !is.na(Date_Sampled))%>% -->
+<!--   filter(!(as.Date(Date_Sampled) <=    -->
+<!--            as.Date(african_swine_fever_test_results_received)))%>% # start datae is not before that testing -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)%>% -->
+<!--   distinct(Country, Event_Code, Specimen_code,  -->
+<!--            Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<<<<<<< HEAD
+<!--          african_swine_fever_test_test_result)) -->
+
+<!-- # name the list -->
+<!-- names(test.results.received.before.samples.taken.per.country)=sapply( -->
+<!--   test.results.received.before.samples.taken.per.country, function(x) unique(x$Country)) -->
+
+
+<!-- # move to da dataset with the event codes in a single row -->
+<!-- test.results.received.before.samples.taken.per.country.df= -->
+<!-- do.call(rbind, test.results.received.before.samples.taken.per.country) -->
+
+<!-- #order by country and specimen code -->
+<!-- test.results.received.before.samples.taken.per.country.df= -->
+<!--   test.results.received.before.samples.taken.per.country.df[order( -->
+<!--     test.results.received.before.samples.taken.per.country.df$Country,  -->
+<!--     test.results.received.before.samples.taken.per.country.df$Specimen_code),] -->
+
+<!--    #delete rownames -->
+<!--   rownames(test.results.received.before.samples.taken.per.country.df)=NULL  -->
+
+<!--    # subset to specific country -->
+<!-- test.results.received.before.samples.taken.per.country.df= -->
+<!-- test.results.received.before.samples.taken.per.country.df%>%filter(Country==params$country.of.interest) -->
+
+<!-- if(nrow(test.results.received.before.samples.taken.per.country.df)>0){   -->
+
+
+<!--         print("No, data has some test results that were received before the corresponding sample was collected. These are the records showing inconsistency between the date test results were received and the date the sample was collected") -->
+
+<!--   kableExtra::kbl(test.results.received.before.samples.taken.per.country.df,  -->
+<!--                   caption = "Tests with inconsistent dates of test results received and sample collected")%>% -->
+<!--                   kableExtra::kable_paper(full_width = F) %>% -->
+<!--                   kableExtra::column_spec(1, bold = T, border_right = T) %>% -->
+<!--                   kableExtra::column_spec(2:ncol(test.results.received.before.samples.taken.per.country.df), border_right = T, width = "10em") -->
+<!-- }} -->
+
+<!-- if(!exists("test.results.received.before.samples.taken.per.country.df") | -->
+<!--     exists("test.results.received.before.samples.taken.per.country.df") &&  -->
+<!--    nrow(test.results.received.before.samples.taken.per.country.df)==0){ -->
+
+
+<!--      test.results.received.before.samples.taken.per.country=list( -->
+<!--        data.frame(Country="",  -->
+<!--                  Event_Code="",  -->
+<!--                  Specimen_code="",  -->
+<!--          Start_date="", -->
+<!--          Date_Found="", Date_Received="", Date_Sampled="", -->
+<!--          african_swine_fever_test_sent_for_testing="", -->
+<!--          african_swine_fever_test_results_received="", -->
+<!--          african_swine_fever_test_test_result="")) -->
+
+=======
 <!--           african_swine_fever_test_test_result)) -->
 
 
@@ -4272,10 +5213,11 @@ list.of.potential.observations.df=
 <!--          african_swine_fever_test_sent_for_testing="", -->
 <!--          african_swine_fever_test_results_received="", -->
 <!--          african_swine_fever_test_test_result="")) -->
-
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 
 <!--     rownames(test.results.received.before.samples.taken.per.country[[1]])<-NULL -->
 
+<<<<<<< HEAD
 <!--   print("Yes, all test results were received since the correspoding sample was collected")} -->
 
 <!-- ``` -->
@@ -4327,6 +5269,72 @@ list.of.potential.observations.df=
 <!--   test.results.received.before.sent.for.testing.per.country%>%filter(Country==x)%>% -->
 <!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
 <!--          Start_date, -->
+=======
+<!--     rownames(test.results.received.before.samples.taken.per.country[[1]])<-NULL -->
+
+<!--   print("Yes, all test results were received since the correspoding sample was collected")} -->
+
+<!-- ``` -->
+<!-- # -->
+<!-- # -->
+<!-- ## Were the tests results received after the tests were sent for testing? -->
+<!-- # -->
+<!-- Only tests available for ASF for now. -->
+<!-- ```{r test dates 9, echo=FALSE, warning=FALSE, eval=F} -->
+
+<!-- # list with the filtering -->
+<!-- test.results.received.before.sent.for.testing.per.country= -->
+<!-- lapply(data.per.country.spec, function(x)  -->
+<!--   x%>% -->
+<!--   filter(!is.na(african_swine_fever_test_results_received) & -->
+<!--          !is.na(african_swine_fever_test_sent_for_testing))%>% -->
+<!--   filter(!(as.Date(african_swine_fever_test_sent_for_testing) <=    -->
+<!--            as.Date(african_swine_fever_test_results_received)))%>% # start datae is not before that testing -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code, -->
+<!--           Start_date, -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--          african_swine_fever_test_test_result)%>% -->
+<!--   distinct(Country, Event_Code, Specimen_code,  -->
+<<<<<<< HEAD
+=======
+<!--          Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<!--            african_swine_fever_test_test_result)) -->
+
+
+<!-- if(nrow(do.call(rbind, test.results.received.before.sent.for.testing.per.country))>0){ -->
+
+<!--   test.results.received.before.sent.for.testing.per.country= -->
+<!--   do.call( -->
+<!--   rbind, test.results.received.before.sent.for.testing.per.country)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+<!--           Start_date, -->
+<!--          Date_Found, Date_Received, Date_Sampled, -->
+<!--          african_swine_fever_test_sent_for_testing, -->
+<!--          african_swine_fever_test_results_received, -->
+<<<<<<< HEAD
+<!--          african_swine_fever_test_test_result)) -->
+
+<!-- # name the list -->
+<!-- names(test.results.received.before.sent.for.testing.per.country)=sapply( -->
+<!--   test.results.received.before.sent.for.testing.per.country, function(x) unique(x$Country)) -->
+
+=======
+<!--          african_swine_fever_test_test_result) -->
+
+<!-- # spit the data by country again now including the data of country based on the project tag -->
+<!-- # for those rows wo country -->
+<!-- test.results.received.before.sent.for.testing.per.country= -->
+<!-- lapply(sort(unique(test.results.received.before.sent.for.testing.per.country$Country)), function(x)  -->
+<!--   test.results.received.before.sent.for.testing.per.country%>%filter(Country==x)%>% -->
+<!--   dplyr::select(Country, Event_Code, Specimen_code,  -->
+<!--          Start_date, -->
 <!--          Date_Found, Date_Received, Date_Sampled, -->
 <!--          african_swine_fever_test_sent_for_testing, -->
 <!--          african_swine_fever_test_results_received, -->
@@ -4341,8 +5349,20 @@ list.of.potential.observations.df=
 <!-- # name the list -->
 <!-- names(test.results.received.before.sent.for.testing.per.country)=sapply( -->
 <!--   test.results.received.before.sent.for.testing.per.country, function(x) unique(x$Country)) -->
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 
+<!-- # move to da dataset with the event codes in a single row -->
+<!-- test.results.received.before.sent.for.testing.per.country.df= -->
+<!-- do.call(rbind, test.results.received.before.sent.for.testing.per.country) -->
 
+<<<<<<< HEAD
+<!-- #order by country and specimen code -->
+<!-- test.results.received.before.sent.for.testing.per.country.df= -->
+<!--   test.results.received.before.sent.for.testing.per.country.df[order( -->
+<!--     test.results.received.before.sent.for.testing.per.country.df$Country,  -->
+<!--     test.results.received.before.sent.for.testing.per.country.df$Specimen_code),] -->
+
+=======
 <!-- # move to da dataset with the event codes in a single row -->
 <!-- test.results.received.before.sent.for.testing.per.country.df= -->
 <!-- do.call(rbind, test.results.received.before.sent.for.testing.per.country) -->
@@ -4353,6 +5373,7 @@ list.of.potential.observations.df=
 <!--     test.results.received.before.sent.for.testing.per.country.df$Country,  -->
 <!--     test.results.received.before.sent.for.testing.per.country.df$Specimen_code),] -->
 
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 <!--    #delete rownames -->
 <!--   rownames(test.results.received.before.sent.for.testing.per.country.df)=NULL  -->
 
@@ -5184,17 +6205,31 @@ env.spec.codes.date.found.provided$No_found_date="Yes"
 #data frame specimens codes found earlier than event date
 
 env.spec.codes.date.found.earlier.date$Found_before_event_date="Yes"
+<<<<<<< HEAD
 
 
 env.spec.species.not.reported$No_species="Yes"
+=======
 
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+
+env.spec.species.not.reported$No_species="Yes"
+
+<<<<<<< HEAD
+env.spec.found.by.not.reported$No_found_by="Yes"
+=======
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 
 env.spec.found.by.not.reported$No_found_by="Yes"
 
+<<<<<<< HEAD
+env.spec.type.provided$No_env_spec_type="Yes"
+=======
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 
 env.spec.type.provided$No_env_spec_type="Yes"
 
-
+<<<<<<< HEAD
 # data showing the issues per event code per country
 env.specimen.codes.with.issues=full_join(env.specimens.funding.source.project.tag.not.provided, 
                                   env.specimens.surveillance.project.tag.not.provided,
@@ -5232,10 +6267,50 @@ env.specimen.codes.with.issues=full_join(env.specimen.codes.with.issues,
                                   env.spec.type.provided, 
                                   by=c("country", "event_code", "environmental_specimen_code"))
 
+=======
+
+# data showing the issues per event code per country
+env.specimen.codes.with.issues=full_join(env.specimens.funding.source.project.tag.not.provided, 
+                                  env.specimens.surveillance.project.tag.not.provided,
+                                  by=c("country", "event_code", "environmental_specimen_code"))
+
+env.specimen.codes.with.issues=full_join(env.specimen.codes.with.issues,
+                                  env.spec.surveillance.unit.not.provided,
+                                  by=c("country", "event_code", "environmental_specimen_code"))
+
+# env.specimen.codes.with.issues=full_join(env.specimen.codes.with.issues,
+#                                   env.specimen.codes.with.env.ids.as.na,
+#                                   by=c("country", "event_code", "environmental_specimen_code"))
+
+# env.specimen.codes.with.issues=full_join(env.specimen.codes.with.issues,
+#                                   env.specimen.codes.with.more.than.one.env.spec.ids,
+#                                   by=c("country", "event_code", "environmental_specimen_code"))
+
+env.specimen.codes.with.issues=full_join(env.specimen.codes.with.issues,
+                                  env.spec.codes.date.found.provided, 
+                                  by=c("country", "event_code", "environmental_specimen_code"))
+
+env.specimen.codes.with.issues=full_join(env.specimen.codes.with.issues,
+                                  env.spec.codes.date.found.earlier.date, 
+                                  by=c("country", "event_code", "environmental_specimen_code"))
+
+env.specimen.codes.with.issues=full_join(env.specimen.codes.with.issues,
+                                  env.spec.species.not.reported, 
+                                  by=c("country", "event_code", "environmental_specimen_code"))
+
+env.specimen.codes.with.issues=full_join(env.specimen.codes.with.issues,
+                                  env.spec.found.by.not.reported, 
+                                  by=c("country", "event_code", "environmental_specimen_code"))
+
+env.specimen.codes.with.issues=full_join(env.specimen.codes.with.issues,
+                                  env.spec.type.provided, 
+                                  by=c("country", "event_code", "environmental_specimen_code"))
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 
 
 env.specimen.codes.with.issues=env.specimen.codes.with.issues %>% arrange(country, event_code, environmental_specimen_code)
 
+<<<<<<< HEAD
 
 if(nrow(env.specimen.codes.with.issues)>0){
   
@@ -5268,7 +6343,111 @@ print("Please scroll down the table below to see the complete dataset")
 #
 #
 ```{r environmental sample dates, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+=======
+env.specimen.codes.with.issues=env.specimen.codes.with.issues %>% arrange(country, event_code, environmental_specimen_code)
 
+
+if(nrow(env.specimen.codes.with.issues)>0){
+  
+      # removing columns were everything is NA
+env.specimen.codes.with.issues=env.specimen.codes.with.issues%>%dplyr::select_if(~ !all(is.na(.)))
+  
+  
+if(any(is.na(env.specimen.codes.with.issues))){env.specimen.codes.with.issues[is.na(env.specimen.codes.with.issues)]="No"}
+  
+print("Please scroll down the table below to see the complete dataset")  
+  
+ kableExtra::kbl(env.specimen.codes.with.issues,
+                  caption = "Environmental specimens codes with problems") %>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(c(2:ncol(env.specimen.codes.with.issues)), border_right = T, width = "8em")%>%
+
+    # kableExtra::collapse_rows(1)
+    scroll_box(width = "100%", height = "600px")
+
+}else{
+  
+  print("No environmental specimen codes present problems")}  
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+
+```
+#
+# ENVIRONMENTAL SPECIMEN SAMPLES
+#
+## Were the environmental samples collected since the date the corresponding event date?
+#
+#
+```{r environmental sample dates, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+<<<<<<< HEAD
+env.sample.date.collected.earlier.than.event.date=
+  dat$env_spec %>% 
+    filter(!is.na(date_sampled) & !is.na(event_date))%>%
+    filter(!(as.Date(date_sampled) >= as.Date(event_date)))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, sample_id)%>%
+    distinct()
+
+
+if(nrow(env.sample.date.collected.earlier.than.event.date)>0){  
+
+env.sample.date.collected.earlier.than.event.date.df=
+  env.sample.date.collected.earlier.than.event.date%>%
+  group_by(country, event_code, environmental_specimen_code) %>%
+  dplyr::summarise(sample_ids = paste(sample_id, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some environmental samples were collected before the event date. These are the environmental samples that were collected before the event date")
+  
+  kableExtra::kbl(env.sample.date.collected.earlier.than.event.date.df, 
+                  caption = "Environmental samples collected before the event date")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(4, width = "30em", border_right = T)
+}else{#}
+
+
+  print("Yes, all environmental samples were collected since the event date")}
+
+```
+#
+#
+## Were the environmental samples collected since the date the source environmental specimen was found?
+#
+```{r environmental sample dates 2, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+env.sample.date.collected.earlier.than.specimen.found=
+  dat$env_spec %>% 
+    filter(!is.na(date_sampled) & !is.na(environmental_specimen_date_found))%>%
+    filter(!(as.Date(date_sampled) >= as.Date(environmental_specimen_date_found)))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, sample_id)%>%
+    distinct()
+
+
+if(nrow(env.sample.date.collected.earlier.than.specimen.found)>0){  
+
+env.sample.date.collected.earlier.than.specimen.found.df=
+  env.sample.date.collected.earlier.than.specimen.found%>%
+  group_by(country, event_code, environmental_specimen_code) %>%
+  dplyr::summarise(sample_ids = paste(sample_id, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some environmental samples were collected before the environmental specimen was found. These are the environmental samples that were collected before the environmental specimen was found.")
+  
+  kableExtra::kbl(env.sample.date.collected.earlier.than.specimen.found.df, 
+                  caption = "Environmental samples collected before the environmental specimen was found")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(4, width = "30em", border_right = T)
+}else{#}
+
+
+  print("Yes, all environmental samples were collected since the environmental specimen was found")}
+=======
 
 env.sample.date.collected.earlier.than.event.date=
   dat$env_spec %>% 
@@ -5649,6 +6828,480 @@ spec.sample.ids.in.more.one.spec.df=
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
     kableExtra::column_spec(4, width = "30em", border_right = T)
 }else{#}
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+
+
+  print("Yes, all the sample ids are used in a single specimen")}
+
+<<<<<<< HEAD
+```
+#
+## Are all environmental sample ids provided?
+#
+#
+```{r environmental sample id provided, echo=FALSE, warning=FALSE, eval=F, cache=FALSE, message=FALSE}
+
+env.spec.sample.ids.provided=
+dat$env_spec %>% 
+  filter(is.na(sample_id) & meta_has_environmental_specimen_sample_inventory=="Yes") %>% 
+  dplyr::select(country, event_code, environmental_specimen_code)%>%
+  distinct()
+
+if(nrow(env.spec.sample.ids.provided)>0){  
+
+env.spec.sample.ids.provided.df=
+  env.spec.sample.ids.provided%>%
+  group_by(country, event_code) %>%
+  dplyr::summarise(environmental_specimen_codes = paste(environmental_specimen_code, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some environmental specimens have samples but their sample ids are not provided. These are the Environmental specimen codes with samples without ids")
+  
+  kableExtra::kbl(env.spec.sample.ids.provided.df, 
+                  caption = "Environmental specimens have samples without ids")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(4, width = "30em", border_right = T)
+    
+}else{#}
+
+=======
+
+```
+#
+## Are the environmental sample quantities provided informative?
+#
+#
+```{r env sample quantity, echo=FALSE, warning=FALSE, eval=F, cache=F}
+
+# BAsed on the temp vector, find problematic quantities
+# temp=
+# dat$spec %>% filter(meta_has_sample_inventory=="Yes") %>% 
+#   distinct(quantity) %>% pull()
+
+dat$spec %>% 
+  filter(meta_has_sample_inventory=="Yes" & quantity %in% c("gram", "One oral","1") | is.na(quantity)) %>% 
+  dplyr::select(country, specimen_code, sample_id) %>% 
+  distinct()
+
+
+dat$spec %>% 
+  filter(meta_has_sample_inventory=="Yes" & is.na(quantity)) %>% 
+  dplyr::select(country, specimen_code, sample_id, quantity)
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+
+  print("Yes, all the environmental samples have sample id")}
+
+<<<<<<< HEAD
+
+```
+
+<!-- # -->
+<!-- # -->
+<!-- ##### Do the sample IDs follow the standardized labeling structure? -->
+<!-- # -->
+```{r env sample ids 2, echo=FALSE, warning=FALSE, eval=F, cache=FALSE}
+
+country.abbreviations=c("KH", "LA", "VN")
+
+project.abbreviations=c("W")
+
+taxa=list(A="Amphibian", B="Bat", C="Carnivore",
+          E="Elephant", F="Fish", G="Pangolin",
+          L="Reptile", M="Marine mammal", P="Primate",
+          R="Rodent", S="Swine", U="Ungulate",
+          W="Wild bird", X="Environmental")
+
+project.country.abbreviations=paste0(rep(project.abbreviations,
+                                         each = length(country.abbreviations))
+                                     , country.abbreviations, "-")
+
+
+sample.type=c("OS", "RS", "NS", "US", "FF", "DF", "UR", "CC", "GC", "VM",
+              "FL", "JF", "CF", "ML", "BW","BP", "BS", "BC", "AG", "BM", 
+              "BN", "BR", "ES", "EY", "GB", "FR", "FS", "HT", "HR", "IL",
+              "IS", "KD", "LN", "LU", "LV", "MG", "MT", "MU", "NV", "OV", "PN",
+              "SC", "SK", "SP", "ST", "TG", "TO", "TN", "TR", "TS", "UB", "UM",
+              "UT", "DM", "SM", "FM", "PL", "PM", "PT", "PF", "PR", "PP", "PZ",
+              "FP", "PO", "SD", "SL", "WA")
+
+medium = c("A", "B", "F", "P", "R", "T", "U", "V")
+
+# where sample ID are provided
+spec.sample.id.provided=spec[!is.na(spec$Sample_ID),]
+
+# first part of sample ids when they are not NA
+first.part.sample.ids.project.country.hyphen= # one letter for project, 2 letters for country, and hyphen
+  substr(spec.sample.id.provided$Sample_ID, 1,5) 
+
+#in the second part of the label
+second.part.sample.ids.taxa.numeric=  # one letter for taxa, 3 numbers
+  sapply(strsplit(spec.sample.id.provided$Sample_ID, "-"), function(x) x[2])
+
+
+#in the third part of the label
+
+third.part.sample.ids.taxa.numeric=  # two letter for sample type, 
+  sapply(strsplit(spec.sample.id.provided$Sample_ID, "-"), function(x) x[3])
+
+# in the fourth part of the label
+
+fourth.part.sample.ids.taxa.numeric=  # one letter for taxa, 3 numbers
+  sapply(strsplit(spec.sample.id.provided$Sample_ID, "-"), function(x) x[4])
+
+
+
+
+  wrong.sample.id.first.part=
+    
+    spec.sample.id.provided$Sample_ID[
+      
+      !(substring(first.part.sample.ids.project.country.hyphen, 1,1)%in%project.abbreviations) | # first piece does have a valid project letter?
+        
+        !(substring(first.part.sample.ids.project.country.hyphen, 2,3)%in%country.abbreviations) | # second piece has valid country abbreviations?
+        
+        substring(first.part.sample.ids.project.country.hyphen, 4,4)!="-"]
+  
+=======
+"gram"  
+  "One oral" 
+  "1" 
+
+```
+#
+#
+## SUMMARY ISSUES AT THE SPECIMEN SAMPLES LEVEL
+#
+"Yes" cells indicate problems for the item specified in the corresponding column name. Absence of a table below means that there are not issues at the sample level.
+```{r env summmary samples, echo=FALSE, warning=FALSE, eval=F, cache=F}
+
+specimen.codes.with.sample.ids.as.na.per.country.df=
+  
+  do.call(rbind, specimen.codes.with.sample.ids.as.na.per.country)
+
+specimen.codes.with.sample.ids.as.na.per.country.df$Sample_ID_is_NA="Yes"
+
+
+# specimen.codes.with.wrong.sample.ids.per.country.df$Wrong_Sample_ID="Yes"
+
+sample.ids.in.more.than.one.event.per.country.df=
+  
+  do.call(rbind, sample.ids.in.more.than.one.event.per.country)
+
+sample.ids.in.more.than.one.event.per.country.df$Repeat_for_events="Yes"
+
+
+
+sample.ids.in.more.than.one.specimen.per.country.df=
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+  
+  do.call(rbind, sample.ids.in.more.than.one.specimen.per.country)
+
+sample.ids.in.more.than.one.specimen.per.country.df$Repeat_for_specimens="Yes"
+
+
+
+samples.sampled.before.event.per.country.df=
+  
+<<<<<<< HEAD
+  
+  wrong.sample.id.second.part=
+    
+    spec.sample.id.provided$Sample_ID[
+      
+      !(substring(second.part.sample.ids.taxa.numeric, 1,1)%in%names(taxa)) | # second piece does have a valid taxa letter?
+        
+        is.na(as.numeric(substring(second.part.sample.ids.taxa.numeric, 2,4)))]
+  
+  
+  
+  
+  wrong.sample.id.third.part=
+    
+    spec.sample.id.provided$Sample_ID[ #third piece does ahave a valid sample type abb
+    
+    !(substring(third.part.sample.ids.taxa.numeric, 1,2)%in%sample.type) & 
+    
+    nchar(third.part.sample.ids.taxa.numeric)!=2] # then there is nothing afterwards
+    
+  
+    
+  
+  wrong.sample.id.fourth.part=spec.sample.id.provided$Sample_ID[ #fourth piece does a have a valid medium type
+    
+    !(substring(fourth.part.sample.ids.taxa.numeric, 1)%in%medium)]
+    
+  
+  # wrong sample ids
+  wrong.sample.id=sort(unique(c(wrong.sample.id.first.part, 
+                                wrong.sample.id.second.part, 
+                                wrong.sample.id.third.part, 
+                                wrong.sample.id.fourth.part)))
+  
+  
+  
+  specimen.codes.with.wrong.sample.ids.per.country=
+  lapply(data.per.country.spec, function(x)
+  x%>%
+  filter(!is.na(Sample_ID) & Sample_ID%in%wrong.sample.id))
+
+  
+  if(nrow(do.call(rbind, specimen.codes.with.wrong.sample.ids.per.country))>0){
+
+  specimen.codes.with.wrong.sample.ids.per.country=
+  do.call(
+  rbind, specimen.codes.with.wrong.sample.ids.per.country)%>%
+  dplyr::select(Country, Event_Code, Specimen_code,  Sample_ID, Sample_type, Medium_Type, Date_Sampled)
+
+# spit the data by country again now including the data of country based on the project tag
+# for those rows wo country
+specimen.codes.with.wrong.sample.ids.per.country=
+lapply(sort(unique(specimen.codes.with.wrong.sample.ids.per.country$Country)), function(x) 
+  specimen.codes.with.wrong.sample.ids.per.country%>%filter(Country==x)%>%
+  dplyr::select(Country, Event_Code, Specimen_code, Sample_ID, Sample_type, Medium_Type, Date_Sampled)%>%
+  distinct(Country, Event_Code, Specimen_code,  Sample_ID, Sample_type, Medium_Type, Date_Sampled))
+
+# name the list
+names(specimen.codes.with.wrong.sample.ids.per.country)=sapply(
+  specimen.codes.with.wrong.sample.ids.per.country, function(x) unique(x$Country))
+    
+
+# move to da dataset with the event codes in a single row
+specimen.codes.with.wrong.sample.ids.per.country.df=
+do.call(rbind, specimen.codes.with.wrong.sample.ids.per.country)
+
+#order by country and specimen code
+specimen.codes.with.wrong.sample.ids.per.country.df=
+  specimen.codes.with.wrong.sample.ids.per.country.df[order(
+    specimen.codes.with.wrong.sample.ids.per.country.df$Country, 
+    specimen.codes.with.wrong.sample.ids.per.country.df$Specimen_code),]
+
+   #delete rownames
+  rownames(specimen.codes.with.wrong.sample.ids.per.country.df)=NULL 
+
+   # subset to specific country
+specimen.codes.with.wrong.sample.ids.per.country.df=
+specimen.codes.with.wrong.sample.ids.per.country.df%>%filter(Country==params$country.of.interest)
+
+if(nrow(specimen.codes.with.wrong.sample.ids.per.country.df)>0){  
+  
+  
+    print("No. Not all sample IDs provided follow the label format. These are the sample IDs with wrong format.
+Please scroll the table below down and left-right to see the complete dataset if needed", appendLF = T)
+
+    
+  kableExtra::kbl(specimen.codes.with.wrong.sample.ids.per.country.df, 
+                  caption = "Wrong sample IDs per country") %>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2:6, border_right = T, width = "15em")%>%
+    # collapse_rows(columns = 2:3)%>%
+=======
+  do.call(rbind, samples.sampled.before.event.per.country)
+
+samples.sampled.before.event.per.country.df$Sampled_before_event="Yes"
+
+
+
+
+samples.sampled.before.found.per.country.df=
+  
+  do.call(rbind, samples.sampled.before.found.per.country)
+
+samples.sampled.before.found.per.country.df$Sampled_before_found="Yes"
+
+
+
+
+sample.ids.problem.quantities.per.country.df=
+  
+  do.call(rbind, sample.ids.problem.quantities.per.country)
+
+sample.ids.problem.quantities.per.country.df$Non_informative_quantity="Yes"
+
+
+
+# data showing the issues per Specimen code per country
+# samples.with.issues=full_join(
+#                               specimen.codes.with.sample.ids.as.na.per.country.df, 
+#                               specimen.codes.with.wrong.sample.ids.per.country.df, 
+#                               by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
+
+samples.with.issues=full_join(#samples.with.issues,
+                              specimen.codes.with.sample.ids.as.na.per.country.df,
+                              sample.ids.in.more.than.one.event.per.country.df, 
+                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
+
+samples.with.issues=full_join(samples.with.issues,
+                              sample.ids.in.more.than.one.specimen.per.country.df, 
+                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
+
+samples.with.issues=full_join(samples.with.issues, 
+                              samples.sampled.before.event.per.country.df, 
+                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
+
+samples.with.issues=full_join(samples.with.issues,
+                              samples.sampled.before.found.per.country.df,
+                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
+
+samples.with.issues=full_join(samples.with.issues,
+                              sample.ids.problem.quantities.per.country.df%>%
+                                dplyr::select(-Quantity),
+                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
+
+
+samples.with.issues=samples.with.issues%>%filter(Specimen_code!="")
+
+samples.with.issues=samples.with.issues[order(
+  samples.with.issues$Country,
+  samples.with.issues$Specimen_code),]
+
+
+rownames(samples.with.issues)=NULL
+
+# subset to specific country
+samples.with.issues=
+  samples.with.issues%>%filter(Country==params$country.of.interest)
+
+
+# subset to rows with at least one "Yes" 
+  
+samples.with.issues=
+samples.with.issues %>%
+   filter(rowSums(across(everything(), ~grepl("Yes", .x))) > 0)
+
+if(nrow(samples.with.issues)>0){
+  
+  # removing columns were everything is NA
+samples.with.issues=
+samples.with.issues%>%dplyr::select_if(~ !all(is.na(.)))
+  
+      if(any(is.na(samples.with.issues))){
+  samples.with.issues[is.na(samples.with.issues)]="No"}
+
+  
+print("Please scroll the table below down and left-right to see the complete dataset")  
+  
+ kableExtra::kbl(samples.with.issues,
+                  caption = "Samples with problems per country") %>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2:ncol(samples.with.issues), border_right = T, width = "20em")%>%
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
+    scroll_box(width = "100%", height = "600px")
+    
+}}
+
+<<<<<<< HEAD
+  if(!exists("specimen.codes.with.wrong.sample.ids.per.country.df") |
+    exists("specimen.codes.with.wrong.sample.ids.per.country.df") && 
+   nrow(specimen.codes.with.wrong.sample.ids.per.country.df)==0){  
+
+  specimen.codes.with.wrong.sample.ids.per.country=list(
+    data.frame(Country="", 
+               Event_Code="", 
+               Specimen_code="", 
+               Sample_ID="", 
+               Sample_type="",
+               Medium_Type="",
+               Date_Sampled=""))
+   
+  rownames(specimen.codes.with.wrong.sample.ids.per.country[[1]])<-NULL
+  
+  print("Yes, all sample IDs provided have the correct format")}
+
+
+```
+#
+#
+## Are envinromental sample IDs under a single event?
+#
+```{r envinronmental sample ids under single event, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+
+env.spec.sample.ids.in.more.one.event=
+  dat$env_spec %>% 
+  filter(!is.na(sample_id))%>%
+  distinct(event_code, sample_id) %>% 
+  count(sample_id) %>% 
+  filter(n>1)%>%
+  pull(sample_id)
+
+env.spec.sample.ids.in.more.one.event=
+  dat$env_spec %>% 
+  filter(sample_id %in% env.spec.sample.ids.in.more.one.event) %>% 
+  dplyr::select(country, event_code, environmental_specimen_code, sample_id) %>% 
+  distinct() %>% 
+  arrange(sample_id)
+
+if(nrow(env.spec.sample.ids.in.more.one.event)>0){  
+
+env.spec.sample.ids.in.more.one.event.df=
+  env.spec.sample.ids.in.more.one.event%>%
+  group_by(country, sample_id) %>%
+  dplyr::summarise(
+    event_codes = paste(event_code, collapse = ", "), 
+    environmental_specimen_codes = paste(environmental_specimen_code, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some environmenral samples ids ahave been used in more than one event. These are the environmental sample ids used in more than one event")
+  
+  kableExtra::kbl(env.spec.sample.ids.in.more.one.event.df, 
+                  caption = "Environmental sample ids used in more than one event")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(4, width = "30em", border_right = T)
+}else{#}
+
+
+  print("Yes, all the envrionemtnal sample ids are used in a single event")}
+
+
+```
+#
+#
+## Are environmental sample IDs under a single specimen?
+#
+```{r env sample ids under single specimen, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+spec.sample.ids.in.more.one.spec=
+  dat$spec %>% 
+  filter(!is.na(sample_id))%>%
+  distinct(specimen_code, sample_id) %>% 
+  count(sample_id) %>% 
+  filter(n>1)%>%
+  pull(sample_id)
+
+spec.sample.ids.in.more.one.spec=
+  dat$spec %>% 
+  filter(sample_id %in% spec.sample.ids.in.more.one.spec) %>% 
+  dplyr::select(country, specimen_code, sample_id) %>% 
+  distinct() %>% 
+  arrange(sample_id)
+
+if(nrow(spec.sample.ids.in.more.one.spec)>0){  
+
+spec.sample.ids.in.more.one.spec.df=
+  spec.sample.ids.in.more.one.spec%>%
+  group_by(country, sample_id) %>%
+  dplyr::summarise(
+    specimen_codes = paste(specimen_code, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some sample ids have been used in more than one specimen. These are the sample ids used in more than one specimen")
+  
+  kableExtra::kbl(spec.sample.ids.in.more.one.event.df, 
+                  caption = "Sample ids in more than one specimen")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(4, width = "30em", border_right = T)
+}else{#}
 
 
   print("Yes, all the sample ids are used in a single specimen")}
@@ -5681,6 +7334,10 @@ dat$spec %>%
   "One oral" 
   "1" 
 
+=======
+}else{
+  print("No samples with problems")} 
+>>>>>>> 9033e4d54be61c802839f680870dc1d35e32a454
 ```
 #
 #
@@ -5811,7 +7468,6 @@ print("Please scroll the table below down and left-right to see the complete dat
 }else{
   print("No samples with problems")} 
 ```
-
 
 
 
