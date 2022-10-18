@@ -2,7 +2,9 @@
 title: "WHIP DATA QUALITY ASSESSMENT"
 output: html_document
 params:
-  country.of.interest: "Cambodia"
+  obs: obs
+  spec: spec
+  env_spec: env_spec
 ---
 
 ```{r setup, include=FALSE}
@@ -30,8 +32,10 @@ years=2019:2100
 
 # which sheets are present = what data was requested
 
-dat=lapply(c(1:3), function(x) 
-  read_excel("/Users/DMontecino/Desktop/Data export_bevan_federko_2022-10-03.xlsx", sheet = x, col_types = "text"))
+# dat=lapply(c(1:3), function(x)
+#   read_excel("/Users/DMontecino/Desktop/Data export_bevan_federko_2022-10-03.xlsx", sheet = x, col_types = "text"))
+
+dat=list(params$obs, params$spec, params$env_spec)
 
 # assigna names to the list elements
 names(dat)<-c("obs","spec","env_spec")
@@ -43,7 +47,6 @@ dat$env_spec=dat$env_spec[!grepl("training", x = dat$env_spec$environmental_spec
 
 
 ```
-
 # EVENTS 
 #
 #
@@ -91,7 +94,8 @@ These are the Events without country. The country is provided based on the proje
                     caption = "Event codes without country. Country based on project tag") %>%
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
-      kableExtra::column_spec(2, width = "30em")}else{#}
+      kableExtra::column_spec(2, width = "30em")%>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
     
     print("Yes, all the events have the country assigned")
@@ -144,8 +148,8 @@ events.no.standard.country.df=
                     caption = "Event codes with incorrect country. The country is based on the project tag") %>%
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
-      kableExtra::column_spec(2, width = "30em")
-}else{#}
+      kableExtra::column_spec(2, width = "30em")%>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
 # if(!exists("events.countries.provided.bogus.per.country.df") |
 #     exists("events.countries.provided.bogus.per.country.df") && nrow(events.countries.provided.bogus.per.country.df)==0){  
@@ -159,11 +163,10 @@ events.no.standard.country.df=
 
   
 ```
-
-
+#
 ## LATITUDE AND LONGITUDE
 #
-#### Is the Latitude feasible in decimal degrees
+#### Is the Latitude feasible in decimal degrees?
 #
 #
 ```{r check latitude, echo=FALSE, warning=FALSE, eval=T, cache=F}
@@ -197,7 +200,8 @@ event.codes.wrong.lat.df=
                     caption = "Event codes with implausible latitude values (in decimal degrees)") %>%
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
-      kableExtra::column_spec(2, width = "30em")
+      kableExtra::column_spec(2, width = "30em")%>%
+      scroll_box(width = "100%", height = "600px")
 
     }else{#}
 
@@ -206,7 +210,7 @@ event.codes.wrong.lat.df=
   
 ```
 #
-#### Is the Longitude feasible in decimal degrees
+#### Is the Longitude feasible in decimal degrees?
 #
 #
 ```{r check Longitude, echo=FALSE, warning=FALSE, eval=T, cache=F}
@@ -241,14 +245,15 @@ event.codes.wrong.lon.df=
     kableExtra::kbl(event.codes.wrong.lon.df, 
                     caption = "Event codes with implausible longitude values (in decimal degrees)") %>%    kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
-    kableExtra::column_spec(2, width = "30em")
-  
+    kableExtra::column_spec(2, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")
     }else{#}
 
 
     print("Yes, all the longitude values reported are feasible (in decimal degrees)")}
 
 ```
+#
 ## EVENT DATES
 #
 #### Are the dates provided for all the events?
@@ -288,19 +293,14 @@ event.codes.dates.not.provided.df=
                   caption = "Event codes without date") %>%
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
-    kableExtra::column_spec(2, width = "50em")
-  
-  
-  }else{#}
+    kableExtra::column_spec(2, width = "50em")%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
 
-        print("Yes,  dates are provided for all events")}
+        print("Yes, dates are provided for all events")}
   
 ```
-
-
-
 #
 #### Does the interpretation occurs since the event started?
 #
@@ -341,7 +341,8 @@ the interpretation date and the event date")
                   caption = "Event codes with inconsistent event date and date of interpretation") %>%
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
-    kableExtra::column_spec(2,  border_right = T, width = "30em")
+    kableExtra::column_spec(2,  border_right = T, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")
   
   }else{#}
   
@@ -353,6 +354,8 @@ the interpretation date and the event date")
 #
 ## HISTORY OF THE EVENTS 
 # 
+#### Is the History of the events provided?
+
 ```{r check History, echo=FALSE, warning=FALSE, eval=T, cache=F}
 
 event.codes.no.history=
@@ -377,21 +380,18 @@ event.codes.no.history.df=
 
 # Show the results
   
-    print("No. Not all the events have  the 'history' provided. These are the events with no history")
+    print("No. Not all the events have the 'history' provided. These are the events with no history")
     
     kableExtra::kbl(event.codes.no.history.df, 
                     caption = "Event codes without history") %>%    kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
-    kableExtra::column_spec(2, width = "30em")
-  
-    }else{#}
+    kableExtra::column_spec(2, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
     
     print("Yes, all the events have the 'history' provided")}
 
 ```
-
-
 #
 #
 ## SUMMARY ISSUES AT THE EVENT LEVEL
@@ -538,14 +538,15 @@ print("Please scroll down the table below to see the complete dataset")
 
 
 ```
-
-
-
+#
 # OBSERVATIONS 
 #
 #
 ## FUNDING SOURCE PROJECT TAG PROVIDED
-
+#
+#### Do all the observations have the funding source project tag?
+#
+#
 ```{r funding project tag provided, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 
@@ -575,8 +576,8 @@ observations.funding.source.project.tag.not.provided.df=
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
-      kableExtra::column_spec(3, width = "30em")
-}else{#}
+      kableExtra::column_spec(3, width = "30em")%>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
     print("Yes, all the observations have the funding project tag")}
 
@@ -585,6 +586,9 @@ observations.funding.source.project.tag.not.provided.df=
 ```
 #
 ## SURVEILLANCE PROJECT TAG PROVIDED
+#
+#### Do all the observations have the surveillance project tag?
+#
 #
 ```{r type of surveillance tag provided, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
@@ -615,8 +619,8 @@ observations.surveillance.project.tag.not.provided.df=
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
-      kableExtra::column_spec(3, width = "30em")
-}else{#}
+      kableExtra::column_spec(3, width = "30em")%>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
     print("Yes, all the observations have the surveillance project tag")}
 
@@ -624,6 +628,9 @@ observations.surveillance.project.tag.not.provided.df=
 ```
 #
 ## SURVEILLANCE OUTBREAK UNIT
+#
+#### Do all the observations have the surveillance or outbreak unit?
+#
 #
 ```{r surveillance or outbreak unit observations, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
@@ -653,8 +660,8 @@ observations.surveillance.unit.not.provided.df=
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
-      kableExtra::column_spec(3, width = "30em")
-}else{#}
+      kableExtra::column_spec(3, width = "30em")%>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
     print("Yes, all the observations have the surveillance or outbreak unit")}
 
@@ -662,6 +669,9 @@ observations.surveillance.unit.not.provided.df=
 ```
 #
 ## OBSERVATION IDs PROVIDED 
+#
+#
+#### Do all the observations have the observation id provided?
 #
 #
 ```{r observation ids, echo=FALSE, cache=FALSE, eval=F, message=FALSE}
@@ -686,16 +696,17 @@ observation.codes.with.observation.ids.as.na.df=
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em")
-  
-}else{
+    kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{
 
     print("Yes, all observation IDs are provided")}
 
 ```
 #
-#
 ## OBSERVATION ID UNIQUE FOR A SINGLE OBSERVATION
+#
+#### Do all the observations have a unique observation id? 
+#
 #
 ```{r observation ids unique, echo=FALSE, warning=FALSE, cache=FALSE, eval=F, message = FALSE}
 
@@ -738,15 +749,17 @@ observation.codes.with.more.than.one.animal.ids.df=
       kableExtra::column_spec(1, bold = T, border_right = T) %>%            
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
       kableExtra::column_spec(3, width = "50em") %>% 
-      kableExtra::column_spec(4, width = "50em")
-
-  }else{#}
+      kableExtra::column_spec(4, width = "50em")%>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
         print("Yes, all observation ids are used for a single observation")}
 
 ```
 #
 ## OBSERVATIONS WITH DATE OBSERVED
+#
+#
+#### Do all observations have the date they were observed provided?
 #
 #
 ```{r observation date provided, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
@@ -774,9 +787,8 @@ obs.codes.date.observed.provided.df=
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-  
-  }else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all observations have the date they were observed")}
@@ -784,6 +796,9 @@ obs.codes.date.observed.provided.df=
 ```
 #
 ## OBSERVATIONS MADE SINCE THE EVENT DATE
+#
+#
+#### Were all observations made since the corresponding event date?
 #
 #
 ```{r observation date, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
@@ -807,25 +822,27 @@ obs.codes.date.found.earlier.date.df=
   arrange(country)  
 
   
-  print("No, the data show that some observations were observed before the event. These are the observations
-that were observed earlier than the event")
+  print("No, the data show that some observations were observed before the event. These are the observations that were observed earlier than the event")
   
   kableExtra::kbl(obs.codes.date.found.earlier.date.df, 
                   caption = "Observations with inconsistency between the event date and the date they were observed")%>%
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-  
-  }else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all observations were found since the corresponding event")}
   
 ```
-
+#
 ## OBSERVATION DETAILS
-
+#
+#
+#### Do all the observations have the details provided?
+#
+#
 ```{r observation details, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 observation.no.details=dat$obs %>% 
@@ -843,17 +860,15 @@ observation.no.details.df=
   arrange(country)  
 
   
-  print("No, not all observations have details. These are the observations
-that do not have details provided")
+  print("No, not all observations have details. These are the observations that do not have details provided")
   
   kableExtra::kbl(observation.no.details.df, 
                   caption = "Observations without details provided")%>%
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-  
-  }else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all observations have the details provided")}
@@ -896,8 +911,13 @@ that do not have details provided")
 <!--   print("Yes, all observations have the details provided")} -->
 
 <!-- ``` -->
+#
 ## OBSERVATION CAPTIVITY CATEGORY
-
+#
+#
+#### Do all the observations have the funding source project tag?
+#
+#
 ```{r observation captivity category, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 observation.no.captivity.category=dat$obs %>% 
@@ -922,17 +942,20 @@ observation.no.captivity.category.df=
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-  
-  }else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all observations have the captivity category provided")}
   
 ```
-
+#
 ## OBSERVATION CLINICAL SIGNS
-
+#
+#
+#### Do all observations have the clinical signs provided?
+#
+#
 ```{r observation clinical signs, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 observation.no.clinical.signs=dat$obs %>% 
@@ -956,19 +979,20 @@ observation.no.clinical.signs.df=
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-  
-  }else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all observations have the clinical signs provided")}
   
 ```
-
+#
 ## OBSERVATION NUMBERS
-
+#
+#
 #### Is there at least one individual reported per observation?
-
+#
+#
 ```{r observation at least one, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 total.obs.healthy.sick.dead.is.zero=dat$obs %>% 
@@ -1000,16 +1024,16 @@ total.obs.healthy.sick.dead.is.zero.df=
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em")
-  # print(specimen.codes.with.animal.ids.as.na.per.country)
-}else{#}
+    kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
     print("Yes, all observations have at least one individual")}
 
 ```
-
+#
 #### Does total seen match the sum of number healthy, number sick, and number dead?
-
+#
+#
 ```{r observation number, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 obs.healthy.sick.dead.not.equal.observed.sum=dat$obs %>% 
@@ -1040,17 +1064,17 @@ if(nrow(obs.healthy.sick.dead.not.equal.observed.sum)>0){
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em")
-  # print(specimen.codes.with.animal.ids.as.na.per.country)
-}else{
+    kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{
 
     print("Yes, all observations have correct consistent numbers")}
 
 
 ```
-
-#### Do all observation codes match a single species?
-
+#
+#### Do all observations represent a single species?
+#
+#
 ```{r checking observation single sps, echo=FALSE, cache=FALSE, eval=T, message=FALSE}
 
 observation.codes.unique.sps=
@@ -1075,27 +1099,67 @@ observation.codes.unique.sps.df=
   arrange(country)  
 
 
-  print("No. Not all observation codes match a single species. These are the observations with with more than one species")
+  print("No. Not all observation represent a single species. These are the observations with with more than one species")
   
   kableExtra::kbl(observation.codes.unique.sps.df, 
                       caption = "Observations with more than one species") %>%
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em")
-  # print(specimen.codes.with.animal.ids.as.na.per.country)
-}else{#}
+    kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
-    print("Yes, all observations have a single species")}
+    print("Yes, all observations represent a single species")}
 
 ```
+#
+## OBSERVATION SPECIES PROVIDED
+#
+#
+#### Do all observations have a species assigned?
+#
+#
+```{r observation species, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
+
+obs.species.not.reported=
+
+dat$obs%>%
+    filter(is.na(observation_common_name)) %>% 
+    dplyr::select(country, event_code, observation_code)%>%
+    distinct()
 
 
+if(nrow(obs.species.not.reported)>0){  
+
+obs.species.not.reported.df=
+  obs.species.not.reported%>%
+  group_by(country, event_code) %>%
+  dplyr::summarise(observation_codes = paste(observation_code, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some observations do not have the species. These are the Observation codes that do not have the species reported")
+  
+  kableExtra::kbl(obs.species.not.reported.df, 
+                  caption = "Observation species not provided")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all observations have species reported")}
+  
+
+```
+#
 ## TENTATIVE DIAGNOSIS FOR THE OBSERVED SPECIES
-
-#### Category of Tentative Diagnosis
-
+#
+#
+#### Is the category of Tentative Diagnosis provided?
+#
+#
 ```{r tentative diagnosis category observations, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message = FALSE}
 
 observation.category.tentative.diagnosis.not.provided=
@@ -1124,14 +1188,15 @@ if(nrow(observation.category.tentative.diagnosis.not.provided)>0){
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em")
-  # print(specimen.codes.with.animal.ids.as.na.per.country)
+    kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")
 }else{
 
     print("Yes, all observations have a category of tentative diagnosis")}
 ```
 #
-#### The Tentative Diagnosis
+#### Is the Tentative Diagnosis provided?
+#
 #
 ```{r tentative diagnosis observations, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message = FALSE}
 
@@ -1162,53 +1227,83 @@ if(nrow(observation.tentative.diagnosis.not.provided)>0){
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em")
-  # print(specimen.codes.with.animal.ids.as.na.per.country)
-}else{
+    kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{
 
     print("Yes, all observations have a tentative diagnosis")}
 ```
 #
-#### The Tentative Diagnosis Date since the Event Date
+#### Is the Tentative Diagnosis Date provided?
 #
-```{r tentative diagnosis observations since the event date, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message = FALSE}
+#
+```{r tentative diagnosis date for observations provided, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message = FALSE}
 
-observation.tentative.diagnosis.date.not.provided.or.before.event.date=
+observation.tentative.diagnosis.date.not.provided=
   
   dat$obs %>% 
-  dplyr::select(country, event_code, 
-                observation_code, # select the columns of interest
-                event_date,
-                observation_tentative_diagnosis_date) %>% 
-      filter(is.na(observation_tentative_diagnosis_date) |
-             !as.Date(observation_tentative_diagnosis_date)>=as.Date(event_date))%>%
-      select(country, event_code, observation_code) %>% #select columns
+      filter(is.na(observation_tentative_diagnosis_date))%>%
+      select(country, event_code, observation_code) %>%
       distinct() #unique combinations
 
 
-if(nrow(observation.tentative.diagnosis.date.not.provided.or.before.event.date)>0){  
+if(nrow(observation.tentative.diagnosis.date.not.provided)>0){  
 
-  observation.tentative.diagnosis.date.not.provided.or.before.event.date.df=
-  observation.tentative.diagnosis.date.not.provided.or.before.event.date%>%
+  observation.tentative.diagnosis.date.not.provided.df=
+  observation.tentative.diagnosis.date.not.provided%>%
   group_by(country, event_code) %>%
   dplyr::summarise(observation_codes = paste(observation_code, collapse = ", ")) %>% 
   arrange(country)  
 
   print("No. Not all observations have the tentative diagnosis date provided or they were observed since the event date")
   
-  kableExtra::kbl(observation.tentative.diagnosis.date.not.provided.or.before.event.date.df, 
+  kableExtra::kbl(observation.tentative.diagnosis.date.not.provided.df, 
                       caption = "Observations without tentative diagnosis date or earlier than the event date") %>%
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em")
-  # print(specimen.codes.with.animal.ids.as.na.per.country)
-}else{
+    kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{
 
-    print("Yes, all observations have a tentative diagnosis date and occurred since the event date")}
+    print("Yes, all observations have a tentative diagnosis date provided")}
 ```
 #
-#### The Tentative Diagnosis Date since the Observation Date
+#### Does the Tentative Diagnosis occur since the event date?
+#
+#
+```{r tentative diagnosis observations since the event date, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message = FALSE}
+
+observation.tentative.diagnosis.date.before.event.date=
+  
+  dat$obs %>% 
+      filter(!is.na(observation_tentative_diagnosis_date) &
+             !as.Date(observation_tentative_diagnosis_date)>=as.Date(event_date))%>%
+      select(country, event_code, observation_code) %>% #select columns
+      distinct() #unique combinations
+
+
+if(nrow(observation.tentative.diagnosis.date.before.event.date)>0){  
+
+  observation.tentative.diagnosis.date.before.event.date.df=
+  observation.tentative.diagnosis.date.before.event.date%>%
+  group_by(country, event_code) %>%
+  dplyr::summarise(observation_codes = paste(observation_code, collapse = ", ")) %>% 
+  arrange(country)  
+
+  print("No. Not all the tentative diagnosis were provided since the event date")
+  
+  kableExtra::kbl(observation.tentative.diagnosis.date.before.event.date.df, 
+                      caption = "Observations with tentative diagnosies provided earlier than the event date") %>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{
+
+    print("Yes, all the tentative diagnosis date were provided since the event date")}
+```
+#
+#### Does the Tentative Diagnosis occur since the Observation date?
+#
 #
 ```{r tentative diagnosis observations since the observation date, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message = FALSE}
 
@@ -1219,7 +1314,7 @@ observation.tentative.diagnosis.date.before.observation.date=
                 observation_code, # select the columns of interest
                 observation_date,
                 observation_tentative_diagnosis_date) %>% 
-      filter(!is.na(observation_tentative_diagnosis_date) |
+      filter(!is.na(observation_tentative_diagnosis_date) &
              !as.Date(observation_tentative_diagnosis_date)>=as.Date(observation_date))%>%
       select(country, event_code, observation_code) %>% #select columns
       distinct() #unique combinations
@@ -1240,9 +1335,8 @@ if(nrow(observation.tentative.diagnosis.date.before.observation.date)>0){
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em")
-  # print(specimen.codes.with.animal.ids.as.na.per.country)
-}else{
+    kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{
 
     print("Yes, for all the observations that have a tentative diagnosis date, it is since the observation date")}
 ```
@@ -1262,11 +1356,9 @@ if(nrow(observation.tentative.diagnosis.date.before.observation.date)>0){
 <!-- ``` -->
 
 #
-#
 ## SUMMARY ISSUES AT THE OBSERVATION LEVEL
 #
-"Yes" cells indicate problems for the item specified in the corresponding column name.
-
+"Yes" cells indicate problems for the item specified in the corresponding column name. Absence of a table below means that there are not issues at the observation level.#
 ```{r issues observation level, echo=FALSE, warning=FALSE, eval=T, cache=F}
 
 
@@ -1311,7 +1403,12 @@ total.obs.healthy.sick.dead.is.zero$No_animals="Yes"
 obs.healthy.sick.dead.not.equal.observed.sum$Inconsistent_numbers="Yes"
 
 #data frame observations with more than one species
+
 observation.codes.unique.sps$More_one_species="Yes"
+
+#data frame observations with species not reported
+
+obs.species.not.reported$No_species="Yes"
 
 #data frame observations without tentative diagnosis category
 
@@ -1323,7 +1420,11 @@ observation.tentative.diagnosis.not.provided$No_tentative_diag_given="Yes"
 
 #data frame observations without tentative diagnosis date
 
-observation.tentative.diagnosis.date.not.provided.or.before.event.date$No_tentative_diag_date="Yes"
+observation.tentative.diagnosis.date.not.provided.df$No_tentative_diag_date="Yes"
+
+#data frame observations with tentative diagnosis date before the event date
+
+observation.tentative.diagnosis.date.before.event.date$Tentative_diag_date_before_event_date="Yes"
 
 #data frame observations with tentative diagnosis date before the observation date
 
@@ -1373,6 +1474,10 @@ observation.codes.with.issues=full_join(observation.codes.with.issues,
                                   by=c("country", "event_code", "observation_code"))
 
 observation.codes.with.issues=full_join(observation.codes.with.issues,
+                                  obs.species.not.reported, 
+                                  by=c("country", "event_code", "observation_code"))
+
+observation.codes.with.issues=full_join(observation.codes.with.issues,
                                   observation.category.tentative.diagnosis.not.provided, 
                                   by=c("country", "event_code", "observation_code"))
 
@@ -1381,13 +1486,16 @@ observation.codes.with.issues=full_join(observation.codes.with.issues,
                                   by=c("country", "event_code", "observation_code"))
 
 observation.codes.with.issues=full_join(observation.codes.with.issues,
-                                  observation.tentative.diagnosis.date.not.provided.or.before.event.date, 
+                                  observation.tentative.diagnosis.date.not.provided, 
+                                  by=c("country", "event_code", "observation_code"))
+
+observation.codes.with.issues=full_join(observation.codes.with.issues,
+                                  observation.tentative.diagnosis.date.before.event.date, 
                                   by=c("country", "event_code", "observation_code"))
 
 observation.codes.with.issues=full_join(observation.codes.with.issues,
                                   observation.tentative.diagnosis.date.before.observation.date, 
                                   by=c("country", "event_code", "observation_code"))
-
 
 
 observation.codes.with.issues=observation.codes.with.issues %>% arrange(country, event_code)
@@ -1408,8 +1516,6 @@ print("Please scroll down the table below to see the complete dataset")
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(c(2:ncol(observation.codes.with.issues)), border_right = T, width = "8em")%>%
-
-    # kableExtra::collapse_rows(1)
     scroll_box(width = "100%", height = "600px")
 
 }else{
@@ -1418,11 +1524,15 @@ print("Please scroll down the table below to see the complete dataset")
 
 
 ```
-
-# SPECIMENS
+#
+# SPECIMENS 
+#
 #
 ## FUNDING SOURCE PROJECT TAG PROVIDED
-
+#
+#### Do all the specimens have the funding source project tag?
+#
+#
 ```{r funding project tag provided specimens, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 
@@ -1452,8 +1562,8 @@ specimens.funding.source.project.tag.not.provided.df=
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
-      kableExtra::column_spec(3, width = "30em")
-}else{#}
+      kableExtra::column_spec(3, width = "30em")%>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
     print("Yes, all the specimens have the funding project tag")}
 
@@ -1462,6 +1572,9 @@ specimens.funding.source.project.tag.not.provided.df=
 ```
 #
 ## SURVEILLANCE PROJECT TAG PROVIDED
+#
+#### Do all the specimens have the surveillance project tag?
+#
 #
 ```{r type of surveillance tag provided specimens, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
@@ -1492,8 +1605,8 @@ specimens.surveillance.project.tag.not.provided.df=
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
-      kableExtra::column_spec(3, width = "30em")
-}else{#}
+      kableExtra::column_spec(3, width = "30em")%>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
     print("Yes, all the specimens have the surveillance project tag")}
 
@@ -1501,6 +1614,9 @@ specimens.surveillance.project.tag.not.provided.df=
 ```
 #
 ## SURVEILLANCE OUTBREAK UNIT
+#
+#### Do all the speicmens have the surveillance or outbreak unit?
+#
 #
 ```{r surveillance or outbreak unit specimens, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
@@ -1528,8 +1644,8 @@ spec.surveillance.unit.not.provided.df=
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
-      kableExtra::column_spec(3, width = "30em")
-}else{#}
+      kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
     print("Yes, all the specmens have the surveillance or outbreak unit")}
 
@@ -1537,6 +1653,9 @@ spec.surveillance.unit.not.provided.df=
 ```
 #
 ## ANIMAL IDs PROVIDED 
+#
+#
+#### Do all the speicmens have the animal ids provided?
 #
 #
 ```{r animal ids, echo=FALSE, cache=FALSE, eval=T, message=FALSE}
@@ -1561,16 +1680,17 @@ specimen.codes.with.animal.ids.as.na.df=
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em")
-  
-}else{
+    kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{
 
     print("Yes, all animal IDs are provided")}
 
 ```
 #
-#
 ## ANIMAL ID UNIQUE FOR A SINGLE SPECIMEN
+#
+#### Do all the specimens have a unique animal id? 
+#
 #
 ```{r animal ids unique, echo=FALSE, warning=FALSE, cache=FALSE, eval=T, message = FALSE}
 
@@ -1613,9 +1733,8 @@ specimen.codes.with.more.than.one.animal.ids.df=
       kableExtra::column_spec(1, bold = T, border_right = T) %>%            
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
       kableExtra::column_spec(3, width = "50em") %>% 
-      kableExtra::column_spec(4, width = "50em")
-
-  }else{#}
+      kableExtra::column_spec(4, width = "50em")%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
         print("Yes, all animal IDs are used for a single specimen")}
 
@@ -1778,6 +1897,9 @@ specimen.codes.with.more.than.one.animal.ids.df=
 ## SPECIMENS WITH DATE FOUND
 #
 #
+#### Do all specimens have the date they were found provided?
+#
+#
 ```{r speciemens date found provided, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 spec.codes.date.found.provided=
@@ -1812,10 +1934,12 @@ spec.codes.date.found.provided.df=
  
 ```
 #
-## SPECIMEN COLLECTED SINCE THE EVENT DATE
+## SPECIMENS FOUND SINCE THE EVENT DATE
 #
 #
-<!-- Date found was not mandatory until Feb 2, 2021, so several rows without this information. See below to check which specimens do not have the date found provided. -->
+#### Were all specimens found since the corresponding event date?
+#
+#
 ```{r specimen date, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 spec.codes.date.found.earlier.date=
@@ -1841,9 +1965,8 @@ spec.codes.date.found.earlier.date.df=
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-  
-  }else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens were found since the corresponding event")}
@@ -1936,7 +2059,10 @@ spec.codes.date.found.earlier.date.df=
 
 <!-- ``` -->
 #
-## SPECIES PROVIDED
+## SPECIMENS SPECIES PROVIDED
+#
+#
+#### Do all specimens have a species assigned?
 #
 #
 ```{r specimen species, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
@@ -1964,8 +2090,8 @@ spec.species.not.reported.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens have species reported")}
@@ -1973,10 +2099,13 @@ spec.species.not.reported.df=
 
 ```
 #
-## FOUND BY PROVIDED
+## SPECIMENS WITH FOUND BY
 #
 #
-```{r specimen foud by, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
+#### Do all specimens have the person that found them?
+#
+#
+```{r specimen found by, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
 spec.found.by.not.reported=
 
@@ -2010,7 +2139,10 @@ spec.found.by.not.reported.df=
 
 ```
 #
-## AGE PROVIDED
+## SPECIMENS WITH AGE PROVIDED
+#
+#
+#### Do all specimens have their age provided?
 #
 #
 ```{r specimen age, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
@@ -2038,8 +2170,8 @@ spec.age.not.reported.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens have the age reported")}
@@ -2048,6 +2180,9 @@ spec.age.not.reported.df=
 ```
 #
 ## SEX PROVIDED
+#
+#
+#### Do all specimens have their sex provided?
 #
 #
 ```{r specimen sex, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
@@ -2075,8 +2210,8 @@ spec.sex.not.reported.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens have the sex reported")}
@@ -2085,6 +2220,9 @@ spec.sex.not.reported.df=
 ```
 #
 ## CONDITION PROVIDED
+#
+#
+#### Do all specimens have their condition provided?
 #
 #
 ```{r specimen condition, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
@@ -2112,8 +2250,8 @@ spec.condition.not.reported.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens have the found by item reported")}
@@ -2122,6 +2260,9 @@ spec.condition.not.reported.df=
 ```
 #
 ## CAPTIVITY CATEGORY PROVIDED
+#
+#
+#### Do all specimens have their captivity category provided?
 #
 #
 ```{r specimen captivity category, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
@@ -2149,8 +2290,8 @@ spec.captivity.category.not.reported.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens have the captivity category reported")}
@@ -2159,6 +2300,9 @@ spec.captivity.category.not.reported.df=
 ```
 #
 ## FINAL CONDITION PROVIDED
+#
+#
+#### Do all specimens have their final condition provided?
 #
 #
 ```{r specimen final condition, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
@@ -2186,8 +2330,8 @@ spec.final.condition.not.reported.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens have the final condition reported")}
@@ -2196,6 +2340,9 @@ spec.final.condition.not.reported.df=
 ```
 #
 ## CLINICAL SIGNS PROVIDED (FOR NON-HEALTHY INDIVIDUALS)
+#
+#
+#### Do all specimens have their clinical signs provided?
 #
 #
 ```{r specimen clinical signs, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
@@ -2224,8 +2371,8 @@ spec.no.clinical.signs.reported.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens have the final condition reported")}
@@ -2237,6 +2384,7 @@ spec.no.clinical.signs.reported.df=
 #
 #
 #### Were necropsies conducted since the event date?
+#
 #
 ```{r necropsy after the event date, echo=FALSE, warning=FALSE, eval=T, cache=F, message =FALSE}
 
@@ -2263,8 +2411,8 @@ spec.date.necropsy.earlier.than.event.date.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens were necropsied after the event date")}
@@ -2272,8 +2420,8 @@ spec.date.necropsy.earlier.than.event.date.df=
 
 ```
 #
-#
 #### Were necropsies conducted since the specimen was found?
+#
 #
 ```{r necropsy after specimen found, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
@@ -2300,18 +2448,17 @@ spec.date.necropsy.earlier.than.date.found.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens were necropsied after they were found")}
 
 ```
 #
-#
 #### Is the "necropsy level" reported in WHIP? 
 #
-
+#
 <!-- for those specimens without necropsy, the level is "No necropsy" -->
 
 ```{r specimen necropsy level, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
@@ -2339,8 +2486,8 @@ spec.necropsy.level.not.reported.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens have the necropsy level reported")}
@@ -2471,8 +2618,8 @@ spec.necropsy.but.no.finding.reported.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens have the necropsied specimens have the necropsy findings provided")}
@@ -2505,21 +2652,18 @@ spec.pending.necropsy.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all the necropsies are not pending")}
 ```
 #
-#
 ## SUMMARY ISSUES AT THE SPECIMENS LEVEL
-#
 #
 "Yes" cells indicate problems for the item specified in the corresponding column name.
 
 ```{r issues specimen level, echo=FALSE, warning=FALSE, eval=T, cache=F}
-
 
 #data frame event codes without fundgin project tag
 
@@ -2646,7 +2790,6 @@ specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                   spec.no.clinical.signs.reported, 
                                   by=c("country", "event_code", "specimen_code"))
 
-
 specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                   spec.date.necropsy.earlier.than.event.date, 
                                   by=c("country", "event_code", "specimen_code"))
@@ -2654,7 +2797,6 @@ specimen.codes.with.issues=full_join(specimen.codes.with.issues,
 specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                   spec.date.necropsy.earlier.than.date.found, 
                                   by=c("country", "event_code", "specimen_code"))
-
 
 specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                   spec.necropsy.level.not.reported, 
@@ -2664,12 +2806,9 @@ specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                   spec.necropsy.but.no.finding.reported, 
                                   by=c("country", "event_code", "specimen_code"))
 
-
 specimen.codes.with.issues=full_join(specimen.codes.with.issues,
                                   spec.pending.necropsy, 
                                   by=c("country", "event_code", "specimen_code"))
-
-
 
 specimen.codes.with.issues=specimen.codes.with.issues %>% arrange(country, event_code, specimen_code)
 
@@ -2701,7 +2840,10 @@ print("Please scroll down the table below to see the complete dataset")
 #
 # SPECIMEN SAMPLES
 #
-## Were the samples collected since the date the corresponding event date?
+#
+## SAMPLING DATE SINCE THE EVENT DATE
+#
+#### Were all the samples collected since the event date?
 #
 #
 ```{r sample dates, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
@@ -2731,16 +2873,19 @@ sample.date.collected.earlier.than.event.date.df=
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all samples were collected since the event date")}
 
 ```
 #
+## SAMPLING SINCE THE SOURCE SPECIMEN WAS FOUND
 #
-## Were the samples collected since the date the source specimen was found?
+#
+#### Were the samples collected since the date the source specimen was found?
+#
 #
 ```{r sample dates 2, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
@@ -2763,13 +2908,13 @@ sample.date.collected.earlier.than.specimen.found.df=
   print("No, the data show that some samples were collected before the specimen was found. These are the samples that were collected before the specimen was found.")
   
   kableExtra::kbl(sample.date.collected.earlier.than.specimen.found.df, 
-                  caption = "Samples collected before the specimen was found")%>%
+                  caption = "Samples collected before the specimen source was found")%>%
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all samples were collected since the specimen was found")}
@@ -2778,10 +2923,13 @@ sample.date.collected.earlier.than.specimen.found.df=
 
 ```
 #
-## Are all sample ids provided?
+## SAMPLE IDS PROVIDED
 #
 #
-```{r sample id provided, echo=FALSE, warning=FALSE, eval=F, cache=FALSE, message=FALSE}
+#### Are all the sample IDs provided?
+#
+#
+```{r sample id provided, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
 spec.sample.ids.provided=
 dat$spec %>% 
@@ -2805,9 +2953,8 @@ spec.sample.ids.provided.df=
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-    
-}else{#}
+    # kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all the samples have sample id")}
@@ -2815,35 +2962,38 @@ spec.sample.ids.provided.df=
 
 ```
 #
-## Are all sample types provided?
+## SAMPLE TYPES PROVIDED
 #
 #
-```{r sample type provided, echo=FALSE, warning=FALSE, eval=F, cache=FALSE, message=FALSE}
+#### Are all sample types provided?
+#
+#
+```{r sample type provided, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
 spec.sample.types.provided=
 dat$spec %>% 
-  filter(is.na(sample_type) & meta_has_sample_inventory=="Yes") %>% 
-  dplyr::select(country, event_code, specimen_code)%>%
+  filter(is.na(sample_type) & !is.na(sample_id) & meta_has_sample_inventory=="Yes") %>% 
+  dplyr::select(country, event_code, specimen_code, sample_id)%>%
   distinct()
 
 if(nrow(spec.sample.types.provided)>0){  
 
 spec.sample.types.provided.df=
   spec.sample.types.provided%>%
-  group_by(country, event_code) %>%
-  dplyr::summarise(specimen_codes = paste(specimen_code, collapse = ", ")) %>% 
-  arrange(country)  
+  group_by(country, event_code, specimen_code) %>%
+  dplyr::summarise(sample_ids = paste(sample_id, collapse = ", ")) %>% 
+ arrange(country)  
   
   print("No, the data show that some specimens have samples but their sample types are not provided. These are the Specimen codes with sample types not provided")
   
-  kableExtra::kbl(spec.pending.necropsy.df, 
+  kableExtra::kbl(spec.sample.types.provided.df, 
                   caption = "Specimens samples with of unknown type")%>%
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-}else{#}
+    # kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all sample types are provided")}
@@ -3034,8 +3184,11 @@ Please scroll the table below down and left-right to see the complete dataset if
 
 ```
 #
+## SAMPLE IDS UNDER A SINGLE EVENT
 #
-## Are sample IDs under a single event?
+#
+#### Are sample IDs under a single event?
+#
 #
 ```{r sample ids under single event, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
@@ -3073,8 +3226,8 @@ spec.sample.ids.in.more.one.event.df=
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all the sample ids are used in a single event")}
@@ -3082,8 +3235,11 @@ spec.sample.ids.in.more.one.event.df=
 
 ```
 #
+## SAMPLE IDS UNDER A SINGLE SPECIMEN
 #
-## Are sample IDs under a single specimen?
+#
+#### Are sample IDs under a single specimen?
+#
 #
 ```{r sample ids under single specimen, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
@@ -3098,7 +3254,7 @@ spec.sample.ids.in.more.one.spec=
 spec.sample.ids.in.more.one.spec=
   dat$spec %>% 
   filter(sample_id %in% spec.sample.ids.in.more.one.spec) %>% 
-  dplyr::select(country, specimen_code, sample_id) %>% 
+  dplyr::select(country, event_code, specimen_code, sample_id) %>% 
   distinct() %>% 
   arrange(sample_id)
 
@@ -3108,19 +3264,20 @@ spec.sample.ids.in.more.one.spec.df=
   spec.sample.ids.in.more.one.spec%>%
   group_by(country, sample_id) %>%
   dplyr::summarise(
+    event_codes = paste(event_code, collapse = ", "), 
     specimen_codes = paste(specimen_code, collapse = ", ")) %>% 
   arrange(country)  
   
   print("No, the data show that some sample ids have been used in more than one specimen. These are the sample ids used in more than one specimen")
   
-  kableExtra::kbl(spec.sample.ids.in.more.one.event.df, 
+  kableExtra::kbl(spec.sample.ids.in.more.one.spec.df, 
                   caption = "Sample ids in more than one specimen")%>%
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-}else{#}
+    # kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all the sample ids are used in a single specimen")}
@@ -3128,7 +3285,10 @@ spec.sample.ids.in.more.one.spec.df=
 
 ```
 #
-## Are the sample quantities provided informative?
+## SAMPLE QUANTITIES PROVIDED
+#
+#
+#### Are the sample quantities provided informative?
 #
 #
 ```{r sample quantity, echo=FALSE, warning=FALSE, eval=F, cache=F}
@@ -3155,143 +3315,84 @@ dat$spec %>%
 
 ```
 #
+## SUMMARY ISSUES AT THE SPECIMENS SAMPLES LEVEL
 #
-## SUMMARY ISSUES AT THE SPECIMEN SAMPLES LEVEL
-#
-"Yes" cells indicate problems for the item specified in the corresponding column name. Absence of a table below means that there are not issues at the sample level.
-```{r summmary samples, echo=FALSE, warning=FALSE, eval=F, cache=F}
+"Yes" cells indicate problems for the item specified in the corresponding column name.
 
-specimen.codes.with.sample.ids.as.na.per.country.df=
+```{r issues specimen samples level, echo=FALSE, warning=FALSE, eval=T, cache=F}
+
+
+sample.date.collected.earlier.than.event.date$Sampling_date_before_event="Yes"
+
+sample.date.collected.earlier.than.specimen.found$Sampling_date_before_specimen_found="Yes"
+
+spec.sample.ids.provided$No_sample_id_provided="Yes"
+
+spec.sample.types.provided$No_sample_type="Yes"
+
+spec.sample.ids.in.more.one.event$Sample_id_for_more_one_event="Yes"
+
+spec.sample.ids.in.more.one.spec$Sample_id_more_one_spec="Yes"
+
+
+# data showing the issues per event code per country
+specimen.sample.codes.with.issues=full_join(sample.date.collected.earlier.than.event.date, 
+                                  sample.date.collected.earlier.than.specimen.found,
+                                  by=c("country", "event_code", "specimen_code", "sample_id"))
+
+specimen.sample.codes.with.issues=full_join(specimen.sample.codes.with.issues,
+                                  spec.sample.ids.provided,
+                                  by=c("country", "event_code", "specimen_code"))
+
+specimen.sample.codes.with.issues=full_join(specimen.sample.codes.with.issues,
+                                  spec.sample.types.provided,
+                                  by=c("country", "event_code", "specimen_code", "sample_id"))
+
+specimen.sample.codes.with.issues=full_join(specimen.sample.codes.with.issues,
+                                  spec.sample.ids.in.more.one.event, 
+                                  by=c("country", "event_code", "specimen_code", "sample_id"))
+
+specimen.sample.codes.with.issues=full_join(specimen.sample.codes.with.issues,
+                                  spec.sample.ids.in.more.one.spec, 
+                                  by=c("country", "event_code", "specimen_code", "sample_id"))
+
+
+specimen.sample.codes.with.issues=specimen.sample.codes.with.issues %>% arrange(country, event_code, specimen_code, sample_id)
+
+
+if(nrow(specimen.sample.codes.with.issues)>0){
   
-  do.call(rbind, specimen.codes.with.sample.ids.as.na.per.country)
-
-specimen.codes.with.sample.ids.as.na.per.country.df$Sample_ID_is_NA="Yes"
-
-
-# specimen.codes.with.wrong.sample.ids.per.country.df$Wrong_Sample_ID="Yes"
-
-sample.ids.in.more.than.one.event.per.country.df=
+      # removing columns were everything is NA
+specimen.sample.codes.with.issues=specimen.sample.codes.with.issues%>%dplyr::select_if(~ !all(is.na(.)))
   
-  do.call(rbind, sample.ids.in.more.than.one.event.per.country)
-
-sample.ids.in.more.than.one.event.per.country.df$Repeat_for_events="Yes"
-
-
-
-sample.ids.in.more.than.one.specimen.per.country.df=
   
-  do.call(rbind, sample.ids.in.more.than.one.specimen.per.country)
-
-sample.ids.in.more.than.one.specimen.per.country.df$Repeat_for_specimens="Yes"
-
-
-
-samples.sampled.before.event.per.country.df=
+if(any(is.na(specimen.sample.codes.with.issues))){specimen.sample.codes.with.issues[is.na(specimen.sample.codes.with.issues)]="No"}
   
-  do.call(rbind, samples.sampled.before.event.per.country)
-
-samples.sampled.before.event.per.country.df$Sampled_before_event="Yes"
-
-
-
-
-samples.sampled.before.found.per.country.df=
+print("Please scroll down the table below to see the complete dataset")  
   
-  do.call(rbind, samples.sampled.before.found.per.country)
-
-samples.sampled.before.found.per.country.df$Sampled_before_found="Yes"
-
-
-
-
-sample.ids.problem.quantities.per.country.df=
-  
-  do.call(rbind, sample.ids.problem.quantities.per.country)
-
-sample.ids.problem.quantities.per.country.df$Non_informative_quantity="Yes"
-
-
-
-# data showing the issues per Specimen code per country
-# samples.with.issues=full_join(
-#                               specimen.codes.with.sample.ids.as.na.per.country.df, 
-#                               specimen.codes.with.wrong.sample.ids.per.country.df, 
-#                               by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-samples.with.issues=full_join(#samples.with.issues,
-                              specimen.codes.with.sample.ids.as.na.per.country.df,
-                              sample.ids.in.more.than.one.event.per.country.df, 
-                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-samples.with.issues=full_join(samples.with.issues,
-                              sample.ids.in.more.than.one.specimen.per.country.df, 
-                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-samples.with.issues=full_join(samples.with.issues, 
-                              samples.sampled.before.event.per.country.df, 
-                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-samples.with.issues=full_join(samples.with.issues,
-                              samples.sampled.before.found.per.country.df,
-                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-samples.with.issues=full_join(samples.with.issues,
-                              sample.ids.problem.quantities.per.country.df%>%
-                                dplyr::select(-Quantity),
-                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-
-samples.with.issues=samples.with.issues%>%filter(Specimen_code!="")
-
-samples.with.issues=samples.with.issues[order(
-  samples.with.issues$Country,
-  samples.with.issues$Specimen_code),]
-
-
-rownames(samples.with.issues)=NULL
-
-# subset to specific country
-samples.with.issues=
-  samples.with.issues%>%filter(Country==params$country.of.interest)
-
-
-# subset to rows with at least one "Yes" 
-  
-samples.with.issues=
-samples.with.issues %>%
-   filter(rowSums(across(everything(), ~grepl("Yes", .x))) > 0)
-
-if(nrow(samples.with.issues)>0){
-  
-  # removing columns were everything is NA
-samples.with.issues=
-samples.with.issues%>%dplyr::select_if(~ !all(is.na(.)))
-  
-      if(any(is.na(samples.with.issues))){
-  samples.with.issues[is.na(samples.with.issues)]="No"}
-
-  
-print("Please scroll the table below down and left-right to see the complete dataset")  
-  
- kableExtra::kbl(samples.with.issues,
-                  caption = "Samples with problems per country") %>%
+ kableExtra::kbl(specimen.sample.codes.with.issues,
+                  caption = "Specimens sample codes with problems") %>%
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
-    kableExtra::column_spec(2:ncol(samples.with.issues), border_right = T, width = "20em")%>%
+    kableExtra::column_spec(c(2:ncol(specimen.sample.codes.with.issues)), border_right = T, width = "8em")%>%
+
+    # kableExtra::collapse_rows(1)
     scroll_box(width = "100%", height = "600px")
 
 }else{
-  print("No samples with problems")} 
-```
+  
+  print("No specimen samples present problems")}  
 
+```
 #
 ## SPECIMENS THAT COULD ACTUALLY BE AN OBSERVATION
 #
+#
 #### Are there specimens without a necropsy report, no "necropsy level" reported, and no sample inventory in WHIP? 
 #
-The specimens that match these three conditions can be confused with observations because there are actually no specimens. Some of these specimens will be repeated above. If you are expecting to conduct a necropsy, please add "Pending Necropsy" in the "Necropsy level" field, or add "No Necropsy". Complete the sample inventory. Record those specimens that are actually observations.
+The specimens that match these three conditions can be confused with observations because there are actually no specimens. Some of these specimens will be repeated above. If you are expecting to conduct a necropsy, please add "Pending Necropsy" in the "Necropsy level" field, or add "No Necropsy". Complete the sample inventory. Record those specimens that are actually observations as observations for tge same event and delete the corresponding specimen.
 
-```{r specimen no necropsy report, no necropsy level or no necropsy reported and no sample inventory, echo=FALSE, warning=FALSE, eval=T, cache=FALSE}
+```{r specimen no necropsy report, no necropsy level or no necropsy reported and no sample inventory, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
 
 # specimens wo smaples and necropsy
@@ -3305,7 +3406,6 @@ dat$spec %>% select(country, specimen_code, sample_type, date_sampled, meta_has_
           necropsy_level== "No Necropsy" | is.na(necropsy_level))
 
 
-# if there are rows with wrong latitude
 
 if(nrow(list.of.potential.observations)>0){  
 
@@ -3324,8 +3424,8 @@ list.of.potential.observations.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T) 
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("None of the specimens seem to be an observations")}
@@ -4606,10 +4706,14 @@ list.of.potential.observations.df=
 <!--   print("No tests with problems")}  -->
 <!-- ``` -->
 #
-# ENVIRONMENTAL SPECIMENS
+# ENVIRONMENTAL SPECIMENS 
+#
 #
 ## FUNDING SOURCE PROJECT TAG PROVIDED
-
+#
+#### Do all the environmental specimens have the funding source project tag?
+#
+#
 ```{r funding project tag provided env specimens, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 
@@ -4639,8 +4743,8 @@ env.specimens.funding.source.project.tag.not.provided.df=
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
-      kableExtra::column_spec(3, width = "30em")
-}else{#}
+      kableExtra::column_spec(3, width = "30em")%>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
     print("Yes, all the environmental specimens have the funding project tag")}
 
@@ -4649,6 +4753,9 @@ env.specimens.funding.source.project.tag.not.provided.df=
 ```
 #
 ## SURVEILLANCE PROJECT TAG PROVIDED
+#
+#### Do all the environmental specimens have the surveillance project tag?
+#
 #
 ```{r type of surveillance tag provided env specimens, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
@@ -4679,8 +4786,8 @@ env.specimens.surveillance.project.tag.not.provided.df=
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
-      kableExtra::column_spec(3, width = "30em")
-}else{#}
+      kableExtra::column_spec(3, width = "30em") %>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
     print("Yes, all the environmental specimens have the surveillance project tag")}
 
@@ -4688,6 +4795,9 @@ env.specimens.surveillance.project.tag.not.provided.df=
 ```
 #
 ## SURVEILLANCE OUTBREAK UNIT
+#
+#### Do all the environmental specimens have the surveillance or outbreak unit?
+#
 #
 ```{r surveillance or outbreak unit env specimens, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
@@ -4715,15 +4825,18 @@ env.spec.surveillance.unit.not.provided.df=
       kableExtra::kable_paper(full_width = F) %>%
       kableExtra::column_spec(1, bold = T, border_right = T) %>%
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
-      kableExtra::column_spec(3, width = "30em")
-}else{#}
+      kableExtra::column_spec(3, width = "30em") %>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
     print("Yes, all the environmental specimens have the surveillance or outbreak unit")}
 
 
 ```
 #
-## ENVIRONMENTAL SPECIMEN IDS PROVIDED 
+## ENVIRONMENTAL SPECIMENS IDs PROVIDED 
+#
+#
+#### Do all the environmental specimens have the environmental specimen id provided?
 #
 #
 ```{r env specimen id, echo=FALSE, cache=FALSE, eval=F, message=FALSE}
@@ -4748,16 +4861,17 @@ env.specimen.codes.with.env.ids.as.na.df=
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em")
-  
-}else{
+    kableExtra::column_spec(3, width = "30em")%>%
+    scroll_box(width = "100%", height = "600px")}else{
 
     print("Yes, all environmental specimens IDs are provided")}
 
 ```
 #
-#
 ## ENVIRONMENTAL SPECIMEN ID UNIQUE FOR A SINGLE ENVIRONMENTAL SPECIMEN
+#
+#### Do all the environmental specimens have a unique environmental specimen id? 
+#
 #
 ```{r env specimen unique, echo=FALSE, warning=FALSE, cache=FALSE, eval=F, message = FALSE}
 
@@ -4800,9 +4914,8 @@ env.specimen.codes.with.more.than.one.env.spec.ids.df=
       kableExtra::column_spec(1, bold = T, border_right = T) %>%            
       kableExtra::column_spec(2, bold = T, border_right = T) %>%
       kableExtra::column_spec(3, width = "50em") %>% 
-      kableExtra::column_spec(4, width = "50em")
-
-  }else{#}
+      kableExtra::column_spec(4, width = "50em") %>%
+      scroll_box(width = "100%", height = "600px")}else{#}
 
         print("Yes, all environmental specimen ids are used for a single environmental specimen")}
 
@@ -4965,6 +5078,9 @@ env.specimen.codes.with.more.than.one.env.spec.ids.df=
 ## ENVIRONMENTAL SPECIMENS WITH DATE FOUND
 #
 #
+#### Do all environmental specimens have the date they were found provided?
+#
+#
 ```{r env speciemens date found provided, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 env.spec.codes.date.found.provided=
@@ -4990,16 +5106,18 @@ env.spec.codes.date.found.provided.df=
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-  
-  }else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all environmental specimens have the date they were found")} # test
  
 ```
 #
-## ENVIRONMENTAL SPECIMEN COLLECTED SINCE THE EVENT DATE
+## ENVIRONMENTAL SPECIMENS FOUND SINCE THE EVENT DATE
+#
+#
+#### Were all environmental specimens collected since the corresponding event date?
 #
 #
 <!-- Date found was not mandatory until Feb 2, 2021, so several rows without this information. See below to check which specimens do not have the date found provided. -->
@@ -5021,25 +5139,27 @@ env.spec.codes.date.found.earlier.date.df=
   arrange(country)  
 
   
-  print("No, the data show that some environmental specimens were found before the event. These are the environmental specimens that were found earlier than the event")
+  print("No, the data show that some environmental specimens were collected before the event. These are the environmental specimens that were found earlier than the event")
   
   kableExtra::kbl(env.spec.codes.date.found.earlier.date.df, 
                   caption = "Environmental specimens with inconsistency between the event date and the date they were found")%>%
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-  
-  }else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all specimens were found since the corresponding event")}
   
 ```
 #
-## ENVIRONMENTAL SPECIMEN SPECIES PROVIDED
+## ENVIRONMENTAL SPECIMENS SPECIES PROVIDED
 #
-# 
+#
+#### Do all environmental specimens have a species assigned?
+#
+#
 Remember that you could add higher taxonomic levels such as "Aves", or more specific levels such as order, family, or genus. The list below does not include soil, water, or sediment specimens.
 ```{r env specimen species, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
@@ -5067,8 +5187,8 @@ env.spec.species.not.reported.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all environmental specimens have species reported")}
@@ -5076,10 +5196,13 @@ env.spec.species.not.reported.df=
 
 ```
 #
-## FOUND BY PROVIDED
+## ENVIRONMENTAL SPECIMENS WITH FOUND BY
 #
 #
-```{r env specimen foud by, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
+#### Do all environmental specimens have the person that found them?
+#
+#
+```{r env specimen found by, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
 env.spec.found.by.not.reported=
 
@@ -5104,8 +5227,8 @@ env.spec.found.by.not.reported.df=
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
-    kableExtra::column_spec(3, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all envinronmental specimens have the found by item reported")}
@@ -5113,7 +5236,11 @@ env.spec.found.by.not.reported.df=
 
 ```
 #
-## TYPE PROVIDED
+## ENVIRONMENTAL SPECIMENS TYPE PROVIDED
+#
+#
+#### Do all environmental specimens have their type provided?
+#
 #
 ```{r environnmental specimen type provided, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
@@ -5139,8 +5266,8 @@ env.spec.type.provided.df=
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all the environmental specimen types are provided")}
@@ -5148,12 +5275,10 @@ env.spec.type.provided.df=
 
 ```
 #
+## SUMMARY ISSUES AT THE ENVIRONMENTAL SPECIMEN LEVEL
 #
-## SUMMARY ISSUES AT THE ENVIRONMENTAL SPECIMENS LEVEL
-#
-#
-"Yes" cells indicate problems for the item specified in the corresponding column name.
-#
+"Yes" cells indicate problems for the item specified in the corresponding column name. Absence of a table below means that there are not issues at the environmental specimen level.
+
 ```{r issues environmental specimen level, echo=FALSE, warning=FALSE, eval=T, cache=F}
 
 
@@ -5264,7 +5389,10 @@ print("Please scroll down the table below to see the complete dataset")
 #
 # ENVIRONMENTAL SPECIMEN SAMPLES
 #
-## Were the environmental samples collected since the date the corresponding event date?
+#
+## SAMPLING DATE SINCE THE EVENT DATE
+#
+#### Were the environmental samples collected since the date the corresponding event date?
 #
 #
 ```{r environmental sample dates, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
@@ -5294,16 +5422,19 @@ env.sample.date.collected.earlier.than.event.date.df=
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all environmental samples were collected since the event date")}
 
 ```
 #
+## SAMPLING SINCE THE SOURCE ENVIRONMENTAL SPECIMEN WAS FOUND
 #
-## Were the environmental samples collected since the date the source environmental specimen was found?
+#
+#### Were the environmental samples collected since the date the source environmental specimen was found?
+#
 #
 ```{r environmental sample dates 2, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
@@ -5331,8 +5462,8 @@ env.sample.date.collected.earlier.than.specimen.found.df=
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all environmental samples were collected since the environmental specimen was found")}
@@ -5341,10 +5472,13 @@ env.sample.date.collected.earlier.than.specimen.found.df=
 
 ```
 #
-## Are all environmental sample ids provided?
+## ENVIRONMENTAL SAMPLE IDS PROVIDED
 #
 #
-```{r environmental sample id provided, echo=FALSE, warning=FALSE, eval=F, cache=FALSE, message=FALSE}
+#### Are all the environmental sample IDs provided?
+#
+#
+```{r environmental sample id provided, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
 env.spec.sample.ids.provided=
 dat$env_spec %>% 
@@ -5368,9 +5502,8 @@ env.spec.sample.ids.provided.df=
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-    
-}else{#}
+    # kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all the environmental samples have sample id")}
@@ -5562,8 +5695,11 @@ Please scroll the table below down and left-right to see the complete dataset if
 
 ```
 #
+## ENVIRONMENTAL SAMPLE IDS UNDER A SINGLE EVENT
 #
-## Are envinromental sample IDs under a single event?
+#
+#### Are the environmental sample IDs under a single event?
+#
 #
 ```{r envinronmental sample ids under single event, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
@@ -5601,8 +5737,8 @@ env.spec.sample.ids.in.more.one.event.df=
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
   print("Yes, all the envrionemtnal sample ids are used in a single event")}
@@ -5610,53 +5746,59 @@ env.spec.sample.ids.in.more.one.event.df=
 
 ```
 #
+## ENVIRONMENTAL SAMPLE IDS UNDER A SINGLE ENVIRONMENTAL SPECIMEN
 #
-## Are environmental sample IDs under a single specimen?
+#
+#### Are environmental sample IDs under a single environmental specimen?
+#
 #
 ```{r env sample ids under single specimen, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
-spec.sample.ids.in.more.one.spec=
-  dat$spec %>% 
+env.spec.sample.ids.in.more.one.env.spec=
+  dat$env_spec %>% 
   filter(!is.na(sample_id))%>%
-  distinct(specimen_code, sample_id) %>% 
+  distinct(event_code, environmental_specimen_code, sample_id) %>% 
   count(sample_id) %>% 
   filter(n>1)%>%
   pull(sample_id)
 
-spec.sample.ids.in.more.one.spec=
-  dat$spec %>% 
-  filter(sample_id %in% spec.sample.ids.in.more.one.spec) %>% 
-  dplyr::select(country, specimen_code, sample_id) %>% 
+env.spec.sample.ids.in.more.one.env.spec=
+  dat$env_spec %>% 
+  filter(sample_id %in% env.spec.sample.ids.in.more.one.env.spec) %>% 
+  dplyr::select(country, event_code, environmental_specimen_code, sample_id) %>% 
   distinct() %>% 
   arrange(sample_id)
 
-if(nrow(spec.sample.ids.in.more.one.spec)>0){  
+if(nrow(env.spec.sample.ids.in.more.one.env.spec)>0){  
 
-spec.sample.ids.in.more.one.spec.df=
-  spec.sample.ids.in.more.one.spec%>%
-  group_by(country, sample_id) %>%
+env.spec.sample.ids.in.more.one.env.spec.df=
+  env.spec.sample.ids.in.more.one.env.spec%>%
+  group_by(country, event_code, sample_id) %>%
   dplyr::summarise(
-    specimen_codes = paste(specimen_code, collapse = ", ")) %>% 
+    environmental_specimen_codes = paste(environmental_specimen_code, collapse = ", ")) %>% 
   arrange(country)  
   
-  print("No, the data show that some sample ids have been used in more than one specimen. These are the sample ids used in more than one specimen")
+  print("No, the data show that some environmental sample ids have been used in more than one environmental specimen. These are the environmentl samples ids used in more than one environmentnal specimen")
   
-  kableExtra::kbl(spec.sample.ids.in.more.one.event.df, 
-                  caption = "Sample ids in more than one specimen")%>%
+  kableExtra::kbl(env.spec.sample.ids.in.more.one.env.spec.df, 
+                  caption = "Environmental sample ids in more than one environmental specimen")%>%
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
     kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
-    kableExtra::column_spec(4, width = "30em", border_right = T)
-}else{#}
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
-  print("Yes, all the sample ids are used in a single specimen")}
+  print("Yes, all the environamental sample ids are used in a single environmental specimen")}
 
 
 ```
 #
-## Are the environmental sample quantities provided informative?
+## ENVIRONMENTAL SAMPLE QUANTITIES PROVIDED
+#
+#
+#### Are the environmental sample quantities provided informative?
 #
 #
 ```{r env sample quantity, echo=FALSE, warning=FALSE, eval=F, cache=F}
@@ -5683,133 +5825,68 @@ dat$spec %>%
 
 ```
 #
+## SUMMARY ISSUES AT THE ENVIRONMENTAL SPECIMENS SAMPLES LEVEL
 #
-## SUMMARY ISSUES AT THE SPECIMEN SAMPLES LEVEL
-#
-"Yes" cells indicate problems for the item specified in the corresponding column name. Absence of a table below means that there are not issues at the sample level.
-```{r env summmary samples, echo=FALSE, warning=FALSE, eval=F, cache=F}
+"Yes" cells indicate problems for the item specified in the corresponding column name.
 
-specimen.codes.with.sample.ids.as.na.per.country.df=
+```{r issues environmental specimen samples level, echo=FALSE, warning=FALSE, eval=T, cache=F}
+
+
+env.sample.date.collected.earlier.than.event.date$Sampling_date_before_event="Yes"
+
+env.sample.date.collected.earlier.than.specimen.found$Sampling_date_before_specimen_found="Yes"
+
+env.spec.sample.ids.provided$No_sample_id_provided="Yes"
+
+env.spec.sample.ids.in.more.one.event$Sample_id_for_more_one_event="Yes"
+
+env.spec.sample.ids.in.more.one.env.spec$Sample_id_more_one_spec="Yes"
+
+
+# data showing the issues per event code per country
+env.specimen.sample.codes.with.issues=full_join(env.sample.date.collected.earlier.than.event.date, 
+                                  env.sample.date.collected.earlier.than.specimen.found,
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_id"))
+
+env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.issues,
+                                  env.spec.sample.ids.provided,
+                                  by=c("country", "event_code", "environmental_specimen_code"))
+
+env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.issues,
+                                  env.spec.sample.ids.in.more.one.event,
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_id"))
+
+env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.issues,
+                                  env.spec.sample.ids.in.more.one.env.spec, 
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_id"))
+
+
+env.specimen.sample.codes.with.issues=env.specimen.sample.codes.with.issues %>% arrange(country, event_code, environmental_specimen_code, sample_id)
+
+
+if(nrow(env.specimen.sample.codes.with.issues)>0){
   
-  do.call(rbind, specimen.codes.with.sample.ids.as.na.per.country)
-
-specimen.codes.with.sample.ids.as.na.per.country.df$Sample_ID_is_NA="Yes"
-
-
-# specimen.codes.with.wrong.sample.ids.per.country.df$Wrong_Sample_ID="Yes"
-
-sample.ids.in.more.than.one.event.per.country.df=
+      # removing columns were everything is NA
+env.specimen.sample.codes.with.issues=env.specimen.sample.codes.with.issues%>%dplyr::select_if(~ !all(is.na(.)))
   
-  do.call(rbind, sample.ids.in.more.than.one.event.per.country)
-
-sample.ids.in.more.than.one.event.per.country.df$Repeat_for_events="Yes"
-
-
-
-sample.ids.in.more.than.one.specimen.per.country.df=
   
-  do.call(rbind, sample.ids.in.more.than.one.specimen.per.country)
-
-sample.ids.in.more.than.one.specimen.per.country.df$Repeat_for_specimens="Yes"
-
-
-
-samples.sampled.before.event.per.country.df=
+if(any(is.na(env.specimen.sample.codes.with.issues))){env.specimen.sample.codes.with.issues[is.na(env.specimen.sample.codes.with.issues)]="No"}
   
-  do.call(rbind, samples.sampled.before.event.per.country)
-
-samples.sampled.before.event.per.country.df$Sampled_before_event="Yes"
-
-
-
-
-samples.sampled.before.found.per.country.df=
+print("Please scroll down the table below to see the complete dataset")  
   
-  do.call(rbind, samples.sampled.before.found.per.country)
-
-samples.sampled.before.found.per.country.df$Sampled_before_found="Yes"
-
-
-
-
-sample.ids.problem.quantities.per.country.df=
-  
-  do.call(rbind, sample.ids.problem.quantities.per.country)
-
-sample.ids.problem.quantities.per.country.df$Non_informative_quantity="Yes"
-
-
-
-# data showing the issues per Specimen code per country
-# samples.with.issues=full_join(
-#                               specimen.codes.with.sample.ids.as.na.per.country.df, 
-#                               specimen.codes.with.wrong.sample.ids.per.country.df, 
-#                               by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-samples.with.issues=full_join(#samples.with.issues,
-                              specimen.codes.with.sample.ids.as.na.per.country.df,
-                              sample.ids.in.more.than.one.event.per.country.df, 
-                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-samples.with.issues=full_join(samples.with.issues,
-                              sample.ids.in.more.than.one.specimen.per.country.df, 
-                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-samples.with.issues=full_join(samples.with.issues, 
-                              samples.sampled.before.event.per.country.df, 
-                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-samples.with.issues=full_join(samples.with.issues,
-                              samples.sampled.before.found.per.country.df,
-                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-samples.with.issues=full_join(samples.with.issues,
-                              sample.ids.problem.quantities.per.country.df%>%
-                                dplyr::select(-Quantity),
-                              by=c("Country", "Event_Code", "Specimen_code", "Sample_ID", "Sample_type", "Medium_Type", "Date_Sampled"))
-
-
-samples.with.issues=samples.with.issues%>%filter(Specimen_code!="")
-
-samples.with.issues=samples.with.issues[order(
-  samples.with.issues$Country,
-  samples.with.issues$Specimen_code),]
-
-
-rownames(samples.with.issues)=NULL
-
-# subset to specific country
-samples.with.issues=
-  samples.with.issues%>%filter(Country==params$country.of.interest)
-
-
-# subset to rows with at least one "Yes" 
-  
-samples.with.issues=
-samples.with.issues %>%
-   filter(rowSums(across(everything(), ~grepl("Yes", .x))) > 0)
-
-if(nrow(samples.with.issues)>0){
-  
-  # removing columns were everything is NA
-samples.with.issues=
-samples.with.issues%>%dplyr::select_if(~ !all(is.na(.)))
-  
-      if(any(is.na(samples.with.issues))){
-  samples.with.issues[is.na(samples.with.issues)]="No"}
-
-  
-print("Please scroll the table below down and left-right to see the complete dataset")  
-  
- kableExtra::kbl(samples.with.issues,
-                  caption = "Samples with problems per country") %>%
+ kableExtra::kbl(env.specimen.sample.codes.with.issues,
+                  caption = "Environmental specimens sample codes with problems") %>%
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
-    kableExtra::column_spec(2:ncol(samples.with.issues), border_right = T, width = "20em")%>%
+    kableExtra::column_spec(c(2:ncol(env.specimen.sample.codes.with.issues)), border_right = T, width = "8em")%>%
+
+    # kableExtra::collapse_rows(1)
     scroll_box(width = "100%", height = "600px")
 
 }else{
-  print("No samples with problems")} 
+  
+  print("No environemtnal specimen samples present problems")}  
+
 ```
 
 
