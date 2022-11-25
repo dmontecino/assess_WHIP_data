@@ -32,10 +32,10 @@ years=2019:2100
 
 # which sheets are present = what data was requested
 
-# dat=lapply(c(1:3), function(x)
-#   read_excel("/Users/DMontecino/Desktop/Data export_bevan_federko_2022-10-03.xlsx", sheet = x, col_types = "text"))
+dat=lapply(c(1:3), function(x)
+  read_excel("/Users/DMontecino/Desktop/Data export_bevan_federko_2022-10-21.xlsx", sheet = x, col_types = "text"))
 
-dat=list(params$obs, params$spec, params$env_spec)
+ # dat=list(params$obs, params$spec, params$env_spec)
 
 # assigna names to the list elements
 names(dat)<-c("obs","spec","env_spec")
@@ -136,9 +136,9 @@ events.no.standard.country.df=do.call(rbind, events.no.standard.country)
 
 events.no.standard.country.df=
   events.no.standard.country.df%>%
-  group_by(value) %>%
+  group_by(country) %>%
   dplyr::summarise(event_codes = paste(event_code, collapse = ", "))%>%
-  arrange(value)
+  arrange(country)
 
 # Show the results
       
@@ -564,7 +564,7 @@ if(nrow(observations.funding.source.project.tag.not.provided)>0){
 observations.funding.source.project.tag.not.provided.df=
   observations.funding.source.project.tag.not.provided%>%
   group_by(country, event_code) %>%
-  dplyr::summarise(observation_codes = paste(observation_code, collapse = ", "))
+  dplyr::summarise(observation_codes = paste(observation_code, collapse = ", "), .groups = "keep")
     
   
 # Show the results
@@ -702,59 +702,59 @@ observation.codes.with.observation.ids.as.na.df=
     print("Yes, all observation IDs are provided")}
 
 ```
-#
-## OBSERVATION ID UNIQUE FOR A SINGLE OBSERVATION
-#
-#### Do all the observations have a unique observation id? 
-#
-#
-```{r observation ids unique, echo=FALSE, warning=FALSE, cache=FALSE, eval=F, message = FALSE}
+<!-- # -->
+<!-- ## OBSERVATION ID UNIQUE FOR A SINGLE OBSERVATION -->
+<!-- # -->
+<!-- #### Do all the observations have a unique observation id?  -->
+<!-- # -->
+<!-- # -->
+<!-- ```{r observation ids unique, echo=FALSE, warning=FALSE, cache=FALSE, eval=F, message = FALSE} -->
 
-# each specimen code has a single animal id?
+<!-- # each specimen code has a single animal id? -->
 
-observation.codes.with.more.than.one.animal.ids=
-  dat$obs %>% 
-  filter(!is.na(observation_id))%>%
-  distinct(observation_code, observation_id) %>% 
-  count(observation_id) %>% 
-  filter(n>1)%>%
-  pull(observation_id)
+<!-- observation.codes.with.more.than.one.animal.ids= -->
+<!--   dat$obs %>%  -->
+<!--   filter(!is.na(observation_id))%>% -->
+<!--   distinct(observation_code, observation_id) %>%  -->
+<!--   count(observation_id) %>%  -->
+<!--   filter(n>1)%>% -->
+<!--   pull(observation_id) -->
 
-observation.codes.with.more.than.one.animal.ids=
-  dat$spec %>% 
-  filter(observation_id %in% observation.codes.with.more.than.one.animal.ids) %>% 
-  dplyr::select(country, event_code, observation_code, observation_id) %>% 
-  distinct() %>% 
-  arrange(observation_id)
+<!-- observation.codes.with.more.than.one.animal.ids= -->
+<!--   dat$spec %>%  -->
+<!--   filter(observation_id %in% observation.codes.with.more.than.one.animal.ids) %>%  -->
+<!--   dplyr::select(country, event_code, observation_code, observation_id) %>%  -->
+<!--   distinct() %>%  -->
+<!--   arrange(observation_id) -->
 
 
-  
-if(nrow(observation.codes.with.more.than.one.animal.ids)>0){  
 
-observation.codes.with.more.than.one.animal.ids.df=
-  observation.codes.with.more.than.one.animal.ids%>%
-  group_by(country, observation_id) %>%
-  dplyr::summarise(
-    event_codes = paste(event_code, collapse = ", "), 
-    specimen_codes = paste(observation_code, collapse = ", ")) %>% 
-  arrange(country)  
-    
-    
-  print("No, not all observation IDs are under a single observation code. These are observations ids for more than one observation")
+<!-- if(nrow(observation.codes.with.more.than.one.animal.ids)>0){   -->
 
-    
-    kableExtra::kbl(observation.codes.with.more.than.one.animal.ids.df, 
-                    caption = "Observation Ids in more than one observation code") %>%
-      kableExtra::kable_paper(full_width = F) %>%
-      kableExtra::column_spec(1, bold = T, border_right = T) %>%            
-      kableExtra::column_spec(2, bold = T, border_right = T) %>%
-      kableExtra::column_spec(3, width = "50em") %>% 
-      kableExtra::column_spec(4, width = "50em")%>%
-      scroll_box(width = "100%", height = "600px")}else{#}
+<!-- observation.codes.with.more.than.one.animal.ids.df= -->
+<!--   observation.codes.with.more.than.one.animal.ids%>% -->
+<!--   group_by(country, observation_id) %>% -->
+<!--   dplyr::summarise( -->
+<!--     event_codes = paste(event_code, collapse = ", "),  -->
+<!--     specimen_codes = paste(observation_code, collapse = ", ")) %>%  -->
+<!--   arrange(country)   -->
 
-        print("Yes, all observation ids are used for a single observation")}
 
-```
+<!--   print("No, not all observation IDs are under a single observation code. These are observations ids for more than one observation") -->
+
+
+<!--     kableExtra::kbl(observation.codes.with.more.than.one.animal.ids.df,  -->
+<!--                     caption = "Observation Ids in more than one observation code") %>% -->
+<!--       kableExtra::kable_paper(full_width = F) %>% -->
+<!--       kableExtra::column_spec(1, bold = T, border_right = T) %>%             -->
+<!--       kableExtra::column_spec(2, bold = T, border_right = T) %>% -->
+<!--       kableExtra::column_spec(3, width = "50em") %>%  -->
+<!--       kableExtra::column_spec(4, width = "50em")%>% -->
+<!--       scroll_box(width = "100%", height = "600px")}else{#} -->
+
+<!--         print("Yes, all observation ids are used for a single observation")} -->
+
+<!-- ``` -->
 #
 ## OBSERVATIONS WITH DATE OBSERVED
 #
@@ -874,43 +874,45 @@ observation.no.details.df=
   print("Yes, all observations have the details provided")}
   
 ```
+#
+## OBSERVATION OBSERVER
+#
+#
+#### Do all the observations have the observer provided?
+#
+#
+```{r observation observer, echo=FALSE, warning=FALSE, eval=T}
+
+observation.no.observer=dat$obs %>%
+  filter(is.na(observed_by)) %>%
+  select(country, event_code, observation_code) %>%
+  distinct()
 
 
-<!-- ## OBSERVATION FOUND BY -->
+if(nrow(observation.no.observer)>0){
 
-<!-- ```{r observation found by, echo=FALSE, warning=FALSE, eval=F} -->
-
-<!-- observation.no.details=dat$obs %>%  -->
-<!--   filter(is.na(observation_details)) %>%  -->
-<!--   select(country, event_code, observation_code) %>%  -->
-<!--   distinct() -->
-
-
-<!-- if(nrow(observation.no.details)>0){   -->
-
-<!-- observation.no.details.df= -->
-<!--   observation.no.details%>% -->
-<!--   group_by(country, event_code) %>% -->
-<!--   dplyr::summarise(observation_codes = paste(observation_code, collapse = ", ")) %>%  -->
-<!--   arrange(country)   -->
+observation.no.observer.df=
+  observation.no.observer%>%
+  group_by(country, event_code) %>%
+  dplyr::summarise(observation_codes = paste(observation_code, collapse = ", ")) %>%
+  arrange(country)
 
 
-<!--   print("No, not all observations have details. These are the observations -->
-<!-- that do not have details provided") -->
+  print("No, not all observations have the observer These are the observations that do not have the observer provided")
 
-<!--   kableExtra::kbl(observation.no.details.df,  -->
-<!--                   caption = "Observations without details provided")%>% -->
-<!--     kableExtra::kable_paper(full_width = F) %>% -->
-<!--     kableExtra::column_spec(1, bold = T, border_right = T) %>% -->
-<!--     kableExtra::column_spec(2, bold = T, border_right = T) %>% -->
-<!--     kableExtra::column_spec(3, width = "30em", border_right = T) -->
+  kableExtra::kbl(observation.no.details.df,
+                  caption = "Observations without details provided")%>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T)
 
-<!--   }else{#} -->
+  }else{#}
 
 
-<!--   print("Yes, all observations have the details provided")} -->
+  print("Yes, all observations have the observer provided")}
 
-<!-- ``` -->
+```
 #
 ## OBSERVATION CAPTIVITY CATEGORY
 #
@@ -972,7 +974,7 @@ observation.no.clinical.signs.df=
   dplyr::summarise(observation_codes = paste(observation_code, collapse = ", ")) %>% 
   arrange(country)  
   
-  print("No, not all observations have the captivity category. These are the observations that do not have clinical signs provided")
+  print("No, not all observations have the clinical signs. These are the observations that do not have clinical signs provided")
   
   kableExtra::kbl(observation.no.clinical.signs.df, 
                   caption = "Observations without clinical signs provided")%>%
@@ -1254,10 +1256,10 @@ if(nrow(observation.tentative.diagnosis.date.not.provided)>0){
   dplyr::summarise(observation_codes = paste(observation_code, collapse = ", ")) %>% 
   arrange(country)  
 
-  print("No. Not all observations have the tentative diagnosis date provided or they were observed since the event date")
+  print("No. Not all observations have the tentative diagnosis date provided")
   
   kableExtra::kbl(observation.tentative.diagnosis.date.not.provided.df, 
-                      caption = "Observations without tentative diagnosis date or earlier than the event date") %>%
+                      caption = "Observations without tentative diagnosis date") %>%
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
@@ -1386,6 +1388,10 @@ obs.codes.date.found.earlier.date$Observed_before_event_date="Yes"
 
 observation.no.details$No_details="Yes"
 
+#data frame observation codes without observer
+
+observation.no.observer$No_observer="Yes"
+
 #data frame observation codes without captivity category
 
 observation.no.captivity.category$No_captivity_cat="Yes"
@@ -1451,6 +1457,10 @@ observation.codes.with.issues=full_join(observation.codes.with.issues,
 
 observation.codes.with.issues=full_join(observation.codes.with.issues,
                                   observation.no.details, 
+                                  by=c("country", "event_code", "observation_code"))
+
+observation.codes.with.issues=full_join(observation.codes.with.issues,
+                                  observation.no.observer, 
                                   by=c("country", "event_code", "observation_code"))
 
 observation.codes.with.issues=full_join(observation.codes.with.issues,
@@ -2059,7 +2069,7 @@ spec.codes.date.found.earlier.date.df=
 
 <!-- ``` -->
 #
-## SPECIMENS SPECIES PROVIDED
+## SPECIMEN SPECIES PROVIDED
 #
 #
 #### Do all specimens have a species assigned?
@@ -3428,24 +3438,138 @@ list.of.potential.observations.df=
     scroll_box(width = "100%", height = "600px")}else{#}
 
 
-  print("None of the specimens seem to be an observations")}
+  print("None of the specimens seem to be an observation")}
 
 ```
-<!-- # SPECIMEN TESTS -->
-<!-- Given the current status of the exported data from WHIP, I can only provide you the Specimen code that has samples with issues at the test level. You should search the Specimen code and go to the "Diseases" tab. -->
-<!-- # -->
-<!-- # -->
-<!-- ## Were the tests sent for testing since the event started? -->
-<!-- # -->
-<!-- Only tests available for ASF for now. -->
+#
+# SPECIMEN TESTS
+#
+#
+## SAMPLES NOT USED IN TESTS (YET?) BUT MORE THAN ONCE PER SPECIMEN
+#
+#### Are all samples not used in tests (yet) unique per specimen?
+#
+#
+```{r repeated samples without tests dates, echo=FALSE, warning=FALSE, eval=F}
 
-<!-- ```{r test dates, echo=FALSE, warning=FALSE, eval=F} -->
+#how can sample id be repeated within the same specimen
 
-<!-- # list wht the filtering -->
-<!-- test.sent.before.start.date.per.country= -->
-<!-- lapply(data.per.country.spec, function(x)  -->
-<!--   x%>% -->
-<!--   filter(!is.na(african_swine_fever_test_test_result) &  -->
+#at least two rows, none of them with disease test: always problematic because it means the sample id is repeated for different tissue and any of them has been used for a test
+
+samples.no.test.but.repeated= dat$spec %>% 
+  select(country, event_code, specimen_code, sample_id, disease) %>%
+  filter(is.na(disease) & !is.na(sample_id)) %>% 
+  count(country, event_code, specimen_code, sample_id) %>%
+  filter(n>1) %>% 
+  select(country, event_code, specimen_code, sample_id)
+
+if(nrow(samples.no.test.but.repeated)>0){  
+
+samples.no.test.but.repeated.df=
+  samples.no.test.but.repeated %>% 
+   group_by(country, event_code, specimen_code) %>%
+  dplyr::summarise(sample_ids = paste(sample_id, collapse = ", "))%>% 
+  arrange(country)  
+
+  
+  print("The data has sample ids that are repeated for a specific specimen but that have not been used for any tests. These sample ids are used in more than one sample and should have a '.number' after the id follwoing the guidelines here https://docs.google.com/document/d/1qdrUJKN234as7Xd5E6_7QewT6l5hQ940/edit. These are the sample ids not used for any test so far but repeated for a specimen." )
+  
+  kableExtra::kbl(samples.no.test.but.repeated.df, 
+                  caption = "Specimen codes with repeated sample ids that have not been used in any test")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("None of the specimens have repeated samples that have not been used for any test")}
+```
+
+Note: if two or more samples get the same id and they are used for the same test conducted on the same date, then there is no way to find that they are repeated except if the info in other fields is not repeated.
+
+
+```{r repeated samples with and without tests dates, echo=FALSE, warning=FALSE, eval=F}
+
+#at least two rows, one of them with disease test and the other not:  always problematic because the row without disease test should not be present: sample id is repeated for a sample not used in a test and for a sample that was used in at least one test.
+
+temp=
+dat$spec %>% 
+  select(country, event_code, specimen_code, sample_id, disease) %>%
+  filter(!is.na(sample_id)) %>% 
+  nest(data=c(disease)) %>%
+  filter(map_int(data, nrow)>1)   # filtering out groups whose data (disease) has a single row.
+indexing.samples.diseases.and.not.diseases=
+map_lgl(temp$data, function(x) any(is.na(x$disease)) & any(!is.na(x$disease)))
+
+samples.with.test.and.wo.test=
+  temp %>% 
+  filter(indexing.samples.diseases.and.not.diseases) %>% 
+  select(country, event_code, specimen_code, sample_id, data) 
+
+if(nrow(samples.with.test.and.wo.test)>0){  
+
+samples.with.test.and.wo.test.df=
+  samples.with.test.and.wo.test %>% 
+  group_by(country, event_code, specimen_code) %>%
+  dplyr::summarise(
+    sample_ids = paste(sample_id, collapse = ", "))%>% 
+  arrange(country)  
+
+  print("The data has specimens with sample ids that contain at least two tests and one of them does not have a specified disease. This means that the two rows are from independent samples and that the sample id is repeated for more than one sample." )
+  
+  kableExtra::kbl(samples.with.test.and.wo.test.df, 
+                  caption = "Sample ids are repeated for at least two samples, some of them with a test and some without a test")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("None of the specimens have repeated samples ids that have and have not been used for a test")}
+
+
+```
+
+
+
+#at least two rows, both of them with disease test: 
+  #same sample used to test for different diseases: this can be correct. If it is the same sample, the rows should be identical for samples-related fields, otherwise sample id is repeated.
+  #same sample used to test for the same disease a least twice (TRICKY): this can be correct but I can point suspects, specially if the test level data is the same (suspect of a test witht he same source that could be actually from different source)
+  
+  #same sample used to test for different disease (sample id - disease combinations should be different) protocol does not matter
+  # some could be the same sample (all cells identical up to test disease) this is correct
+  # some could be actually two different samples with repeated code for sample (). Potentially the sample level fields would be different
+  
+
+
+#are samples unique? if they dont have a test at all, the sample id should not be repeated. If it does, is because the sample id is not unique for a specific sample
+dat$spec %>% 
+  # select(c("event_code", "specimen_code", "sample_id", "sample_source", "disease")) %>%
+  filter(is.na(disease)) %>% 
+  # group_by(event_code, specimen_code, sample_id)
+  count(event_code, specimen_code, sample_id) %>% arrange(desc(n))
+
+
+# single test and no results (was the test actually conducted?)
+
+
+# two tests, same test, same source, same date, how to know it is a repeated test or it was wrongly entered twice? Provide suspicious tests?
+
+
+
+
+```
+
+
+# list wht the filtering
+test.sent.before.start.date.per.country=
+lapply(data.per.country.spec, function(x)
+  x%>%
+  filter(!is.na(african_swine_fever_test_test_result) &
 <!--          !is.na(Start_date))%>% -->
 <!--   filter(!(as.Date(Start_date) <=    -->
 <!--            as.Date(african_swine_fever_test_sent_for_testing)))%>% # start date is not before that testing -->
@@ -5167,7 +5291,7 @@ env.spec.species.not.reported=
 
 dat$env_spec%>%
     filter(is.na(environmental_specimen_common_name)) %>% 
-    filter(environmental_specimen_sample_type%in%c("WA - Water", "SD - Sediment", "SO - Soil")) %>% 
+    filter(environmental_specimen_type%in%c("WA - Water", "SD - Sediment", "SO - Soil")) %>% 
     dplyr::select(country, event_code, environmental_specimen_code) %>%
     distinct()
 
@@ -5246,7 +5370,7 @@ env.spec.found.by.not.reported.df=
 
 env.spec.type.provided=
 dat$env_spec %>% 
-  filter(is.na(environmental_specimen_sample_type) & meta_has_environmental_specimen_sample_inventory=="Yes") %>% 
+  filter(is.na(environmental_specimen_type) & meta_has_environmental_specimen_sample_inventory=="Yes") %>% 
   dplyr::select(country, event_code, environmental_specimen_code)%>%
   distinct()
 
@@ -5402,7 +5526,7 @@ env.sample.date.collected.earlier.than.event.date=
   dat$env_spec %>% 
     filter(!is.na(date_sampled) & !is.na(event_date))%>%
     filter(!(as.Date(date_sampled) >= as.Date(event_date)))%>%
-    dplyr::select(country, event_code, environmental_specimen_code, sample_id)%>%
+    dplyr::select(country, event_code, environmental_specimen_code, environmental_specimen_sample_id)%>%
     distinct()
 
 
@@ -5411,7 +5535,7 @@ if(nrow(env.sample.date.collected.earlier.than.event.date)>0){
 env.sample.date.collected.earlier.than.event.date.df=
   env.sample.date.collected.earlier.than.event.date%>%
   group_by(country, event_code, environmental_specimen_code) %>%
-  dplyr::summarise(sample_ids = paste(sample_id, collapse = ", ")) %>% 
+  dplyr::summarise(environmental_specimen_sample_ids = paste(environmental_specimen_sample_id, collapse = ", ")) %>% 
   arrange(country)  
   
   print("No, the data show that some environmental samples were collected before the event date. These are the environmental samples that were collected before the event date")
@@ -5442,7 +5566,7 @@ env.sample.date.collected.earlier.than.specimen.found=
   dat$env_spec %>% 
     filter(!is.na(date_sampled) & !is.na(environmental_specimen_date_found))%>%
     filter(!(as.Date(date_sampled) >= as.Date(environmental_specimen_date_found)))%>%
-    dplyr::select(country, event_code, environmental_specimen_code, sample_id)%>%
+    dplyr::select(country, event_code, environmental_specimen_code, environmental_specimen_sample_id)%>%
     distinct()
 
 
@@ -5451,7 +5575,7 @@ if(nrow(env.sample.date.collected.earlier.than.specimen.found)>0){
 env.sample.date.collected.earlier.than.specimen.found.df=
   env.sample.date.collected.earlier.than.specimen.found%>%
   group_by(country, event_code, environmental_specimen_code) %>%
-  dplyr::summarise(sample_ids = paste(sample_id, collapse = ", ")) %>% 
+  dplyr::summarise(environmental_specimen_sample_ids = paste(environmental_specimen_sample_id, collapse = ", ")) %>% 
   arrange(country)  
   
   print("No, the data show that some environmental samples were collected before the environmental specimen was found. These are the environmental samples that were collected before the environmental specimen was found.")
@@ -5482,7 +5606,7 @@ env.sample.date.collected.earlier.than.specimen.found.df=
 
 env.spec.sample.ids.provided=
 dat$env_spec %>% 
-  filter(is.na(sample_id) & meta_has_environmental_specimen_sample_inventory=="Yes") %>% 
+  filter(is.na(environmental_specimen_sample_id) & meta_has_environmental_specimen_sample_inventory=="Yes") %>% 
   dplyr::select(country, event_code, environmental_specimen_code)%>%
   distinct()
 
@@ -5706,24 +5830,24 @@ Please scroll the table below down and left-right to see the complete dataset if
 
 env.spec.sample.ids.in.more.one.event=
   dat$env_spec %>% 
-  filter(!is.na(sample_id))%>%
-  distinct(event_code, sample_id) %>% 
-  count(sample_id) %>% 
+  filter(!is.na(environmental_specimen_sample_id))%>%
+  distinct(event_code, environmental_specimen_sample_id) %>% 
+  count(environmental_specimen_sample_id) %>% 
   filter(n>1)%>%
-  pull(sample_id)
+  pull(environmental_specimen_sample_id)
 
 env.spec.sample.ids.in.more.one.event=
   dat$env_spec %>% 
-  filter(sample_id %in% env.spec.sample.ids.in.more.one.event) %>% 
-  dplyr::select(country, event_code, environmental_specimen_code, sample_id) %>% 
+  filter(environmental_specimen_sample_id %in% env.spec.sample.ids.in.more.one.event) %>% 
+  dplyr::select(country, event_code, environmental_specimen_code, environmental_specimen_sample_id) %>% 
   distinct() %>% 
-  arrange(sample_id)
+  arrange(environmental_specimen_sample_id)
 
 if(nrow(env.spec.sample.ids.in.more.one.event)>0){  
 
 env.spec.sample.ids.in.more.one.event.df=
   env.spec.sample.ids.in.more.one.event%>%
-  group_by(country, sample_id) %>%
+  group_by(country, environmental_specimen_sample_id) %>%
   dplyr::summarise(
     event_codes = paste(event_code, collapse = ", "), 
     environmental_specimen_codes = paste(environmental_specimen_code, collapse = ", ")) %>% 
@@ -5756,24 +5880,24 @@ env.spec.sample.ids.in.more.one.event.df=
 
 env.spec.sample.ids.in.more.one.env.spec=
   dat$env_spec %>% 
-  filter(!is.na(sample_id))%>%
-  distinct(event_code, environmental_specimen_code, sample_id) %>% 
-  count(sample_id) %>% 
+  filter(!is.na(environmental_specimen_sample_id))%>%
+  distinct(event_code, environmental_specimen_code, environmental_specimen_sample_id) %>% 
+  count(environmental_specimen_sample_id) %>% 
   filter(n>1)%>%
-  pull(sample_id)
+  pull(environmental_specimen_sample_id)
 
 env.spec.sample.ids.in.more.one.env.spec=
   dat$env_spec %>% 
-  filter(sample_id %in% env.spec.sample.ids.in.more.one.env.spec) %>% 
-  dplyr::select(country, event_code, environmental_specimen_code, sample_id) %>% 
+  filter(environmental_specimen_sample_id %in% env.spec.sample.ids.in.more.one.env.spec) %>% 
+  dplyr::select(country, event_code, environmental_specimen_code, environmental_specimen_sample_id) %>% 
   distinct() %>% 
-  arrange(sample_id)
+  arrange(environmental_specimen_sample_id)
 
 if(nrow(env.spec.sample.ids.in.more.one.env.spec)>0){  
 
 env.spec.sample.ids.in.more.one.env.spec.df=
   env.spec.sample.ids.in.more.one.env.spec%>%
-  group_by(country, event_code, sample_id) %>%
+  group_by(country, event_code, environmental_specimen_sample_id) %>%
   dplyr::summarise(
     environmental_specimen_codes = paste(environmental_specimen_code, collapse = ", ")) %>% 
   arrange(country)  
@@ -5846,7 +5970,7 @@ env.spec.sample.ids.in.more.one.env.spec$Sample_id_more_one_spec="Yes"
 # data showing the issues per event code per country
 env.specimen.sample.codes.with.issues=full_join(env.sample.date.collected.earlier.than.event.date, 
                                   env.sample.date.collected.earlier.than.specimen.found,
-                                  by=c("country", "event_code", "environmental_specimen_code", "sample_id"))
+                                  by=c("country", "event_code", "environmental_specimen_code", "environmental_specimen_sample_id"))
 
 env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.issues,
                                   env.spec.sample.ids.provided,
@@ -5854,14 +5978,14 @@ env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.i
 
 env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.issues,
                                   env.spec.sample.ids.in.more.one.event,
-                                  by=c("country", "event_code", "environmental_specimen_code", "sample_id"))
+                                  by=c("country", "event_code", "environmental_specimen_code", "environmental_specimen_sample_id"))
 
 env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.issues,
                                   env.spec.sample.ids.in.more.one.env.spec, 
-                                  by=c("country", "event_code", "environmental_specimen_code", "sample_id"))
+                                  by=c("country", "event_code", "environmental_specimen_code", "environmental_specimen_sample_id"))
 
 
-env.specimen.sample.codes.with.issues=env.specimen.sample.codes.with.issues %>% arrange(country, event_code, environmental_specimen_code, sample_id)
+env.specimen.sample.codes.with.issues=env.specimen.sample.codes.with.issues %>% arrange(country, event_code, environmental_specimen_code, environmental_specimen_sample_id)
 
 
 if(nrow(env.specimen.sample.codes.with.issues)>0){
