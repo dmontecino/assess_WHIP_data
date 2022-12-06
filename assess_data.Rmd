@@ -3669,7 +3669,7 @@ test.sent.testing.earlier.than.sampling.date.df=
   dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
   arrange(country)  
   
-  print("No, the data show that some tests were sent for testing before the source sample was collectde date. These are the tests that were sent for testing before the source sample was collected")
+  print("No, the data show that some tests were sent for testing before the sample source was collected. These are the tests that were sent for testing before the sample source was collected")
   
   kableExtra::kbl(test.sent.testing.earlier.than.sampling.date.df, 
                   caption = "Tests sent for testing before the sample collection")%>%
@@ -3685,20 +3685,169 @@ test.sent.testing.earlier.than.sampling.date.df=
   print("Yes, all tests were sent for testing since the sample collection")}
 
 ```
+#
+#
+## TESTS RESULTS RECEIVED SINCE THE EVENT DATE
+#
+#### Were the tests results received since the event date?
+#
+```{r tests results since event date, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
 
+test.results.received.earlier.than.event.date=
+  dat$spec %>% 
+    filter(!is.na(disease_inventory_results_received) & !is.na(event_date))%>%
+    filter(!(as.Date(disease_inventory_results_received) >= as.Date(event_date)))%>%
+    dplyr::select(country, event_code, specimen_code, disease, sample_source)%>%
+    distinct()
 
 
+if(nrow(test.results.received.earlier.than.event.date)>0){  
 
-<!-- ## Were the tests results received since the event date? -->
+test.results.received.earlier.than.event.date.df=
+  test.results.received.earlier.than.event.date%>%
+  group_by(country, event_code, specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests results were received before the event date. These are the tests results that were received before the event date")
+  
+  kableExtra::kbl(test.results.received.earlier.than.event.date.df, 
+                  caption = "Tests results received before the event date")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
-<!-- ## Were the tests results received since the source specimens was found? -->
+  print("Yes, all tests results were received since the event date")}
 
-<!-- ## Were the tests results received since the samples were collected? -->
+```
+#
+#
+## TESTS RESULTS RECEIVED SINCE THE TESTED SPECIMEN WAS FOUND
+#
+#### Were the tests results received since the source specimens was found?
+#
+```{r tests results since specimen found, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
 
-<!-- ## Were the tests results received since the test was sent for testing? -->
+test.results.earlier.than.specimen.found=
+  dat$spec %>% 
+    filter(!is.na(disease_inventory_results_received) & !is.na(date_found))%>%
+    filter(!(as.Date(disease_inventory_results_received) >= as.Date(date_found)))%>%
+    dplyr::select(country, event_code, specimen_code, disease, sample_source)%>%
+    distinct()
+
+if(nrow(test.results.earlier.than.specimen.found)>0){  
+
+test.results.earlier.than.specimen.found.df=
+  test.results.earlier.than.specimen.found%>%
+  group_by(country, event_code, specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests results were received before the tested specimen was found. These are the tests results that were received before the tested specimen was found")
+  
+  kableExtra::kbl(test.results.earlier.than.specimen.found.df, 
+                  caption = "Tests results received before the tested specimen was found")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests results were received since the event date")}
+
+```
+#
+#
+## TESTS RESULTS RECEIVED SINCE THE SAMPLE SOURCE WAS COLLECTED
+#
+#### Were the tests results received since the sample source was collected?
+#
+```{r tests results since sample collected, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+
+test.results.earlier.than.sampling.date=
+  dat$spec %>% 
+    filter(!is.na(disease_inventory_results_received) & !is.na(date_sampled))%>%
+    filter(!(as.Date(disease_inventory_results_received) >= as.Date(date_sampled)))%>%
+    dplyr::select(country, event_code, specimen_code, disease, sample_source)%>%
+    distinct()
+
+
+if(nrow(test.results.earlier.than.sampling.date)>0){  
+
+test.results.earlier.than.sampling.date.df=
+  test.results.earlier.than.sampling.date%>%
+  group_by(country, event_code, specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests results were received before the sample source was collected. These are the tests results that were received before the sample source was collected")
+  
+  kableExtra::kbl(test.results.earlier.than.sampling.date.df, 
+                  caption = "Tests results received before the sample collection")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests results were received since the sample collection")}
+
+```
+#
+#
+## TESTS RESULTS RECEIVED SINCE THE TESTS WERE SENT
+#
+#### Were the tests results received since the test was sent?
+#
+```{r tests results since test sent, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+
+test.results.earlier.than.test.sent=
+  dat$spec %>% 
+    filter(!is.na(disease_inventory_results_received) & !is.na(sent_for_testing))%>%
+    filter(!(as.Date(disease_inventory_results_received) >= as.Date(sent_for_testing)))%>%
+    dplyr::select(country, event_code, specimen_code, disease, sample_source)%>%
+    distinct()
+
+
+if(nrow(test.results.earlier.than.test.sent)>0){  
+
+test.results.earlier.than.test.sent.df=
+  test.results.earlier.than.test.sent%>%
+  group_by(country, event_code, specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests results were received before the test was sent for testing. These are the tests results that were received before the test was sent")
+  
+  kableExtra::kbl(test.results.earlier.than.test.sent.df, 
+                  caption = "Tests results received before tests were sent")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests results were received since the tests were sent")}
+
+```
 #
 #
 ## TEST WITHOUT THE SOURCE
