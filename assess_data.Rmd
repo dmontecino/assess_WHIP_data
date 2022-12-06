@@ -3298,6 +3298,44 @@ spec.sample.ids.in.more.one.spec.df=
 ## SAMPLE QUANTITIES PROVIDED
 #
 #
+#### Are the sample quantities provided?
+#
+#
+```{r sample quantity provided, echo=FALSE, warning=FALSE, eval=T, cache=F}
+
+sample.quantity.provided=
+dat$spec %>% 
+  filter(is.na(quantity) & !is.na(sample_id)) %>% 
+  dplyr::select(country, event_code, specimen_code, sample_id, quantity) %>% 
+  distinct()
+
+if(nrow(sample.quantity.provided)>0){  
+
+sample.quantity.provided.df=
+  sample.quantity.provided %>% 
+   group_by(country, event_code, specimen_code) %>%
+  dplyr::summarise(sample_ids = paste(sample_id, collapse = ", "))%>% 
+  arrange(country)  
+
+  
+  print("No. The data has samples without their quantities.These are the samples whose quantity is not provided." )
+  
+  kableExtra::kbl(sample.quantity.provided.df, 
+                  caption = "Sample IDs without the quantity provided")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes. All sample quantities are provided")}
+```
+#
+## SAMPLE QUANTITIES PROVIDED INFORMATIVE
+#
+#
 #### Are the sample quantities provided informative?
 #
 #
@@ -3307,22 +3345,34 @@ spec.sample.ids.in.more.one.spec.df=
 # temp=
 # dat$spec %>% filter(meta_has_sample_inventory=="Yes") %>% 
 #   distinct(quantity) %>% pull()
-
+sample.quantity.not.informative=
 dat$spec %>% 
-  filter(meta_has_sample_inventory=="Yes" & quantity %in% c("gram", "One oral","1") | is.na(quantity)) %>% 
-  dplyr::select(country, specimen_code, sample_id) %>% 
+  filter(!is.na(quantity) & quantity %in% c("gram", "One oral", "1", "Whole blood in", "plain", "Skin in plain", "40PZ in 1.8ml of alcohol", "1FP")) %>% 
+  dplyr::select(country, event_code, specimen_code, sample_id, quantity) %>% 
   distinct()
 
+if(nrow(sample.quantity.not.informative)>0){  
 
-dat$spec %>% 
-  filter(meta_has_sample_inventory=="Yes" & is.na(quantity)) %>% 
-  dplyr::select(country, specimen_code, sample_id, quantity)
+sample.quantity.not.informative.df=
+  sample.quantity.not.informative %>% 
+   group_by(country, event_code, specimen_code) %>%
+  dplyr::summarise(sample_ids = paste(sample_id, collapse = ", "))%>% 
+  arrange(country)  
+
+  
+  print("No. The data has sample quantities that are not informative.These are the samples whose quantity is not informative." )
+  
+  kableExtra::kbl(sample.quantity.not.informative.df, 
+                  caption = "Sample IDs that do not have an informative quantity")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
-"gram"  
-  "One oral" 
-  "1" 
-
+  print("Yes. All the sample quantities provided are informative.")}
 ```
 #
 ## SAMPLES NOT USED IN TESTS (YET?) BUT MORE THAN ONCE PER SPECIMEN
@@ -3376,7 +3426,7 @@ Note: if two or more samples get the same id and they are used for the same test
 #
 #
 #### Are sample IDs associated and not associated with tests?
-there should be a single data point only for these sample id associated with a test and not more. The row with the sample id wo test should not exist 
+There should be a single data point only for these sample id associated with a test and not more. The row with the sample id wo test should not exist 
 #
 ```{r repeated samples with and without tests, echo=FALSE, warning=FALSE, eval=T}
 
@@ -3441,11 +3491,13 @@ spec.sample.ids.in.more.one.event$Sample_id_for_more_one_event="Yes"
 
 spec.sample.ids.in.more.one.spec$Sample_id_more_one_spec="Yes"
 
-# spec.sample.ids.in.more.one.spec$Sample_quantity_missing="Yes"
+sample.quantity.provided$Sample_quantity_missing="Yes"
 
-# samples.no.test.but.repeated$Repeated_sample_id="Yes"
+sample.quantity.not.informative$Sample_quantity_not_informative="Yes"
 
-# samples.with.test.and.wo.test$Repeated_sample_is_2="Yes"
+samples.no.test.but.repeated$Repeated_sample="Yes"
+
+samples.with.test.and.wo.test$Repeated_sample_2="Yes"
 
 # data showing the issues per event code per country
 specimen.sample.codes.with.issues=full_join(sample.date.collected.earlier.than.event.date, 
@@ -3468,6 +3520,21 @@ specimen.sample.codes.with.issues=full_join(specimen.sample.codes.with.issues,
                                   spec.sample.ids.in.more.one.spec, 
                                   by=c("country", "event_code", "specimen_code", "sample_id"))
 
+specimen.sample.codes.with.issues=full_join(specimen.sample.codes.with.issues,
+                                  sample.quantity.provided %>% select(-quantity), 
+                                  by=c("country", "event_code", "specimen_code", "sample_id"))
+
+specimen.sample.codes.with.issues=full_join(specimen.sample.codes.with.issues,
+                                  sample.quantity.not.informative %>% select(-quantity), 
+                                  by=c("country", "event_code", "specimen_code", "sample_id"))
+
+specimen.sample.codes.with.issues=full_join(specimen.sample.codes.with.issues,
+                                  samples.no.test.but.repeated, 
+                                  by=c("country", "event_code", "specimen_code", "sample_id"))
+
+specimen.sample.codes.with.issues=full_join(specimen.sample.codes.with.issues,
+                                  samples.with.test.and.wo.test, 
+                                  by=c("country", "event_code", "specimen_code", "sample_id"))
 
 specimen.sample.codes.with.issues=specimen.sample.codes.with.issues %>% arrange(country, event_code, specimen_code, sample_id)
 
@@ -3850,7 +3917,7 @@ test.results.earlier.than.test.sent.df=
 ```
 #
 #
-## TEST WITHOUT THE SOURCE
+## TESTS WITHOUT THE SOURCE
 #
 #### Do all tests have the source provided?
 #
@@ -3888,7 +3955,7 @@ test.source.not.provided.df=
 ```
 #
 #
-## TEST WITHOUT METHOD
+## TESTS WITHOUT METHOD
 #
 #### Do all tests have the method provided? 
 #
@@ -3926,7 +3993,7 @@ test.method.not.provided.df=
 ```
 #
 #
-## TEST WITH RESULTS BUT WITHOUT THE DATE WHEN RESULTS WERE RECEIVED
+## TESTS WITH RESULTS BUT WITHOUT THE DATE WHEN RESULTS WERE RECEIVED
 #
 #### Do all tests that have a "non-pending" result have the date when the results were received? 
 #
@@ -3965,10 +4032,9 @@ test.result.received.date.not.provided.df=
 
   print("Yes, all tests with results have the date when the results arrived")}
 ```
-
 #
 #
-## TEST WITHOUT RESULTS
+## TESTS WITHOUT RESULTS
 #
 #### Do all tests have their result? Here we scan for tests sent without results at all. Test with "Pending" results are provided in the next section.
 #
@@ -4006,7 +4072,7 @@ test.results.not.provided.df=
 ```
 #
 #
-## TEST WITH RESULTS RECEIVED FROM THE LAB BUT PENDING OR NO RESULT IN THE DATA
+## TESTS WITH RESULTS RECEIVED FROM THE LAB BUT PENDING OR NO RESULT IN THE DATA
 #
 #### Do tests have pending or no results? Here we scan for tests sent to the lab, with "Pending" results but with date of results received. If the results were received then the test result should not be "pending" or NA status.
 #
@@ -4056,6 +4122,15 @@ test.results.pending.df=
 
 
 <!-- ## SUMMARY ISSUES AT THE SPECIMEN TEST LEVEL -->
+
+
+
+
+
+
+
+
+
 
 #
 # ENVIRONMENTAL SPECIMENS 
