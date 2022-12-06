@@ -3993,6 +3993,49 @@ test.method.not.provided.df=
 ```
 #
 #
+## TESTS WITHOUT THE DATE WHEN THEY WERE SENT FOR TESTING
+#
+#### Do all tests that a result, result received date, method, or sample source have the date when the test was sent? 
+#
+```{r tests without , echo=FALSE, warning=FALSE, eval=T, message=FALSE}
+
+test.sent.for.testing.date.not.provided=
+  dat$spec %>% 
+    filter(is.na(sent_for_testing)) %>% 
+    filter(!is.na(disease_inventory_test_result) |
+           !is.na(disease) |
+           !is.na(disease_inventory_results_received) |
+           !is.na(disease_inventory_test_method) |
+           !is.na(sample_source))%>%
+    dplyr::select(country, event_code, specimen_code, disease,  sample_source)%>%
+    distinct()
+
+
+if(nrow(test.sent.for.testing.date.not.provided)>0){  
+
+test.sent.for.testing.date.not.provided.df=
+  test.sent.for.testing.date.not.provided%>%
+  group_by(country, event_code, specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests lack the date when these tests were sent")
+  
+  kableExtra::kbl(test.sent.for.testing.date.not.provided.df, 
+                  caption = "Tests with unknown date when they were sent")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests have the date when they were sent")}
+```
+#
+#
 ## TESTS WITH RESULTS BUT WITHOUT THE DATE WHEN RESULTS WERE RECEIVED
 #
 #### Do all tests that have a "non-pending" result have the date when the results were received? 
@@ -4121,7 +4164,122 @@ test.results.pending.df=
 
 
 
-<!-- ## SUMMARY ISSUES AT THE SPECIMEN TEST LEVEL -->
+#
+## SUMMARY ISSUES AT THE SPECIMEN TESTS LEVEL
+#
+"Yes" cells indicate problems for the item specified in the corresponding column name.
+
+```{r issues specimen test level, echo=FALSE, warning=FALSE, eval=T, cache=F}
+
+
+test.sent.testing.earlier.than.event.date$Test_sent_before_event="Yes"
+
+test.sent.testing.earlier.than.specimen.found$Test_sent_before_specimen_found="Yes"
+
+test.sent.testing.earlier.than.sampling.date$Test_sent_before_sampling="Yes"
+
+test.results.received.earlier.than.event.date$Test_received_before_event="Yes"
+
+test.results.earlier.than.specimen.found$Test_received_before_specimen_found="Yes"
+
+test.results.earlier.than.sampling.date$Test_received_before_sampling="Yes"
+
+test.results.earlier.than.test.sent$Test_received_before_test_sent="Yes"
+
+test.source.not.provided$Test_source_not_provided="Yes"
+
+test.method.not.provided$Test_method_not_provided="Yes"
+
+test.sent.for.testing.date.not.provided$Test_sent_date_not_provided="Yes"
+
+test.result.received.date.not.provided$Test_result_received_date_not_provided="Yes"
+
+test.results.not.provided$Test_result_not_provided="Yes"
+
+test.results.pending$Test_result_pending="Yes"
+
+
+# data showing the issues per event code per country
+specimen.tests.with.issues=full_join(test.sent.testing.earlier.than.event.date, 
+                                  test.sent.testing.earlier.than.specimen.found,
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+specimen.tests.with.issues=full_join(specimen.tests.with.issues,
+                                  test.sent.testing.earlier.than.sampling.date,
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+specimen.tests.with.issues=full_join(specimen.tests.with.issues,
+                                  test.results.received.earlier.than.event.date,
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+specimen.tests.with.issues=full_join(specimen.tests.with.issues,
+                                  test.results.earlier.than.specimen.found, 
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+specimen.tests.with.issues=full_join(specimen.tests.with.issues,
+                                  test.results.earlier.than.sampling.date, 
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+specimen.tests.with.issues=full_join(specimen.tests.with.issues,
+                                  test.results.earlier.than.test.sent, 
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+
+specimen.tests.with.issues=full_join(specimen.tests.with.issues,
+                                  test.source.not.provided, 
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+specimen.tests.with.issues=full_join(specimen.tests.with.issues,
+                                  test.method.not.provided, 
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+specimen.tests.with.issues=full_join(specimen.tests.with.issues,
+                                  test.sent.for.testing.date.not.provided, 
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+
+specimen.tests.with.issues=full_join(specimen.tests.with.issues,
+                                  test.result.received.date.not.provided, 
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+
+specimen.tests.with.issues=full_join(specimen.tests.with.issues,
+                                  test.results.not.provided, 
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+specimen.tests.with.issues=full_join(specimen.tests.with.issues,
+                                  test.results.pending %>% select(-disease_inventory_results_received, - disease_inventory_test_result), 
+                                  by=c("country", "event_code", "specimen_code", "sample_source", "disease"))
+
+
+
+specimen.tests.with.issues=specimen.tests.with.issues %>% arrange(country, event_code, specimen_code, sample_source, disease)
+
+
+if(nrow(specimen.tests.with.issues)>0){
+  
+      # removing columns were everything is NA
+specimen.tests.with.issues=specimen.tests.with.issues%>%dplyr::select_if(~ !all(is.na(.)))
+  
+  
+if(any(is.na(specimen.tests.with.issues))){specimen.tests.with.issues[is.na(specimen.tests.with.issues)]="No"}
+  
+print("Please scroll down the table below to see the complete dataset")  
+  
+ kableExtra::kbl(specimen.tests.with.issues,
+                  caption = "Specimens tests with problems") %>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(c(2:ncol(specimen.tests.with.issues)), border_right = T, width = "8em")%>%
+
+    # kableExtra::collapse_rows(1)
+    scroll_box(width = "100%", height = "600px")
+
+}else{
+  
+  print("No specimen test present problems")}  
+
+```
 
 
 
