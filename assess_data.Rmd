@@ -3318,7 +3318,7 @@ sample.quantity.provided.df=
   arrange(country)  
 
   
-  print("No. The data has samples without their quantities.These are the samples whose quantity is not provided." )
+  print("No. The data have samples without their quantities.These are the samples whose quantity is not provided." )
   
   kableExtra::kbl(sample.quantity.provided.df, 
                   caption = "Sample IDs without the quantity provided")%>%
@@ -3339,7 +3339,7 @@ sample.quantity.provided.df=
 #### Are the sample quantities provided informative?
 #
 #
-```{r sample quantity, echo=FALSE, warning=FALSE, eval=F, cache=F}
+```{r sample quantity, echo=FALSE, warning=FALSE, eval=T, cache=F}
 
 # BAsed on the temp vector, find problematic quantities
 # temp=
@@ -3360,7 +3360,7 @@ sample.quantity.not.informative.df=
   arrange(country)  
 
   
-  print("No. The data has sample quantities that are not informative.These are the samples whose quantity is not informative." )
+  print("No. The data have sample quantities that are not informative.These are the samples whose quantity is not informative." )
   
   kableExtra::kbl(sample.quantity.not.informative.df, 
                   caption = "Sample IDs that do not have an informative quantity")%>%
@@ -3404,7 +3404,7 @@ samples.no.test.but.repeated.df=
   arrange(country)  
 
   
-  print("The data has sample ids that are repeated for a specific specimen but that have not been used for any tests. These sample ids are used in more than one sample and should have a '.number' after the id follwoing the guidelines here https://docs.google.com/document/d/1qdrUJKN234as7Xd5E6_7QewT6l5hQ940/edit. These are the sample ids not used for any test so far but repeated for a specimen." )
+  print("The data have sample ids that are repeated for a specific specimen but that have not been used for any tests. These sample ids are used in more than one sample and should have a '.number' after the id follwoing the guidelines here https://docs.google.com/document/d/1qdrUJKN234as7Xd5E6_7QewT6l5hQ940/edit. These are the sample ids not used for any test so far but repeated for a specimen." )
   
   kableExtra::kbl(samples.no.test.but.repeated.df, 
                   caption = "Specimen codes with repeated sample ids that have not been used in any test")%>%
@@ -3418,9 +3418,6 @@ samples.no.test.but.repeated.df=
 
   print("None of the specimens have repeated samples that have not been used for any test")}
 ```
-
-Note: if two or more samples get the same id and they are used for the same test conducted on the same date, then there is no way to find that they are repeated except if the info in other fields is not repeated.
-
 #
 ## SAMPLE ID WITH AND WITHOUT TEST UNDER A SINGLE SPECIMEN
 #
@@ -3428,7 +3425,7 @@ Note: if two or more samples get the same id and they are used for the same test
 #### Are sample IDs associated and not associated with tests?
 There should be a single data point only for these sample id associated with a test and not more. The row with the sample id wo test should not exist 
 #
-```{r repeated samples with and without tests, echo=FALSE, warning=FALSE, eval=T}
+```{r repeated samples with and without tests single specimen, echo=FALSE, warning=FALSE, eval=T}
 
 #at least two rows, one of them with disease test and the other not:  always problematic because the row without disease test should not be present: sample id is repeated for a sample not used in a test and for a sample that was used in at least one test.
 
@@ -3455,7 +3452,7 @@ samples.with.test.and.wo.test.df=
     sample_ids = paste(sample_id, collapse = ", "))%>% 
   arrange(country)  
 
-  print("The data has specimens with sample ids that contain at least two tests and one of them does not have a specified disease. This means that the two rows are from independent samples and that the sample id is repeated for more than one sample." )
+  print("The data have specimens with sample ids that contain at least two tests and one of them does not have a specified disease. This means that the two rows are from independent samples and that the sample id is repeated for more than one sample." )
   
   kableExtra::kbl(samples.with.test.and.wo.test.df, 
                   caption = "Sample ids are repeated for at least two samples, some of them with a test and some without a test")%>%
@@ -3571,7 +3568,7 @@ print("Please scroll down the table below to see the complete dataset")
 #
 The specimens that match these three conditions can be confused with observations because there are actually no specimens. Some of these specimens will be repeated above. If you are expecting to conduct a necropsy, please add "Pending Necropsy" in the "Necropsy level" field, or add "No Necropsy". Complete the sample inventory. Record those specimens that are actually observations as observations for tge same event and delete the corresponding specimen.
 
-```{r specimen no necropsy report, no necropsy level or no necropsy reported and no sample inventory, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
+```{r specimens that could be an observation, no necropsy level or no necropsy reported and no sample inventory, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
 
 # specimens wo smaples and necropsy
@@ -3596,7 +3593,7 @@ list.of.potential.observations.df=
   arrange(country) 
 
   
-  print("The data has specimens that could be observations. These are the specimen codes that could be observations")
+  print("The data have specimens that could be observations. These are the specimen codes that could be observations")
   
   kableExtra::kbl(list.of.potential.observations.df, 
                   caption = "Specimen codes that could be observations")%>%
@@ -3612,24 +3609,6 @@ list.of.potential.observations.df=
 ```
 #
 # SPECIMEN TESTS
-#
-#
-
-
-
-
-#at least two rows, both of them with disease test: 
-  #same sample used to test for different diseases: this can be correct. If it is the same sample, the rows should be identical for samples-related fields, otherwise sample id is repeated.
-  
-  ```{r repeated samples with and without tests, echo=FALSE, warning=FALSE, eval=T}
-
-```
-  
-  #same sample used to test for the same disease a least twice (TRICKY): this can be correct but I can point suspects, specially if the test level data is the same 
-
-  ```{r repeated samples with and without tests, echo=FALSE, warning=FALSE, eval=T}
-
-```  
 #
 #
 ## TESTS SENT FOR TESTING SINCE THE EVENT DATE
@@ -4156,14 +4135,6 @@ test.results.pending.df=
 
   print("No, all tests with received results from the lab have the test result different of 'Pending'")}
 ```
-
-
-# two tests, same test, same source, same date, how to know it is a repeated test or it was wrongly entered twice? Provide suspicious tests?
-
-
-
-
-
 #
 ## SUMMARY ISSUES AT THE SPECIMEN TESTS LEVEL
 #
@@ -4280,16 +4251,51 @@ print("Please scroll down the table below to see the complete dataset")
   print("No specimen test present problems")}  
 
 ```
+#
+## TESTS THAT COULD BE REPEATED
+#
+#
+#### Are there tests that have the same test information. If test data is repeated twice or more it DOES NOT imply that a single test was entered in the database more tha once, but it is very suggestive it was (it is possible that two tests were conducted in the same lab, using the same source, targeting the same disease, using the same method, getting the same result, and the tests could have been sent the same date, and their results received the same date. But it is also possible that it is the same test entered worngly more than once). These data needs to be double checked and not necessarily corrected.
+#
+```{r tests that could be repeated almost same infomration, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
+
+# tests
+list.of.potential.repeated.tests=
+dat$spec %>% 
+  filter(!is.na(sample_source)) %>% 
+  select(country,
+         event_code,
+         specimen_code,
+         testing_lab,
+         sample_source, 
+         disease, 
+         disease_inventory_test_method, 
+         sent_for_testing, 
+         disease_inventory_results_received,
+         disease_inventory_test_result) %>%
+  group_by_all() %>% 
+  summarise(times_repeated = n()) %>% 
+  filter(times_repeated>1) %>%
+  ungroup()
+ 
+
+if(nrow(list.of.potential.repeated.tests)>0){  
+
+  print("The data have tests that could be repeated. These are the tests that could be repeated")
+  
+  kableExtra::kbl(list.of.potential.repeated.tests, 
+                  caption = "Tests that could be repeated")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2:4, border_right = T) %>%
+    kableExtra::column_spec(5, width = "30em", bold = T, border_right = T) %>%
+    kableExtra::column_spec(6:10, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
+  print("None of the tests seem to be repeated")}
 
-
-
-
-
-
-
-
+```
 #
 # ENVIRONMENTAL SPECIMENS 
 #
@@ -5383,33 +5389,194 @@ env.spec.sample.ids.in.more.one.env.spec.df=
 ## ENVIRONMENTAL SAMPLE QUANTITIES PROVIDED
 #
 #
+#### Are the envinromental sample quantities provided?
+#
+#
+```{r environmental sample quantity provided, echo=FALSE, warning=FALSE, eval=T, cache=F, message=F}
+
+environmental.sample.quantity.provided=
+dat$env_spec %>% 
+  filter(is.na(quantity) & !is.na(environmental_specimen_sample_id)) %>% 
+  dplyr::select(country, 
+                event_code, 
+                environmental_specimen_code, 
+                environmental_specimen_sample_id, 
+                quantity) %>% 
+  distinct()
+
+if(nrow(environmental.sample.quantity.provided)>0){  
+
+environmental.sample.quantity.provided.df=
+  environmental.sample.quantity.provided %>% 
+   group_by(country, event_code, environmental_specimen_code) %>%
+  dplyr::summarise(environ_sample_ids = paste(environmental_specimen_sample_id, collapse = ", "))%>% 
+  arrange(country)  
+
+  
+  print("No. The data have environmental samples without their quantities.These are the environmental samples whose quantity is not provided." )
+  
+  kableExtra::kbl(environmental.sample.quantity.provided.df, 
+                  caption = "Environmental sample IDs without the quantity provided")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes. All environmental sample quantities are provided")}
+```
+#
+## ENVIRONMENTAL SAMPLE QUANTITIES PROVIDED INFORMATIVE
+#
+#
 #### Are the environmental sample quantities provided informative?
 #
 #
-```{r env sample quantity, echo=FALSE, warning=FALSE, eval=F, cache=F}
+```{r environmental sample quantity informative, echo=FALSE, warning=FALSE, eval=T, cache=F, message=F}
 
-# BAsed on the temp vector, find problematic quantities
-# temp=
-# dat$spec %>% filter(meta_has_sample_inventory=="Yes") %>% 
-#   distinct(quantity) %>% pull()
 
-dat$spec %>% 
-  filter(meta_has_sample_inventory=="Yes" & quantity %in% c("gram", "One oral","1") | is.na(quantity)) %>% 
-  dplyr::select(country, specimen_code, sample_id) %>% 
+env.sample.quantity.not.informative=
+dat$env_spec %>% 
+  filter(!is.na(quantity) & quantity %in% c("0 gram", "1 gran", "1 paper", "2-3 feces pilets")) %>% 
+  dplyr::select(country, event_code, environmental_specimen_code, 
+                environmental_specimen_sample_id,
+                quantity) %>% 
   distinct()
 
+if(nrow(env.sample.quantity.not.informative)>0){  
 
-dat$spec %>% 
-  filter(meta_has_sample_inventory=="Yes" & is.na(quantity)) %>% 
-  dplyr::select(country, specimen_code, sample_id, quantity)
+env.sample.quantity.not.informative.df=
+  env.sample.quantity.not.informative %>% 
+   group_by(country, event_code, environmental_specimen_code) %>%
+  dplyr::summarise(environ_sample_ids = paste(environmental_specimen_sample_id, collapse = ", "))%>% 
+  arrange(country)  
+
+  
+  print("No. The data have environmental sample quantities that are not informative.These are the environmental samples whose quantity is not informative." )
+  
+  kableExtra::kbl(env.sample.quantity.not.informative.df, 
+                  caption = "Envinonmental sample IDs that do not have an informative quantity")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
 
 
-"gram"  
-  "One oral" 
-  "1" 
-
+  print("Yes. All the environmental sample quantities provided are informative.")}
 ```
 #
+## ENVIRONMENTAL SAMPLES NOT USED IN TESTS (YET?) BUT MORE THAN ONCE PER ENVIRONMENTAL SPECIMEN
+#
+#
+#### Are all environmental samples that have not used in tests (yet) unique per environmental specimen?
+there should be a single data point for these environmental sample ids and no more 
+#
+#
+```{r repeated environmental samples without tests dates, echo=FALSE, warning=FALSE, eval=T}
+
+#how can sample id be repeated within the same specimen
+
+#at least two rows, none of them with disease test: always problematic because it means the sample id is repeated for different tissue and any of them has been used for a test
+
+env.samples.no.test.but.repeated= dat$env_spec %>% 
+  select(country, 
+         event_code, 
+         environmental_specimen_code, 
+         environmental_specimen_sample_id, 
+         disease) %>%
+  filter(is.na(disease) & !is.na(environmental_specimen_sample_id)) %>% 
+  count(country, 
+        event_code, 
+        environmental_specimen_code, 
+        environmental_specimen_sample_id) %>%
+  filter(n>1) %>% 
+  select(country, 
+         event_code, 
+         environmental_specimen_code, 
+         environmental_specimen_sample_id)
+
+if(nrow(env.samples.no.test.but.repeated)>0){  
+
+env.samples.no.test.but.repeated.df=
+  env.samples.no.test.but.repeated %>% 
+   group_by(country, event_code, environmental_specimen_code) %>%
+  dplyr::summarise(environmental_specimen_sample_ids = 
+                     paste(environmental_specimen_sample_id, collapse = ", "))%>% 
+  arrange(country)  
+
+  
+  print("The data have environmental sample ids that are repeated for a specific environmental specimen but that have not been used for any tests. These environmental sample ids are used in more than one environmental sample and should have a '.number' after the id follwoing the guidelines here https://docs.google.com/document/d/1qdrUJKN234as7Xd5E6_7QewT6l5hQ940/edit. These are the environmental sample ids not used for any test so far but repeated for a environmental specimen." )
+  
+  kableExtra::kbl(env.samples.no.test.but.repeated.df, 
+                  caption = "Environmental specimen codes with repeated senvironmental sample ids that have not been used in any test")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("None of the environmental specimens have repeated environmental samples that have not been used for any test")}
+```
+#
+## ENVIRONMENTAL SAMPLE ID WITH AND WITHOUT TEST UNDER A SINGLE ENVIRONMENTAL SPECIMEN
+#
+#
+#### Are environmental sample IDs associated and not associated with tests?
+There should be a single data point only for these environmental sample id associated with a test and not more. The row with the environmental sample id wo test should not exist 
+#
+```{r repeated envinromental samples with and without tests single environmental specimen, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
+
+#at least two rows, one of them with disease test and the other not:  always problematic because the row without disease test should not be present: sample id is repeated for a sample not used in a test and for a sample that was used in at least one test.
+
+temp=
+dat$env_spec %>% 
+  select(country, 
+         event_code, 
+         environmental_specimen_code,
+         environmental_specimen_sample_id,
+         disease) %>%
+  filter(!is.na(environmental_specimen_sample_id)) %>% 
+  nest(data=c(disease)) %>%
+  filter(map_int(data, nrow)>1)   # filtering out groups whose data (disease) has a single row.
+indexing.env.samples.diseases.and.not.diseases=
+map_lgl(temp$data, function(x) any(is.na(x$disease)) & any(!is.na(x$disease)))
+
+env.samples.with.test.and.wo.test=
+  temp %>% 
+  filter(indexing.env.samples.diseases.and.not.diseases) %>% 
+  select(country, event_code, environmental_specimen_code, environmental_specimen_sample_id, data) 
+
+if(nrow(env.samples.with.test.and.wo.test)>0){  
+
+env.samples.with.test.and.wo.test.df=
+  env.samples.with.test.and.wo.test %>% 
+  group_by(country, event_code, environmental_specimen_code) %>%
+  dplyr::summarise(
+    env_sample_ids = paste(environmental_specimen_sample_id, collapse = ", "))%>% 
+  arrange(country)  
+
+  print("The data have environmental specimens with envinromental sample ids that contain at least two tests and one of them does not have a specified disease. This means that the two rows are from independent environmental samples and that the environmetal sample id is repeated for more than one environmental sample." )
+  
+  kableExtra::kbl(env.samples.with.test.and.wo.test.df, 
+                  caption = "Envrinomental sample ids are repeated for at least two environmental samples, some of them with a test and some without a test")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("None of the environmental specimens have repeated environmental sample ids that have and have not been used for a test")}
+
+```
+
 ## SUMMARY ISSUES AT THE ENVIRONMENTAL SPECIMENS SAMPLES LEVEL
 #
 "Yes" cells indicate problems for the item specified in the corresponding column name.
@@ -5426,6 +5593,14 @@ env.spec.sample.ids.provided$No_sample_id_provided="Yes"
 env.spec.sample.ids.in.more.one.event$Sample_id_for_more_one_event="Yes"
 
 env.spec.sample.ids.in.more.one.env.spec$Sample_id_more_one_spec="Yes"
+
+environmental.sample.quantity.provided$Sample_quantity_missing="Yes"
+
+env.sample.quantity.not.informative$Sample_quantity_not_informative="Yes"
+
+env.samples.no.test.but.repeated$Repeated_sample="Yes"
+
+env.samples.with.test.and.wo.test$Repeated_sample_2="Yes"
 
 
 # data showing the issues per event code per country
@@ -5444,6 +5619,29 @@ env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.i
 env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.issues,
                                   env.spec.sample.ids.in.more.one.env.spec, 
                                   by=c("country", "event_code", "environmental_specimen_code", "environmental_specimen_sample_id"))
+
+
+env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.issues,
+                                  environmental.sample.quantity.provided %>% select(-quantity), 
+                                  by=c("country", "event_code", "environmental_specimen_code", "environmental_specimen_sample_id"))
+
+
+
+env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.issues,
+                                  env.sample.quantity.not.informative %>%  select(-quantity), 
+                                  by=c("country", "event_code", "environmental_specimen_code", "environmental_specimen_sample_id"))
+
+
+env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.issues,
+                                  env.samples.no.test.but.repeated, 
+                                  by=c("country", "event_code", "environmental_specimen_code", "environmental_specimen_sample_id"))
+
+
+env.specimen.sample.codes.with.issues=full_join(env.specimen.sample.codes.with.issues,
+                                  env.samples.with.test.and.wo.test %>% select(-data), 
+                                  by=c("country", "event_code", "environmental_specimen_code", "environmental_specimen_sample_id"))
+
+
 
 
 env.specimen.sample.codes.with.issues=env.specimen.sample.codes.with.issues %>% arrange(country, event_code, environmental_specimen_code, environmental_specimen_sample_id)
