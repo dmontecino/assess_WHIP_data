@@ -31,9 +31,9 @@ years=2019:2100
 
 
 # which sheets are present = what data was requested
-
-dat=lapply(c(1:3), function(x)
-  read_excel("/Users/DMontecino/Desktop/OneDrive - Wildlife Conservation Society/DATA_MANAGEMENT/Checking_quality_whip_data_WHN_2021/Data export_bevan_federko_2022-12-07.xlsx", sheet = x, col_types = "text"))
+# 
+# dat=lapply(c(1:3), function(x)
+#   read_excel("/Users/DMontecino/Desktop/OneDrive - Wildlife Conservation Society/DATA_MANAGEMENT/Checking_quality_whip_data_WHN_2021/Data export_bevan_federko_2022-12-07.xlsx", sheet = x, col_types = "text"))
 
  # dat=list(params$obs, params$spec, params$env_spec)
 
@@ -3382,7 +3382,7 @@ sample.quantity.not.informative.df=
 there should be a single data point for these sample ids and no more 
 #
 #
-```{r repeated samples without tests dates, echo=FALSE, warning=FALSE, eval=T}
+```{r repeated samples without tests dates, echo=FALSE, warning=FALSE, eval=T, message=-FALSE}
 
 #how can sample id be repeated within the same specimen
 
@@ -3425,7 +3425,7 @@ samples.no.test.but.repeated.df=
 #### Are sample IDs associated and not associated with tests?
 There should be a single data point only for these sample id associated with a test and not more. The row with the sample id wo test should not exist 
 #
-```{r repeated samples with and without tests single specimen, echo=FALSE, warning=FALSE, eval=T}
+```{r repeated samples with and without tests single specimen, echo=FALSE, warning=FALSE, eval=T, message = FALSE}
 
 #at least two rows, one of them with disease test and the other not:  always problematic because the row without disease test should not be present: sample id is repeated for a sample not used in a test and for a sample that was used in at least one test.
 
