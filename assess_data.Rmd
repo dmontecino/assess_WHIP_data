@@ -3776,7 +3776,7 @@ test.results.received.earlier.than.event.date.df=
 #
 ## TESTS RESULTS RECEIVED SINCE THE TESTED SPECIMEN WAS FOUND
 #
-#### Were the tests results received since the source specimens was found?
+#### Were the tests results received since the source specimens were found?
 #
 ```{r tests results since specimen found, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
@@ -3816,7 +3816,7 @@ test.results.earlier.than.specimen.found.df=
 #
 ## TESTS RESULTS RECEIVED SINCE THE SAMPLE SOURCE WAS COLLECTED
 #
-#### Were the tests results received since the sample source was collected?
+#### Were the tests results received since the sample sources were collected?
 #
 ```{r tests results since sample collected, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
@@ -3857,7 +3857,7 @@ test.results.earlier.than.sampling.date.df=
 #
 ## TESTS RESULTS RECEIVED SINCE THE TESTS WERE SENT
 #
-#### Were the tests results received since the test was sent?
+#### Were the tests results received since the tests were sent?
 #
 ```{r tests results since test sent, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
@@ -4257,7 +4257,7 @@ print("Please scroll down the table below to see the complete dataset")
 #
 #### Are there tests that have the same test information. If test data is repeated twice or more it DOES NOT imply that a single test was entered in the database more tha once, but it is very suggestive it was (it is possible that two tests were conducted in the same lab, using the same source, targeting the same disease, using the same method, getting the same result, and the tests could have been sent the same date, and their results received the same date. But it is also possible that it is the same test entered worngly more than once). These data needs to be double checked and not necessarily corrected.
 #
-```{r tests that could be repeated almost same infomration, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
+```{r tests that could be repeated same infomration, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
 # tests
 list.of.potential.repeated.tests=
@@ -4430,7 +4430,7 @@ env.spec.surveillance.unit.not.provided.df=
 #### Do all the environmental specimens have the environmental specimen id provided?
 #
 #
-```{r env specimen id, echo=FALSE, cache=FALSE, eval=F, message=FALSE}
+```{r env specimen id, echo=FALSE, cache=FALSE, eval=T, message=FALSE}
 
 env.specimen.codes.with.env.ids.as.na=
           dat$env_spec %>% 
@@ -4464,7 +4464,7 @@ env.specimen.codes.with.env.ids.as.na.df=
 #### Do all the environmental specimens have a unique environmental specimen id? 
 #
 #
-```{r env specimen unique, echo=FALSE, warning=FALSE, cache=FALSE, eval=F, message = FALSE}
+```{r env specimen unique, echo=FALSE, warning=FALSE, cache=FALSE, eval=T, message = FALSE}
 
 # each specimen code has a single animal id?
 
@@ -5712,6 +5712,694 @@ list.of.env.specimens.wo.sample.inventory.df=
   print("All the environmental specimens have sample inventory")}
 
 ```
+#
+# ENVIRONMENTAL SPECIMEN TESTS
+#
+#
+## TESTS SENT FOR TESTING SINCE THE EVENT DATE
+#
+#### Were the tests sent for testing since the event date?
+#
+```{r environmental tests sent since event date, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
+
+env.test.sent.testing.earlier.than.event.date=
+  dat$env_spec %>% 
+    filter(!is.na(sent_for_testing) & !is.na(event_date))%>%
+    filter(!(as.Date(sent_for_testing) >= as.Date(event_date)))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease, sample_source)%>%
+    distinct()
+
+
+if(nrow(env.test.sent.testing.earlier.than.event.date)>0){  
+
+env.test.sent.testing.earlier.than.event.date.df=
+  env.test.sent.testing.earlier.than.event.date%>%
+  group_by(country, event_code, environmental_specimen_code, disease) %>%
+  dplyr::summarise(env_sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests were sent for testing before the event date. These are the tests that were sent for testing before the event date")
+  
+  kableExtra::kbl(env.test.sent.testing.earlier.than.event.date.df, 
+                  caption = "Tests sent for testing before the event date")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests were sent for testing since the event date")}
+
+```
+#
+#
+## TESTS SENT FOR TESTING SINCE THE TESTED ENVIRONMENTAL SPECIMEN WAS FOUND
+#
+#### Were the tests sent for testing since the source environmental specimens was found?
+#
+```{r tests sent since env specimen found, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+
+test.sent.testing.earlier.than.env.specimen.found=
+  dat$env_spec %>% 
+    filter(!is.na(sent_for_testing) & !is.na(environmental_specimen_date_found))%>%
+    filter(!(as.Date(sent_for_testing) >= as.Date(environmental_specimen_date_found)))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease, sample_source)%>%
+    distinct()
+
+if(nrow(test.sent.testing.earlier.than.env.specimen.found)>0){  
+
+test.sent.testing.earlier.than.env.specimen.found.df=
+  test.sent.testing.earlier.than.env.specimen.found%>%
+  group_by(country, event_code, environmental_specimen_code, disease) %>%
+  dplyr::summarise(env_sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests were sent for testing before the tested environmental specimen was found. These are the tests that were sent for testing before the tested environmental specimen was found")
+  
+  kableExtra::kbl(test.sent.testing.earlier.than.env.specimen.found.df, 
+                  caption = "Tests sent for testing before the tested environmental specimen was found")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests were sent for testing since the event date")}
+
+```
+#
+#
+## TESTS SENT FOR TESTING SINCE THE ENVIRONMENTAL SAMPLE SOURCE WAS COLLECTED
+#
+#### Were the tests sent for testing since the environmental sample source was collected?
+#
+```{r tests sent since env sample collected, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+
+env.test.sent.testing.earlier.than.sampling.date=
+  dat$env_spec %>% 
+    filter(!is.na(sent_for_testing) & !is.na(date_sampled))%>%
+    filter(!(as.Date(sent_for_testing) >= as.Date(date_sampled)))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease, sample_source)%>%
+    distinct()
+
+
+if(nrow(env.test.sent.testing.earlier.than.sampling.date)>0){  
+
+env.test.sent.testing.earlier.than.sampling.date.df=
+  env.test.sent.testing.earlier.than.sampling.date%>%
+  group_by(country, event_code, environmental_specimen_code, disease) %>%
+  dplyr::summarise(env_sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests were sent for testing before the environmental sample source was collected. These are the tests that were sent for testing before the environmental sample source was collected")
+  
+  kableExtra::kbl(env.test.sent.testing.earlier.than.sampling.date.df, 
+                  caption = "Tests sent for testing before the environmental sample collection")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests were sent for testing since the environmental sample collection")}
+
+```
+#
+#
+## TESTS RESULTS RECEIVED SINCE THE EVENT DATE
+#
+#### Were the tests results received since the event date?
+#
+```{r env tests results since event date, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+
+env.test.results.received.earlier.than.event.date=
+  dat$env_spec %>% 
+    filter(!is.na(disease_inventory_results_received) & !is.na(event_date))%>%
+    filter(!(as.Date(disease_inventory_results_received) >= as.Date(event_date)))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease, sample_source)%>%
+    distinct()
+
+
+if(nrow(env.test.results.received.earlier.than.event.date)>0){  
+
+env.test.results.received.earlier.than.event.date.df=
+  env.test.results.received.earlier.than.event.date%>%
+  group_by(country, event_code, environmental_specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests results were received before the event date. These are the tests results that were received before the event date")
+  
+  kableExtra::kbl(env.test.results.received.earlier.than.event.date.df, 
+                  caption = "Tests results received before the event date")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests results were received since the event date")}
+
+```
+#
+#
+## TESTS RESULTS RECEIVED SINCE THE TESTED ENVINROMENTAL SPECIMEN WAS FOUND
+#
+#### Were the tests results received since the source envinromental specimens were found?
+#
+```{r tests results since env specimen found, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+
+test.results.earlier.than.env.specimen.found=
+  dat$env_spec %>% 
+    filter(!is.na(disease_inventory_results_received) & !is.na(environmental_specimen_date_found))%>%
+    filter(!(as.Date(disease_inventory_results_received) >= as.Date(environmental_specimen_date_found)))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease, sample_source)%>%
+    distinct()
+
+if(nrow(test.results.earlier.than.specimen.found)>0){  
+
+test.results.earlier.than.specimen.found.df=
+  test.results.earlier.than.specimen.found%>%
+  group_by(country, event_code, specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests results were received before the tested environmental specimen was found. These are the tests results that were received before the tested environmental specimen was found")
+  
+  kableExtra::kbl(test.results.earlier.than.specimen.found.df, 
+                  caption = "Tests results received before the tested  environmental specimen was found")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests results were received since the event date")}
+
+```
+#
+#
+## TESTS RESULTS RECEIVED SINCE THE ENVIRONMENTAL SAMPLE SOURCE WAS COLLECTED
+#
+#### Were the tests results received since the environmental sample source was collected?
+#
+```{r tests results since environmental sample collected, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+
+env.test.results.earlier.than.sampling.date=
+  dat$env_spec %>% 
+    filter(!is.na(disease_inventory_results_received) & !is.na(date_sampled))%>%
+    filter(!(as.Date(disease_inventory_results_received) >= as.Date(date_sampled)))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease, sample_source)%>%
+    distinct()
+
+
+if(nrow(env.test.results.earlier.than.sampling.date)>0){  
+
+env.test.results.earlier.than.sampling.date.df=
+  env.test.results.earlier.than.sampling.date%>%
+  group_by(country, event_code, environmental_specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests results were received before the environmental sample source was collected. These are the tests results that were received before the environmental sample source was collected")
+  
+  kableExtra::kbl(env.test.results.earlier.than.sampling.date.df, 
+                  caption = "Tests results received before the environmental sample collection")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests results were received since the environmental sample collection")}
+
+```
+#
+#
+## TESTS RESULTS RECEIVED SINCE THE TESTS WERE SENT
+#
+#### Were the tests results received since the test was sent?
+#
+```{r env tests results since test sent, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
+
+
+env.test.results.earlier.than.test.sent=
+  dat$env_spec %>% 
+    filter(!is.na(disease_inventory_results_received) & !is.na(sent_for_testing))%>%
+    filter(!(as.Date(disease_inventory_results_received) >= as.Date(sent_for_testing)))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease, sample_source)%>%
+    distinct()
+
+
+if(nrow(env.test.results.earlier.than.test.sent)>0){  
+
+env.test.results.earlier.than.test.sent.df=
+  env.test.results.earlier.than.test.sent%>%
+  group_by(country, event_code, environmental_specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests results were received before the test was sent for testing. These are the tests results that were received before the test was sent")
+  
+  kableExtra::kbl(test.results.earlier.than.test.sent.df, 
+                  caption = "Tests results received before tests were sent")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests results were received since the tests were sent")}
+
+```
+#
+#
+## TESTS WITHOUT THE SOURCE
+#
+#### Do all tests have the source provided?
+#
+```{r env tests source, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
+
+env.test.source.not.provided=
+  dat$env_spec %>% 
+    filter(is.na(sample_source) & !is.na(disease))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, sample_source, disease)%>%
+    distinct()
+
+
+if(nrow(env.test.source.not.provided)>0){  
+
+env.test.source.not.provided.df=
+  env.test.source.not.provided%>%
+  group_by(country, event_code, environmental_specimen_code) %>%
+  dplyr::summarise(disease_tested = paste(disease, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests do not have their sample source")
+  
+  kableExtra::kbl(env.test.source.not.provided.df, 
+                  caption = "Tests without the sample source")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(4, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests have their sample source")}
+
+```
+#
+#
+## TESTS WITHOUT METHOD
+#
+#### Do all tests have the method provided? 
+#
+```{r env tests without the method provided, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
+
+env.test.method.not.provided=
+  dat$env_spec %>% 
+  filter(!is.na(disease) &
+         is.na(disease_inventory_test_method)) %>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease,  sample_source)%>%
+    distinct()
+
+if(nrow(env.test.method.not.provided)>0){  
+
+env.test.method.not.provided.df=
+  env.test.method.not.provided%>%
+  group_by(country, event_code, environmental_specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+
+  print("No, the data show that some tests do not have the method provided")
+  
+  kableExtra::kbl(env.test.method.not.provided.df, 
+                  caption = "Tests without the method provided")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests have their method provided")}
+```
+#
+#
+## TESTS WITHOUT THE DATE WHEN THEY WERE SENT FOR TESTING
+#
+#### Do all tests that a result, result received date, method, or sample source have the date when the test was sent? 
+#
+```{r env tests without , echo=FALSE, warning=FALSE, eval=T, message=FALSE}
+
+env.test.sent.for.testing.date.not.provided=
+  dat$env_spec %>% 
+    filter(is.na(sent_for_testing)) %>% 
+    filter(!is.na(disease_inventory_test_result) |
+           !is.na(disease) |
+           !is.na(disease_inventory_results_received) |
+           !is.na(disease_inventory_test_method) |
+           !is.na(sample_source))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease,  sample_source)%>%
+    distinct()
+
+
+if(nrow(env.test.sent.for.testing.date.not.provided)>0){  
+
+env.test.sent.for.testing.date.not.provided.df=
+  env.test.sent.for.testing.date.not.provided%>%
+  group_by(country, event_code, environmental_specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests lack the date when these tests were sent")
+  
+  kableExtra::kbl(env.test.sent.for.testing.date.not.provided.df, 
+                  caption = "Tests with unknown date when they were sent")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests have the date when they were sent")}
+```
+#
+#
+## TESTS WITH RESULTS BUT WITHOUT THE DATE WHEN RESULTS WERE RECEIVED
+#
+#### Do all tests that have a "non-pending" result have the date when the results were received? 
+#
+```{r env tests with results but no date when results arrived, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
+
+env.test.result.received.date.not.provided=
+  dat$env_spec %>% 
+    filter(disease_inventory_test_result!="Pending" & 
+           !is.na(disease_inventory_test_result) &
+           !is.na(disease) &
+           is.na(disease_inventory_results_received))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease,  sample_source)%>%
+    distinct()
+
+
+if(nrow(env.test.result.received.date.not.provided)>0){  
+
+env.test.result.received.date.not.provided.df=
+  env.test.result.received.date.not.provided%>%
+  group_by(country, event_code, environmental_specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests have results but they lack the date when these results arrived")
+  
+  kableExtra::kbl(env.test.result.received.date.not.provided.df, 
+                  caption = "Tests with results but unknown date when results were received")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests with results have the date when the results arrived")}
+```
+#
+#
+## TESTS WITHOUT RESULTS
+#
+#### Do all tests have their result? Here we scan for tests sent without results at all. Test with "Pending" results are provided in the next section.
+#
+```{r env tests without results, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
+
+env.test.results.not.provided=
+  dat$env_spec %>% 
+    filter(is.na(disease_inventory_test_result) & !is.na(disease))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease,  sample_source)%>%
+    distinct()
+
+
+if(nrow(env.test.results.not.provided)>0){  
+
+env.test.results.not.provided.df=
+  env.test.results.not.provided%>%
+  group_by(country, event_code, environmental_specimen_code, disease) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("No, the data show that some tests do not have results")
+  
+  kableExtra::kbl(env.test.results.not.provided.df, 
+                  caption = "Tests without results")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(5, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("Yes, all tests have results")}
+```
+#
+#
+## TESTS WITH RESULTS RECEIVED FROM THE LAB BUT PENDING OR NO RESULT IN THE DATA
+#
+#### Do tests have pending or no results? Here we scan for tests sent to the lab, with "Pending" results but with date of results received. If the results were received then the test result should not be "pending" or NA status.
+#
+```{r env tests with results received but pending or na in the data, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
+
+env.test.results.pending=
+  dat$env_spec %>% 
+    filter(disease_inventory_test_result=="Pending" | 
+           is.na(disease_inventory_test_result) & 
+           !is.na(disease_inventory_results_received))%>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease, sample_source, 
+                  disease_inventory_results_received, 
+                  disease_inventory_test_result)%>%
+    distinct()
+
+
+if(nrow(env.test.results.pending)>0){  
+
+env.test.results.pending.df=
+  env.test.results.pending%>%
+  group_by(country, event_code, environmental_specimen_code, disease, disease_inventory_results_received) %>%
+  dplyr::summarise(sample_sources = paste(sample_source, collapse = ", ")) %>% 
+  arrange(country)  
+  
+  print("Yes, the data show that some tests have their results received but they are still pending to be added to the data")
+  
+  kableExtra::kbl(env.test.results.pending.df, 
+                  caption = "Tests with results pending")%>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, bold = T, border_right = T) %>%
+    kableExtra::column_spec(4, bold = T, border_right = T) %>%
+    kableExtra::column_spec(5, width = "30em", border_right = T) %>% 
+    kableExtra::column_spec(6, width = "30em", border_right = T)%>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("No, all tests with received results from the lab have the test result different of 'Pending'")}
+```
+#
+## SUMMARY ISSUES AT THE ENVIRONMENTAL SPECIMEN TESTS LEVEL
+#
+"Yes" cells indicate problems for the item specified in the corresponding column name.
+
+```{r issues env specimen test level, echo=FALSE, warning=FALSE, eval=T, cache=F}
+
+
+env.test.sent.testing.earlier.than.event.date$Test_sent_before_event="Yes"
+
+test.sent.testing.earlier.than.env.specimen.found$Test_sent_before_specimen_found="Yes"
+
+env.test.sent.testing.earlier.than.sampling.date$Test_sent_before_sampling="Yes"
+
+env.test.results.received.earlier.than.event.date$Test_received_before_event="Yes"
+
+test.results.earlier.than.env.specimen.found$Test_received_before_specimen_found="Yes"
+
+env.test.results.earlier.than.sampling.date$Test_received_before_sampling="Yes"
+
+env.test.results.earlier.than.test.sent$Test_received_before_test_sent="Yes"
+
+env.test.source.not.provided$Test_source_not_provided="Yes"
+
+env.test.method.not.provided$Test_method_not_provided="Yes"
+
+env.test.sent.for.testing.date.not.provided$Test_sent_date_not_provided="Yes"
+
+env.test.result.received.date.not.provided$Test_result_received_date_not_provided="Yes"
+
+env.test.results.not.provided$Test_result_not_provided="Yes"
+
+env.test.results.pending$Test_result_pending="Yes"
+
+
+# data showing the issues per event code per country
+env.specimen.tests.with.issues=full_join(env.test.sent.testing.earlier.than.event.date, 
+                                  test.sent.testing.earlier.than.env.specimen.found,
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+env.specimen.tests.with.issues=full_join(env.specimen.tests.with.issues,
+                                  env.test.sent.testing.earlier.than.sampling.date,
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+env.specimen.tests.with.issues=full_join(env.specimen.tests.with.issues,
+                                  env.test.results.received.earlier.than.event.date,
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+env.specimen.tests.with.issues=full_join(env.specimen.tests.with.issues,
+                                  test.results.earlier.than.env.specimen.found, 
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+env.specimen.tests.with.issues=full_join(env.specimen.tests.with.issues,
+                                  env.test.results.earlier.than.sampling.date, 
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+env.specimen.tests.with.issues=full_join(env.specimen.tests.with.issues,
+                                  env.test.results.earlier.than.test.sent, 
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+
+env.specimen.tests.with.issues=full_join(env.specimen.tests.with.issues,
+                                  env.test.source.not.provided, 
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+env.specimen.tests.with.issues=full_join(env.specimen.tests.with.issues,
+                                  env.test.method.not.provided, 
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+env.specimen.tests.with.issues=full_join(env.specimen.tests.with.issues,
+                                  env.test.sent.for.testing.date.not.provided, 
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+
+env.specimen.tests.with.issues=full_join(env.specimen.tests.with.issues,
+                                  env.test.result.received.date.not.provided, 
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+
+env.specimen.tests.with.issues=full_join(env.specimen.tests.with.issues,
+                                  env.test.results.not.provided, 
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+env.specimen.tests.with.issues=full_join(env.specimen.tests.with.issues,
+                                  env.test.results.pending %>% select(-disease_inventory_results_received, - disease_inventory_test_result), 
+                                  by=c("country", "event_code", "environmental_specimen_code", "sample_source", "disease"))
+
+
+
+env.specimen.tests.with.issues=env.specimen.tests.with.issues %>% arrange(country, event_code, environmental_specimen_code, sample_source, disease)
+
+
+if(nrow(env.specimen.tests.with.issues)>0){
+  
+      # removing columns were everything is NA
+env.specimen.tests.with.issues=env.specimen.tests.with.issues%>%dplyr::select_if(~ !all(is.na(.)))
+  
+  
+if(any(is.na(env.specimen.tests.with.issues))){env.specimen.tests.with.issues[is.na(env.specimen.tests.with.issues)]="No"}
+  
+print("Please scroll down the table below to see the complete dataset")  
+  
+ kableExtra::kbl(env.specimen.tests.with.issues,
+                  caption = "Environmental specimen tests with problems") %>%
+    kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(c(2:ncol(env.specimen.tests.with.issues)), border_right = T, width = "8em")%>%
+
+    # kableExtra::collapse_rows(1)
+    scroll_box(width = "100%", height = "600px")
+
+}else{
+  
+  print("No environmental specimen test present problems")}  
+
+```
+#
+## TESTS THAT COULD BE REPEATED
+#
+#
+#### Are there tests that have the same test information. If test data is repeated twice or more it DOES NOT imply that a single test was entered in the database more than once, but it is very suggestive it was (it is possible that two tests were conducted in the same lab, using the same source, targeting the same disease, using the same method, getting the same result, and the tests could have been sent the same date, and their results received the same date. But it is also possible that it is the same test entered worngly more than once). These data needs to be double checked and not necessarily corrected.
+#
+```{r env tests that could be repeated same infomration, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
+
+# tests
+list.of.potential.repeated.env.tests=
+dat$env_spec %>% 
+  filter(!is.na(sample_source)) %>% 
+  select(country,
+         event_code,
+         environmental_specimen_code,
+         testing_lab,
+         sample_source, 
+         disease, 
+         disease_inventory_test_method, 
+         sent_for_testing, 
+         disease_inventory_results_received,
+         disease_inventory_test_result) %>%
+  group_by_all() %>% 
+  summarise(times_repeated = n()) %>% 
+  filter(times_repeated>1) %>%
+  ungroup()
+ 
+
+if(nrow(list.of.potential.repeated.env.tests)>0){  
+
+  print("The data have tests that could be repeated. These are the tests that could be repeated")
+  
+  kableExtra::kbl(list.of.potential.repeated.env.tests, 
+                  caption = "Tests that could be repeated")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2:4, border_right = T) %>%
+    kableExtra::column_spec(5, width = "30em", bold = T, border_right = T) %>%
+    kableExtra::column_spec(6:10, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("None of the tests seem to be repeated")}
+
+```
 
 
