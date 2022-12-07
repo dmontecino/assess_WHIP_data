@@ -5671,7 +5671,47 @@ print("Please scroll down the table below to see the complete dataset")
   print("No environemtnal specimen samples present problems")}  
 
 ```
+#
+## ENVIRONMENTAL SPECIMENS WITHOUT SAMPLE INVENTORY
+#
+#
+#### Are there environmental specimens without sample inventory in WHIP? 
+#
+The environmental specimens that match this condition do not have any environmental specimen samples. Complete the environmental sample inventory.
 
+```{r environmental specimens wo sample inventory, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
+
+list.of.env.specimens.wo.sample.inventory=
+dat$env_spec %>% select(country, environmental_specimen_code, environmental_specimen_type, date_sampled, meta_has_environmental_specimen_sample_inventory)%>% # date sampled is mandatory
+  distinct()%>%
+  arrange(country, environmental_specimen_code)%>%
+  filter(meta_has_environmental_specimen_sample_inventory=="No")
+
+
+if(nrow(list.of.env.specimens.wo.sample.inventory)>0){  
+
+list.of.env.specimens.wo.sample.inventory.df=
+  list.of.env.specimens.wo.sample.inventory %>% 
+   group_by(country, environmental_specimen_code) %>%
+  dplyr::summarise(
+    specimen_codes = paste(environmental_specimen_code, collapse = ", ")) %>% 
+  arrange(country) 
+
+  
+  print("The data have environmental specimens that could be observations. These are the environmental specimen codes that could be observations")
+  
+  kableExtra::kbl(list.of.env.specimens.wo.sample.inventory.df, 
+                  caption = "Environmentql specimen without sample inventory")%>%
+     kableExtra::kable_paper(full_width = F) %>%
+    kableExtra::column_spec(1, bold = T, border_right = T) %>%
+    kableExtra::column_spec(2, bold = T, border_right = T) %>%
+    kableExtra::column_spec(3, width = "30em", border_right = T) %>%
+    scroll_box(width = "100%", height = "600px")}else{#}
+
+
+  print("All the environmental specimens have sample inventory")}
+
+```
 
 
 
