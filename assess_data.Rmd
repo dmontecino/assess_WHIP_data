@@ -32,8 +32,7 @@ years=2019:2100
 
 # which sheets are present = what data was requested
 # 
-# dat=lapply(c(1:3), function(x)
-#   read_excel("/Users/DMontecino/Desktop/Data export_bevan_federko_2023-02-09.xlsx", sheet = x, col_types = "text"))
+# dat=lapply(c(1:3), function(x) read_excel("/Users/DMontecino/Downloads/WHIP Data export 2023-05-11.xlsx", sheet = x, col_types = "text"))
 
 dat=list(params$obs, params$spec, params$env_spec)
 
@@ -2591,28 +2590,42 @@ spec.necropsy.level.not.reported.df=
 
 #text versions in the "Primary necropsy tab"
 
-primary.necropsy.v1=c("#Add observations below on each row, after the \";\" Add \"NA\" if not assessed, or \"NAF\" if no abnormal finding \r\n Body condition score \r\n External signs on carcass; \r\n Wounds/Scars; \r\n Skin/Hair Coat/Nails; \r\n External parasites; \r\n Subcutaneous fat (very fat/normal/no fat); \r\n Muscle mass (normal/thin/emaciated); \r\n Nostrils; \r\n Ears; \r\n Eyes; \r\n Mouth; \r\n Anus/perineum; \r\n Musculoskeletal System; \r\n Body Cavities; \r\n Peri-organ fat (very fat/normal/no fat); \r\n Circulatory System; \r\n Respiratory System; \r\n Hemolymphatic System; \r\n Gastrointestinal system; \r\n Urinary System; \r\n Reproductive System; \r\n Nervous System; \r\n Conclusion;")
+# primary.necropsy.v1=c("#Add observations below on each row, after the \";\" Add \"NA\" if not assessed, or \"NAF\" if no abnormal finding \r\n Body condition score \r\n External signs on carcass; \r\n Wounds/Scars; \r\n Skin/Hair Coat/Nails; \r\n External parasites; \r\n Subcutaneous fat (very fat/normal/no fat); \r\n Muscle mass (normal/thin/emaciated); \r\n Nostrils; \r\n Ears; \r\n Eyes; \r\n Mouth; \r\n Anus/perineum; \r\n Musculoskeletal System; \r\n Body Cavities; \r\n Peri-organ fat (very fat/normal/no fat); \r\n Circulatory System; \r\n Respiratory System; \r\n Hemolymphatic System; \r\n Gastrointestinal system; \r\n Urinary System; \r\n Reproductive System; \r\n Nervous System; \r\n Conclusion;")
+# 
+# primary.necropsy.v2=c("#Add observations below on each row, after the \";\" Add \"NA\" if not assessed, or \"NAF\" if no abnormal finding \r\n Body condition score; \r\n External signs on carcass; \r\n Wounds/Scars; \r\n Skin/Hair Coat/Nails; \r\n External parasites; \r\n Subcutaneous fat (very fat/normal/no fat); \r\n Muscle mass (normal/thin/emaciated); \r\n Nostrils; \r\n Ears; \r\n Eyes; \r\n Mouth; \r\n Anus/perineum; \r\n Musculoskeletal System; \r\n Body Cavities; \r\n Peri-organ fat (very fat/normal/no fat); \r\n Circulatory System; \r\n Respiratory System; \r\n Hemolymphatic System; \r\n Gastrointestinal system; \r\n Urinary System; \r\n Reproductive System; \r\n Nervous System; \r\n Conclusion;")
+# 
+# primary.necropsy.v3=c("#Add observations below on each row, after the \";\" Add \"NA\" if not assessed, or \"NAF\" if no abnormal finding  Body condition score;  External signs on carcass;  Wounds/Scars;  Skin/Hair Coat/Nails;  External parasites;  Subcutaneous fat (very fat/normal/no fat);  Muscle mass (normal/thin/emaciated);  Nostrils;  Ears;  Eyes;  Mouth;  Anus/perineum;  Musculoskeletal System;  Body Cavities;  Peri-organ fat (very fat/normal/no fat);  Circulatory System;  Respiratory System;  Hemolymphatic System;  Gastrointestinal system;  Urinary System;  Reproductive System;  Nervous System;  Conclusion;")
+# 
+# primary.necropsy.v4=c("#Describe necropsy findings for each item. Make sure to type the findings between the \":\" and the \";\" (basically replace \"your findings\" text with your own data) in each system. It is key to: i) Leave the \";\" at the end of each section as the last character without a preceding space ii) Do not use \";\" or \":\" when writing the findings iii) Replace \"your findings\" with \"NA\" if the system is not assessed or \"NAF\" if no abnormal finding iv) Do not delete the instructions including this line and start after this line//  External Signs On Carcass: your findings;  Nutritional Condition (Emaciated/Thin/Normal/Overweight/Obese): your findings;  Eyes: your findings;  Ears: your findings;  Nostrils: your findings;  Mouth: your findings;  Skin/Hair Coat/Nails: your findings;   Wounds/Scars: your findings;   External Parasites: your findings;  Anus/Perineum/Cloaca: your findings;  Subcutaneous Fat (very fat/normal/no fat): your findings;  Muscle Mass: your findings;  Musculoskeletal System: your findings;  Body Cavities: your findings;  Circulatory/Cardiovascular System (heart, valves, vessels): your findings;  Respiratory System (larynx, trachea, bronchi, lungs): your findings;  Gastrointestinal System (esophagus, stomach, intestine, feces, pancreas, liver, gallbladder): your findings;  Urinary System (kidneys, ureter, urinary bladder, urethra): your findings;  Reproductive System (ovaries, uterus, testes, epididymis, prostate, presence of fetus): your findings;  Lymphatic System (spleen, lymph nodes): your findings;  Endocrine System (thyroid/parathyroid, adrenal, pituitary): your findings;  Nervous System (brain, spinal cord, peripheral nerves): your findings;  Conclusion: your findings;")
+# 
+# primary.necropsy.v5=c("#Describe necropsy findings for each item. Make sure to type the findings between the \":\" and the \";\" (basically replace \"your findings\" text with your own data) in each system. It is key to: i) Leave the \";\" at the end of each section as the last character without a preceding space ii) Do not use \";\" or \":\" when writing the findings iii) Replace \"your findings\" with \"NA\" if the system is not assessed or \"NAF\" if no abnormal finding iv) Do not delete the instructions including this line and start after this line// \r\n External Signs On Carcass: your findings; \r\n Nutritional Condition (Emaciated/Thin/Normal/Overweight/Obese): your findings; \r\n Eyes: your findings; \r\n Ears: your findings; \r\n Nostrils: your findings; \r\n Mouth: your findings; \r\n Skin/Hair Coat/Nails: your findings; \r\n Wounds/Scars: your findings; \r\n External Parasites: your findings; \r\n Anus/Perineum/Cloaca: your findings; \r\n Subcutaneous Fat (very fat/normal/no fat): your findings; \r\n Muscle Mass: your findings; \r\n Musculoskeletal System: your findings; \r\n Body Cavities: your findings; \r\n Circulatory/Cardiovascular System (heart, valves, vessels): your findings; \r\n Respiratory System (larynx, trachea, bronchi, lungs): your findings; \r\n Gastrointestinal System (esophagus, stomach, intestine, feces, pancreas, liver, gallbladder): your findings; \r\n Urinary System (kidneys, ureter, urinary bladder, urethra): your findings; \r\n Reproductive System (ovaries, uterus, testes, epididymis, prostate, presence of fetus): your findings; \r\n Lymphatic System (spleen, lymph nodes): your findings; \r\n Endocrine System (thyroid/parathyroid, adrenal, pituitary): your findings; \r\n Nervous System (brain, spinal cord, peripheral nerves): your findings; \r\n Conclusion: your findings;")
 
-primary.necropsy.v2=c("#Add observations below on each row, after the \";\" Add \"NA\" if not assessed, or \"NAF\" if no abnormal finding \r\n Body condition score; \r\n External signs on carcass; \r\n Wounds/Scars; \r\n Skin/Hair Coat/Nails; \r\n External parasites; \r\n Subcutaneous fat (very fat/normal/no fat); \r\n Muscle mass (normal/thin/emaciated); \r\n Nostrils; \r\n Ears; \r\n Eyes; \r\n Mouth; \r\n Anus/perineum; \r\n Musculoskeletal System; \r\n Body Cavities; \r\n Peri-organ fat (very fat/normal/no fat); \r\n Circulatory System; \r\n Respiratory System; \r\n Hemolymphatic System; \r\n Gastrointestinal system; \r\n Urinary System; \r\n Reproductive System; \r\n Nervous System; \r\n Conclusion;")
 
-primary.necropsy.v3=c("#Add observations below on each row, after the \";\" Add \"NA\" if not assessed, or \"NAF\" if no abnormal finding  Body condition score;  External signs on carcass;  Wounds/Scars;  Skin/Hair Coat/Nails;  External parasites;  Subcutaneous fat (very fat/normal/no fat);  Muscle mass (normal/thin/emaciated);  Nostrils;  Ears;  Eyes;  Mouth;  Anus/perineum;  Musculoskeletal System;  Body Cavities;  Peri-organ fat (very fat/normal/no fat);  Circulatory System;  Respiratory System;  Hemolymphatic System;  Gastrointestinal system;  Urinary System;  Reproductive System;  Nervous System;  Conclusion;")
+primary.necropsy.v1="Original Necropsy Text:  #Describe necropsy findings for each item. Make sure to type the findings between the \":\" and the \";\" (basically replace \"your findings\" text with your own data) in each system. It is key to: i) Leave the \";\" at the end of each section as the last character without a preceding space ii) Do not use \";\" or \":\" when writing the findings iii) Replace \"your findings\" with \"NA\" if the system is not assessed or \"NAF\" if no abnormal finding iv) Do not delete the instructions including this line and start after this line// \n External Signs On Carcass: your findings; \n Nutritional Condition (Emaciated/Thin/Normal/Overweight/Obese): your findings; \n Eyes: your findings; \n Ears: your findings; \n Nostrils: your findings; \n Mouth: your findings; \n Skin/Hair Coat/Nails: your findings; \n Wounds/Scars: your findings; \n External Parasites: your findings; \n Anus/Perineum/Cloaca: your findings; \n Subcutaneous Fat (very fat/normal/no fat): your findings; \n Muscle Mass: your findings; \n Musculoskeletal System: your findings; \n Body Cavities: your findings; \n Circulatory/Cardiovascular System (heart, valves, vessels): your findings; \n Respiratory System (larynx, trachea, bronchi, lungs): your findings; \n Gastrointestinal System (esophagus, stomach, intestine, feces, pancreas, liver, gallbladder): your findings; \n Urinary System (kidneys, ureter, urinary bladder, urethra): your findings; \n Reproductive System (ovaries, uterus, testes, epididymis, prostate, presence of fetus): your findings; \n Lymphatic System (spleen, lymph nodes): your findings; \n Endocrine System (thyroid/parathyroid, adrenal, pituitary): your findings; \n Nervous System (brain, spinal cord, peripheral nerves): your findings; \n Conclusion: your findings;"
 
-primary.necropsy.v4=c("#Describe necropsy findings for each item. Make sure to type the findings between the \":\" and the \";\" (basically replace \"your findings\" text with your own data) in each system. It is key to: i) Leave the \";\" at the end of each section as the last character without a preceding space ii) Do not use \";\" or \":\" when writing the findings iii) Replace \"your findings\" with \"NA\" if the system is not assessed or \"NAF\" if no abnormal finding iv) Do not delete the instructions including this line and start after this line//  External Signs On Carcass: your findings;  Nutritional Condition (Emaciated/Thin/Normal/Overweight/Obese): your findings;  Eyes: your findings;  Ears: your findings;  Nostrils: your findings;  Mouth: your findings;  Skin/Hair Coat/Nails: your findings;   Wounds/Scars: your findings;   External Parasites: your findings;  Anus/Perineum/Cloaca: your findings;  Subcutaneous Fat (very fat/normal/no fat): your findings;  Muscle Mass: your findings;  Musculoskeletal System: your findings;  Body Cavities: your findings;  Circulatory/Cardiovascular System (heart, valves, vessels): your findings;  Respiratory System (larynx, trachea, bronchi, lungs): your findings;  Gastrointestinal System (esophagus, stomach, intestine, feces, pancreas, liver, gallbladder): your findings;  Urinary System (kidneys, ureter, urinary bladder, urethra): your findings;  Reproductive System (ovaries, uterus, testes, epididymis, prostate, presence of fetus): your findings;  Lymphatic System (spleen, lymph nodes): your findings;  Endocrine System (thyroid/parathyroid, adrenal, pituitary): your findings;  Nervous System (brain, spinal cord, peripheral nerves): your findings;  Conclusion: your findings;")
 
-primary.necropsy.v5=c("#Describe necropsy findings for each item. Make sure to type the findings between the \":\" and the \";\" (basically replace \"your findings\" text with your own data) in each system. It is key to: i) Leave the \";\" at the end of each section as the last character without a preceding space ii) Do not use \";\" or \":\" when writing the findings iii) Replace \"your findings\" with \"NA\" if the system is not assessed or \"NAF\" if no abnormal finding iv) Do not delete the instructions including this line and start after this line// \r\n External Signs On Carcass: your findings; \r\n Nutritional Condition (Emaciated/Thin/Normal/Overweight/Obese): your findings; \r\n Eyes: your findings; \r\n Ears: your findings; \r\n Nostrils: your findings; \r\n Mouth: your findings; \r\n Skin/Hair Coat/Nails: your findings; \r\n Wounds/Scars: your findings; \r\n External Parasites: your findings; \r\n Anus/Perineum/Cloaca: your findings; \r\n Subcutaneous Fat (very fat/normal/no fat): your findings; \r\n Muscle Mass: your findings; \r\n Musculoskeletal System: your findings; \r\n Body Cavities: your findings; \r\n Circulatory/Cardiovascular System (heart, valves, vessels): your findings; \r\n Respiratory System (larynx, trachea, bronchi, lungs): your findings; \r\n Gastrointestinal System (esophagus, stomach, intestine, feces, pancreas, liver, gallbladder): your findings; \r\n Urinary System (kidneys, ureter, urinary bladder, urethra): your findings; \r\n Reproductive System (ovaries, uterus, testes, epididymis, prostate, presence of fetus): your findings; \r\n Lymphatic System (spleen, lymph nodes): your findings; \r\n Endocrine System (thyroid/parathyroid, adrenal, pituitary): your findings; \r\n Nervous System (brain, spinal cord, peripheral nerves): your findings; \r\n Conclusion: your findings;")
-
+# all necropsy columns are NA but they have necropsy as reported ...
 
 spec.necropsy.but.no.finding.reported=
 
+# dat$spec %>% 
+#   filter(!is.na(necropsy_level) & !(necropsy_level%in%c("No Necropsy", "Pending"))) %>% 
+#   filter(necropsy==primary.necropsy.v1 | 
+#            necropsy==primary.necropsy.v2 |
+#            necropsy==primary.necropsy.v3 |
+#            necropsy==primary.necropsy.v4 |
+#            necropsy==primary.necropsy.v5) %>% 
+#   dplyr::select(country, event_code, specimen_code)%>%
+#   distinct()
+
 dat$spec %>% 
-  filter(!is.na(necropsy_level) & !(necropsy_level%in%c("No Necropsy", "Pending"))) %>% 
-  filter(necropsy==primary.necropsy.v1 | 
-           necropsy==primary.necropsy.v2 |
-           necropsy==primary.necropsy.v3 |
-           necropsy==primary.necropsy.v4 |
-           necropsy==primary.necropsy.v5) %>% 
-  dplyr::select(country, event_code, specimen_code)%>%
+   filter(!is.na(necropsy_level) & !(necropsy_level%in%c("No Necropsy", "Pending"))) %>% 
+  filter(!if_all(contains("primary_necropsy"), is.na) &
+           necropsy_primary_necropsy_conclusion==primary.necropsy.v1) %>% 
+  # select(necropsy_level, contains("primary_necropsy")) %>% 
+  dplyr::select(country, event_code, specimen_code) %>%
   distinct()
+
 
 
 if(nrow(spec.necropsy.but.no.finding.reported)>0){  
@@ -3577,7 +3590,7 @@ The specimens that match these three conditions can be confused with observation
 
 
 list.of.potential.observations=
-dat$spec %>% select(country, specimen_code, sample_type, date_sampled, meta_has_sample_inventory, necropsy, necropsy_level)%>% # date sampled is mandatory
+dat$spec %>% select(country, specimen_code, sample_type, date_sampled, meta_has_sample_inventory, necropsy_level)%>% # date sampled is mandatory
   distinct()%>%
   arrange(country, specimen_code)%>%
   filter(meta_has_sample_inventory=="No" &
@@ -4257,7 +4270,7 @@ print("Please scroll down the table below to see the complete dataset")
 ## TESTS THAT COULD BE REPEATED
 #
 #
-#### Are there tests that have the same test information. If test data is repeated twice or more it DOES NOT imply that a single test was entered in the database more tha once, but it is very suggestive it was (it is possible that two tests were conducted in the same lab, using the same source, targeting the same disease, using the same method, getting the same result, and the tests could have been sent the same date, and their results received the same date. But it is also possible that it is the same test entered worngly more than once). These data needs to be double checked and not necessarily corrected.
+#### Are there tests that have the same test information. If test data is repeated twice or more it DOES NOT imply that a single test was entered in the database more tha once, but it is very suggestive it was (it is possible that two tests were conducted in the same lab, using the same source, targeting the same disease, using the same method, getting the same result, and the tests could have been sent the same date, and their results received the same date. But it is also possible that it is the same test entered wrongly more than once). These data needs to be double checked and not necessarily corrected.
 #
 ```{r tests that could be repeated same infomration, echo=FALSE, warning=FALSE, eval=T, cache=FALSE, message=FALSE}
 
@@ -5987,8 +6000,8 @@ env.test.results.earlier.than.test.sent.df=
   
   print("No, the data show that some tests results were received before the test was sent for testing. These are the tests results that were received before the test was sent")
   
-  kableExtra::kbl(test.results.earlier.than.test.sent.df, 
-                  caption = "Tests results received before tests were sent")%>%
+  kableExtra::kbl(env.test.results.earlier.than.test.sent.df, 
+                  caption = "Environmental tests results received before tests were sent")%>%
      kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
     kableExtra::column_spec(2, bold = T, border_right = T) %>%
