@@ -27,14 +27,14 @@ library(dplyr)
 
 countries.names=c("Cambodia", "Laos", "Vietnam", "Guatemala", "Peru", "Bolivia")
 countries.project.tags=c("Cambodia", "Lao_PDR", "Vietnam", "Guatemala", "Peru", "Bolivia")
-years=2019:2100
+years_to_consider<-2019:2100
 
 
 # which sheets are present = what data was requested
 # 
-# dat=lapply(c(1:3), function(x) read_excel("/Users/DMontecino/Downloads/Data export_bevan_federko_2023-10-02.xlsx", sheet = x, col_types = "text"))
+dat=lapply(c(1:3), function(x) read_excel("/Users/DMontecino/Downloads/Data export_bevan_federko_2023-10-02.xlsx", sheet = x, col_types = "text"))
 
-dat=list(params$spec, params$obs, params$env_spec)
+# dat=list(params$spec, params$obs, params$env_spec)
 
 # assigna names to the list elements
 names(dat)<-c("spec", "obs", "env_spec")
@@ -555,7 +555,7 @@ print("Please scroll down the table below to see the complete dataset")
 
 observations.funding.source.project.tag.not.provided=
 dat$obs %>% 
-  filter(!grepl(paste(years, collapse = "|"), dat$obs$observation_project_tags)) %>% 
+  filter(!grepl(paste(years_to_consider, collapse = "|"), dat$obs$observation_project_tags)) %>% 
   select(country, event_code, observation_code) %>% distinct()
 
 
@@ -1062,7 +1062,7 @@ if(nrow(obs.healthy.sick.dead.not.equal.observed.sum)>0){
 
   print("No. Not all total observed and the sum of the number of healthy, sick, and dead observed individuals match. These are the observations with values that do not match")
   
-  kableExtra::kbl(obs.healthy.sick.dead.not.equal.observed.sum.ef, 
+  kableExtra::kbl(obs.healthy.sick.dead.not.equal.observed.sum.df, 
                       caption = "Observations with incongruent numbers of individuals") %>%
     kableExtra::kable_paper(full_width = F) %>%
     kableExtra::column_spec(1, bold = T, border_right = T) %>%
@@ -1551,7 +1551,7 @@ print("Please scroll down the table below to see the complete dataset")
 
 specimens.funding.source.project.tag.not.provided=
 dat$spec %>% 
-  filter(!grepl(paste(years, collapse = "|"), dat$spec$specimen_project_tags)) %>% 
+  filter(!grepl(paste(years_to_consider, collapse = "|"), dat$spec$specimen_project_tags)) %>% 
   select(country, event_code, specimen_code) %>% distinct()
 
 
@@ -3354,7 +3354,7 @@ sample.quantity.provided.df=
 #### Are the sample quantities provided informative?
 #
 #
-```{r sample quantity, echo=FALSE, warning=FALSE, eval=T, cache=F}
+```{r sample quantity, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSErt}
 
 # BAsed on the temp vector, find problematic quantities
 # temp=
@@ -3450,6 +3450,7 @@ dat$spec %>%
   filter(!is.na(sample_id)) %>% 
   nest(data=c(disease)) %>%
   filter(map_int(data, nrow)>1)   # filtering out groups whose data (disease) has a single row.
+
 indexing.samples.diseases.and.not.diseases=
 map_lgl(temp$data, function(x) any(is.na(x$disease)) & any(!is.na(x$disease)))
 
@@ -4327,7 +4328,7 @@ if(nrow(list.of.potential.repeated.tests)>0){
 
 env.specimens.funding.source.project.tag.not.provided=
 dat$env_spec %>% 
-  filter(!grepl(paste(years, collapse = "|"), dat$env_spec$environmental_specimen_project_tags)) %>% 
+  filter(!grepl(paste(years_to_consider, collapse = "|"), dat$env_spec$environmental_specimen_project_tags)) %>% 
   select(country, event_code, environmental_specimen_code) %>% distinct()
 
 
@@ -5559,6 +5560,7 @@ dat$env_spec %>%
   filter(!is.na(environmental_specimen_sample_id)) %>% 
   nest(data=c(disease)) %>%
   filter(map_int(data, nrow)>1)   # filtering out groups whose data (disease) has a single row.
+
 indexing.env.samples.diseases.and.not.diseases=
 map_lgl(temp$data, function(x) any(is.na(x$disease)) & any(!is.na(x$disease)))
 
