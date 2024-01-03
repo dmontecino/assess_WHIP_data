@@ -32,9 +32,9 @@ years_to_consider<-2019:2100
 
 # which sheets are present = what data was requested
 # 
-dat=lapply(c(1:3), function(x) read_excel("/Users/DMontecino/Downloads/Data export_bevan_federko_2023-10-02.xlsx", sheet = x, col_types = "text"))
+dat=lapply(c(1:3), function(x) read_excel("/Users/DMontecino/Downloads/WCS Data export_bevan_federko_2023-12-04.xlsx", sheet = x, col_types = "text"))
 
-# dat=list(params$spec, params$obs, params$env_spec)
+#dat=list(params$spec, params$obs, params$env_spec)
 
 # assigna names to the list elements
 names(dat)<-c("spec", "obs", "env_spec")
@@ -3354,7 +3354,7 @@ sample.quantity.provided.df=
 #### Are the sample quantities provided informative?
 #
 #
-```{r sample quantity, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSErt}
+```{r sample quantity, echo=FALSE, warning=FALSE, eval=T, cache=F, message=FALSE}
 
 # BAsed on the temp vector, find problematic quantities
 # temp=
@@ -5089,8 +5089,8 @@ env.sample.date.collected.earlier.than.specimen.found.df=
 
 env.spec.sample.ids.provided=
 dat$env_spec %>% 
-  filter(is.na(environmental_specimen_sample_id) & meta_has_environmental_specimen_sample_inventory=="Yes") %>% 
-  dplyr::select(country, event_code, environmental_specimen_code)%>%
+  filter(is.na(environmental_specimen_id) & meta_has_environmental_specimen_sample_inventory=="Yes") %>% 
+  dplyr::select(country, event_code, environmental_specimen_code) %>%
   distinct()
 
 if(nrow(env.spec.sample.ids.provided)>0){  
