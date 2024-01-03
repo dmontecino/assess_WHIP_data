@@ -5089,8 +5089,8 @@ env.sample.date.collected.earlier.than.specimen.found.df=
 
 env.spec.sample.ids.provided=
 dat$env_spec %>% 
-  filter(is.na(environmental_specimen_id) & meta_has_environmental_specimen_sample_inventory=="Yes") %>% 
-  dplyr::select(country, event_code, environmental_specimen_code) %>%
+  filter(is.na(environmental_specimen_sample_id) & meta_has_environmental_specimen_sample_inventory=="Yes") %>% 
+  dplyr::select(country, event_code, environmental_specimen_code, environmental_specimen_sample_id) %>%
   distinct()
 
 if(nrow(env.spec.sample.ids.provided)>0){  
