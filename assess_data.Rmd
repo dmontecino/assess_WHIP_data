@@ -4033,13 +4033,13 @@ test.sent.for.testing.date.not.provided.df=
 #
 ## TESTS WITH RESULTS BUT WITHOUT THE DATE WHEN RESULTS WERE RECEIVED
 #
-#### Do all tests that have a "non-pending" result have the date when the results were received? 
+#### Do all tests that have a "non-pending" and "tested" result have the date when the results were received? 
 #
 ```{r tests with results but no date when results arrived, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 test.result.received.date.not.provided=
   dat$spec %>% 
-    filter(disease_inventory_test_result!="Pending" & 
+    filter(!grepl("Pending|Not", disease_inventory_test_result) & 
            !is.na(disease_inventory_test_result) &
            !is.na(disease) &
            is.na(disease_inventory_results_received))%>%
@@ -5701,7 +5701,7 @@ The environmental specimens that match this condition do not have any environmen
 list.of.env.specimens.wo.sample.inventory=
 dat$env_spec %>% select(country, environmental_specimen_code, environmental_specimen_type, date_sampled, meta_has_environmental_specimen_sample_inventory)%>% # date sampled is mandatory
   distinct()%>%
-  arrange(country, environmental_specimen_code)%>%
+  arrange(country, environmental_specimen_code) %>%
   filter(meta_has_environmental_specimen_sample_inventory=="No")
 
 
@@ -6065,8 +6065,9 @@ env.test.source.not.provided.df=
 env.test.method.not.provided=
   dat$env_spec %>% 
   filter(!is.na(disease) &
-         is.na(disease_inventory_test_method)) %>%
-    dplyr::select(country, event_code, environmental_specimen_code, disease,  sample_source)%>%
+         is.na(disease_inventory_test_method) & 
+         disease_inventory_test_result!="Not Tested") %>%
+    dplyr::select(country, event_code, environmental_specimen_code, disease,  sample_source) %>%
     distinct()
 
 if(nrow(env.test.method.not.provided)>0){  
@@ -6139,16 +6140,16 @@ env.test.sent.for.testing.date.not.provided.df=
 #
 ## TESTS WITH RESULTS BUT WITHOUT THE DATE WHEN RESULTS WERE RECEIVED
 #
-#### Do all tests that have a "non-pending" result have the date when the results were received? 
+#### Do all tests that have a "non-pending" and a "tested" result have the date when the results were received? 
 #
 ```{r env tests with results but no date when results arrived, echo=FALSE, warning=FALSE, eval=T, message=FALSE}
 
 env.test.result.received.date.not.provided=
   dat$env_spec %>% 
-    filter(disease_inventory_test_result!="Pending" & 
+    filter(!grepl("Pending|Not", disease_inventory_test_result) & 
            !is.na(disease_inventory_test_result) &
            !is.na(disease) &
-           is.na(disease_inventory_results_received))%>%
+           is.na(disease_inventory_results_received)) %>%
     dplyr::select(country, event_code, environmental_specimen_code, disease,  sample_source)%>%
     distinct()
 
